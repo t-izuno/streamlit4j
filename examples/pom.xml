@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>io.streamlit4j</groupId>
+    <artifactId>streamlit4j-parent</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>streamlit4j-examples</artifactId>
+  <name>streamlit4j examples</name>
+  <description>Example applications demonstrating streamlit4j features.</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.streamlit4j</groupId>
+      <artifactId>streamlit4j-cli</artifactId>
+    </dependency>
+  </dependencies>
+</project>

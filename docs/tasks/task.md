@@ -23,16 +23,16 @@
 
 | ID | Status | Summary | DependsOn |
 | ---- | ---- | ---- | ---- |
-| TASK-001 | ⏳ | Maven でマルチモジュール骨格を構築する | - |
-| TASK-002 | ⏳ | JDK 21 ツールチェーンと共通ビルド規約を設定する | TASK-001 |
-| TASK-003 | ⏳ | JUnit 5 ベースの Java 単体テスト基盤を構築する | TASK-002 |
-| TASK-004 | ⏳ | Spotless と Checkstyle で Java 静的解析を設定する | TASK-002 |
-| TASK-005 | ⏳ | JaCoCo でカバレッジ計測とレポート出力を構築する | TASK-003 |
-| TASK-006 | ⏳ | Vitest と Testing Library でフロント単体テスト基盤を構築する | TASK-001 |
-| TASK-007 | ⏳ | ESLint と Prettier でフロント静的解析と整形を設定する | TASK-001 |
-| TASK-008 | ⏳ | Playwright で E2E テスト基盤を構築する | TASK-006 |
-| TASK-009 | ⏳ | GitHub Actions で push/PR の CI パイプラインを構築する | TASK-003,TASK-004,TASK-005,TASK-006,TASK-007 |
-| TASK-010 | ⏳ | OWASP Dependency-Check で脆弱性スキャンを CI に組み込む | TASK-009 |
+| TASK-001 | ✅ | Maven でマルチモジュール骨格を構築する | - |
+| TASK-002 | ✅ | JDK 21 ツールチェーンと共通ビルド規約を設定する | TASK-001 |
+| TASK-003 | ✅ | JUnit 5 ベースの Java 単体テスト基盤を構築する | TASK-002 |
+| TASK-004 | ✅ | Spotless と Checkstyle で Java 静的解析を設定する | TASK-002 |
+| TASK-005 | ✅ | JaCoCo でカバレッジ計測とレポート出力を構築する | TASK-003 |
+| TASK-006 | ✅ | Vitest と Testing Library でフロント単体テスト基盤を構築する | TASK-001 |
+| TASK-007 | ✅ | ESLint と Prettier でフロント静的解析と整形を設定する | TASK-001 |
+| TASK-008 | ✅ | Playwright で E2E テスト基盤を構築する | TASK-006 |
+| TASK-009 | ✅ | GitHub Actions で push/PR の CI パイプラインを構築する | TASK-003,TASK-004,TASK-005,TASK-006,TASK-007 |
+| TASK-010 | ✅ | OWASP Dependency-Check で脆弱性スキャンを CI に組み込む | TASK-009 |
 | TASK-011 | ⏳ | WebSocket JSON エンベロープのスキーマを定義する | TASK-002 |
 | TASK-012 | ⏳ | レンダーノードの不変データモデルを実装する | TASK-002 |
 | TASK-013 | ⏳ | session_init / render_delta / widget_event の DTO を実装する | TASK-011,TASK-012 |

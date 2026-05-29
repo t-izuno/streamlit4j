@@ -1,0 +1,1 @@
+{"root":["./src/app.test.tsx","./src/app.tsx","./src/main.tsx","./e2e/smoke.spec.ts","./vite.config.ts","./vitest.config.ts","./vitest.setup.ts","./playwright.config.ts"],"errors":true,"version":"5.7.3"}
