@@ -1,0 +1,43 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "words": [
+    "streamlit",
+    "Javelit",
+    "Jeamlit",
+    "langchain",
+    "selectbox",
+    "multiselect",
+    "dataframe",
+    "Sonatype",
+    "Quarkus",
+    "JBang",
+    "Snowflake",
+    "Undertow",
+    "Jetty",
+    "GraalVM",
+    "Spotless",
+    "Checkstyle",
+    "JaCoCo",
+    "MessagePack",
+    "Protobuf",
+    "Vite",
+    "Vitest",
+    "Playwright",
+    "Spotless",
+    "Lit",
+    "ScopedValue",
+    "StackWalker",
+    "Javadoc",
+    "POM",
+    "envelope",
+    "rerun"
+  ],
+  "ignorePaths": [
+    "node_modules",
+    "target",
+    "build",
+    ".idea",
+    ".vscode"
+  ]
+}
