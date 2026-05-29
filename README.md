@@ -7,9 +7,9 @@ An idiomatic, open-source Java framework for building interactive data apps and 
 
 ## Requirements
 
-- JDK 21 LTS (24 以下も可。JDK 25 は formatter 内部 API 非互換のため未サポート)
+- JDK 21 LTS（24 以下も可。JDK 25 は formatter 内部 API 非互換のため未サポート）
 - Maven 3.9+
-- Node.js 22+ (frontend のビルド/テスト時のみ)
+- Node.js 22+（frontend のビルド/テスト時のみ）
 
 ## Modules
 

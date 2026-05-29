@@ -33,23 +33,23 @@
 | TASK-008 | ✅ | Playwright で E2E テスト基盤を構築する | TASK-006 |
 | TASK-009 | ✅ | GitHub Actions で push/PR の CI パイプラインを構築する | TASK-003,TASK-004,TASK-005,TASK-006,TASK-007 |
 | TASK-010 | ✅ | OWASP Dependency-Check で脆弱性スキャンを CI に組み込む | TASK-009 |
-| TASK-011 | ⏳ | WebSocket JSON エンベロープのスキーマを定義する | TASK-002 |
-| TASK-012 | ⏳ | レンダーノードの不変データモデルを実装する | TASK-002 |
-| TASK-013 | ⏳ | session_init / render_delta / widget_event の DTO を実装する | TASK-011,TASK-012 |
-| TASK-014 | ⏳ | JSON シリアライザー/デシリアライザーを実装する | TASK-013 |
-| TASK-015 | ⏳ | 仮想スレッドで動くスクリプトランナーを実装する | TASK-002 |
-| TASK-016 | ⏳ | ThreadLocal ベースのレンダーコンテキスト束縛を実装する | TASK-012,TASK-015 |
-| TASK-017 | ⏳ | 呼び出し位置由来の決定的ウィジェット ID 生成を実装する | TASK-016 |
-| TASK-018 | ⏳ | St.title / St.markdown / St.write の表示系 API を実装する | TASK-016 |
-| TASK-019 | ⏳ | St.slider 入力系 API と値返却ロジックを実装する | TASK-017 |
-| TASK-020 | ⏳ | 単一セッションのライフサイクル管理を実装する | TASK-015 |
-| TASK-021 | ⏳ | 組み込み HTTP/WS サーバの起動と接続受付を実装する | TASK-014,TASK-020 |
-| TASK-022 | ⏳ | widget_event 受信から再実行までの直列処理を実装する | TASK-019,TASK-021 |
-| TASK-023 | ⏳ | React + Vite + TypeScript のフロント雛形を構築する | TASK-007,TASK-011 |
-| TASK-024 | ⏳ | WebSocket クライアントとメッセージ受発信を実装する | TASK-013,TASK-023 |
-| TASK-025 | ⏳ | title / markdown / write のフロント描画を実装する | TASK-024 |
-| TASK-026 | ⏳ | slider のフロント描画と値変更イベント送信を実装する | TASK-024 |
-| TASK-027 | ⏳ | フロント差分適用と全置換フォールバックを実装する | TASK-025,TASK-026 |
+| TASK-011 | ✅ | WebSocket JSON エンベロープのスキーマを定義する | TASK-002 |
+| TASK-012 | ✅ | レンダーノードの不変データモデルを実装する | TASK-002 |
+| TASK-013 | ✅ | session_init / render_delta / widget_event の DTO を実装する | TASK-011,TASK-012 |
+| TASK-014 | ✅ | JSON シリアライザー/デシリアライザーを実装する | TASK-013 |
+| TASK-015 | ✅ | 仮想スレッドで動くスクリプトランナーを実装する | TASK-002 |
+| TASK-016 | ✅ | ThreadLocal ベースのレンダーコンテキスト束縛を実装する | TASK-012,TASK-015 |
+| TASK-017 | ✅ | 呼び出し位置由来の決定的ウィジェット ID 生成を実装する | TASK-016 |
+| TASK-018 | ✅ | St.title / St.markdown / St.write の表示系 API を実装する | TASK-016 |
+| TASK-019 | ✅ | St.slider 入力系 API と値返却ロジックを実装する | TASK-017 |
+| TASK-020 | ✅ | 単一セッションのライフサイクル管理を実装する | TASK-015 |
+| TASK-021 | ✅ | 組み込み HTTP/WS サーバの起動と接続受付を実装する | TASK-014,TASK-020 |
+| TASK-022 | ✅ | widget_event 受信から再実行までの直列処理を実装する | TASK-019,TASK-021 |
+| TASK-023 | ✅ | React + Vite + TypeScript のフロント雛形を構築する | TASK-007,TASK-011 |
+| TASK-024 | ✅ | WebSocket クライアントとメッセージ受発信を実装する | TASK-013,TASK-023 |
+| TASK-025 | ✅ | title / markdown / write のフロント描画を実装する | TASK-024 |
+| TASK-026 | ✅ | slider のフロント描画と値変更イベント送信を実装する | TASK-024 |
+| TASK-027 | ✅ | フロント差分適用と全置換フォールバックを実装する | TASK-025,TASK-026 |
 | TASK-028 | ⏳ | PoC サンプル App を作成し E2E 動作を確認する | TASK-022,TASK-027,TASK-008 |
 | TASK-029 | ⏳ | セッションマネージャーと生成/タイムアウト/破棄を実装する | TASK-020 |
 | TASK-030 | ⏳ | セッションライフサイクルリスナー API を実装する | TASK-029 |
