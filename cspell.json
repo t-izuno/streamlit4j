@@ -33,7 +33,10 @@
     "envelope",
     "rerun",
     "autoconfigure",
-    "springframework"
+    "springframework",
+    "Configurer",
+    "Servlet",
+    "servlet"
   ],
   "ignorePaths": [
     "node_modules",

@@ -115,10 +115,10 @@
 | TASK-090 | ✅ | core / server の境界を整理し Clean Architecture (lite) スタイルを採用する | TASK-021 |
 | TASK-091 | ✅ | core に domain / port / application / runtime / bootstrap 層を確立し ArchUnit で依存方向を強制する | TASK-090 |
 | TASK-092 | ✅ | spring-boot-starter モジュールを新設する | TASK-091 |
-| TASK-093 | ⏳ | auto-configuration で指定パスにマウントする | TASK-092 |
-| TASK-094 | ⏳ | Spring Security への認証委譲アダプターを実装する | TASK-093 |
-| TASK-095 | ⏳ | Spring Session への委譲アダプターを実装する | TASK-093 |
-| TASK-096 | ⏳ | 埋め込みパス配下のリソース提供を実装する | TASK-093 |
+| TASK-093 | ✅ | auto-configuration で指定パスにマウントする | TASK-092 |
+| TASK-094 | ✅ | Spring Security への認証委譲アダプターを実装する | TASK-093 |
+| TASK-095 | ✅ | Spring Session への委譲アダプターを実装する | TASK-093 |
+| TASK-096 | ✅ | 埋め込みパス配下のリソース提供を実装する | TASK-093 |
 | TASK-097 | ⏳ | カスタムコンポーネント宣言用の型安全 API を実装する | TASK-016 |
 | TASK-098 | ⏳ | コンポーネントの引数/戻り値シリアライザーを実装する | TASK-097 |
 | TASK-099 | ⏳ | インプロセス component の登録機構を実装する | TASK-097 |
@@ -129,7 +129,7 @@
 | TASK-104 | ⏳ | フロント TS SDK の値受け渡し API を実装する | TASK-098 |
 | TASK-105 | ⏳ | フロント TS SDK の再描画通知ブリッジを実装する | TASK-104 |
 | TASK-106 | ⏳ | streamlit4j component create 雛形生成コマンドを実装する | TASK-104 |
-| TASK-107 | ⏳ | Spring Boot 埋め込みサンプルアプリを作成する | TASK-094,TASK-095,TASK-096 |
+| TASK-107 | ✅ | Spring Boot 埋め込みサンプルアプリを作成する | TASK-094,TASK-095,TASK-096 |
 | TASK-108 | ⏳ | カスタムコンポーネントサンプル（インプロセス/iframe）を作成する | TASK-100,TASK-103 |
 | TASK-109 | ⏳ | 未決事項（終端 API 名/プロトコル等）を ADR で最終決定する | - |
 | TASK-110 | ⏳ | Apache-2.0 ライセンスを全モジュールに適用する | - |
@@ -262,6 +262,47 @@
 - 補足: `Streamlit4jAutoConfiguration` + `Streamlit4jProperties` のスケルトンを実装
 - 補足: `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` を整備
 - 注意: bean 配線・マウント処理は TASK-093 以降。親 pom に `spring-boot-dependencies` BOM を import 済み
+
+### TASK-093
+
+- 補足: Spring `WebSocketHandler` adapter (`Streamlit4jWebSocketHandler`) を新設
+- 補足: AutoConfig で `Bootstrap.standalone(EntrypointSource)` を Bean 化
+- 補足: `${streamlit4j.base-path}/ws` に WebSocket を登録。basePath 正規化を 6 パターンで検証
+- 注意: `@ConditionalOnWebApplication(SERVLET)` + `@ConditionalOnClass(WebSocketHandler)`。
+  認証・セッション委譲は TASK-094/095、静的リソースは TASK-096
+
+### TASK-094
+
+- 補足: `Streamlit4jPrincipalHandshakeInterceptor` が `SecurityContextHolder` の
+  `Authentication` を WebSocket 属性 `streamlit4j.authentication` にコピー
+- 補足: `@ConditionalOnClass(SecurityContextHolder)` で gating。ObjectProvider で
+  HandshakeInterceptor 群を集約し WebSocket 登録時に attach
+- 注意: アクセス制御自体は宿主側の `SecurityFilterChain` 責務（streamlit4j は強制しない）
+
+### TASK-095
+
+- 補足: `Streamlit4jHttpSessionHandshakeInterceptor` が HTTP セッション ID を
+  WebSocket 属性に持ち越し、`Streamlit4jHttpSessionBinder` (Streamlit4jConnectionListener)
+  が `Streamlit4jHttpSessionRegistry` に登録
+- 補足: `Streamlit4jHttpSessionListener` (Servlet `HttpSessionListener`) が
+  HTTP セッション破棄を購読して関連 Streamlit4j セッションを `SessionStore.remove` する
+- 注意: Servlet 標準 API ベースなので Spring Session 利用時も透過的に動作する
+
+### TASK-096
+
+- 補足: `ResourceRegistration` (WebMvcConfigurer) が `${streamlit4j.base-path}/**`
+  → `classpath:/META-INF/resources/streamlit4j/` のリソースハンドラーを登録
+- 補足: frontend-assets jar 同梱の SPA 資産を Spring Boot 上で提供。basePath が
+  blank / root の場合は登録をスキップしてデフォルトハンドラー衝突を回避
+- 注意: 実際の SPA バンドル（Vite build 成果物）の同梱パイプラインは TASK-100 で整備
+
+### TASK-107
+
+- 補足: `examples/spring/SpringBootHelloApp` が `@SpringBootApplication` で起動し
+  `EntrypointSource` Bean 経由で `Hello.run` を提供
+- 補足: `@SpringBootTest(webEnvironment=RANDOM_PORT)` で Tomcat 起動 + AutoConfig
+  全 Bean (Streamlit4jApplication / WebSocketHandler / EntrypointSource) の解決を検証
+- 注意: spring-boot-starter-web / -websocket を optional 依存で取り込む（examples 由来）
 
 ### TASK-102
 
