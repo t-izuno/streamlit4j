@@ -132,9 +132,9 @@
 | TASK-107 | ✅ | Spring Boot 埋め込みサンプルアプリを作成する | TASK-094,TASK-095,TASK-096 |
 | TASK-108 | ⏳ | カスタムコンポーネントサンプル（インプロセス/iframe）を作成する | TASK-100,TASK-103 |
 | TASK-109 | ⏳ | 未決事項（終端 API 名/プロトコル等）を ADR で最終決定する | - |
-| TASK-110 | ⏳ | Apache-2.0 ライセンスを全モジュールに適用する | - |
-| TASK-111 | ⏳ | NOTICE と third-party ライセンス一覧を整備する | TASK-110 |
-| TASK-112 | ⏳ | 独立 OSS 旨の disclaimer を README 冒頭に明記する | - |
+| TASK-110 | ✅ | MIT ライセンスを全モジュールに適用する | - |
+| TASK-111 | 🚫 | NOTICE と third-party ライセンス一覧を整備する | TASK-110 |
+| TASK-112 | ✅ | 独立 OSS 旨の disclaimer を README 冒頭に明記する | - |
 | TASK-113 | ⏳ | 独立 OSS 旨の disclaimer を公式ドキュメント冒頭に明記する | TASK-115 |
 | TASK-114 | ⏳ | 独自ロゴと独自カラーパレットを策定しテーマに反映する | TASK-077 |
 | TASK-115 | ⏳ | 公式ドキュメントサイトの基盤を構築する | - |
@@ -150,7 +150,7 @@
 | TASK-125 | ⏳ | JBang カタログに CLI を登録する | TASK-059 |
 | TASK-126 | ⏳ | playground（ホストされたデモ）を構築する | TASK-119 |
 | TASK-127 | ⏳ | コア・互換要素・統合機能の E2E テストスイートを整備する | TASK-060,TASK-064,TASK-066,TASK-070,TASK-071,TASK-081,TASK-089,TASK-107,TASK-108 |
-| TASK-128 | ⏳ | 0.1.0 リリースタグとリリースノートを作成する | TASK-109,TASK-111,TASK-112,TASK-113,TASK-114,TASK-116,TASK-117,TASK-118,TASK-120,TASK-121,TASK-124,TASK-125,TASK-127 |
+| TASK-128 | ⏳ | 0.1.0 リリースタグとリリースノートを作成する | TASK-109,TASK-112,TASK-113,TASK-114,TASK-116,TASK-117,TASK-118,TASK-120,TASK-121,TASK-124,TASK-125,TASK-127 |
 | TASK-129 | ⏳ | Maven Central へ 0.1.0 を公開する | TASK-123,TASK-128 |
 | TASK-130 | ⏳ | playground を 0.1.0 ビルドに更新し公開する | TASK-126,TASK-129 |
 
@@ -304,6 +304,26 @@
   全 Bean (Streamlit4jApplication / WebSocketHandler / EntrypointSource) の解決を検証
 - 注意: spring-boot-starter-web / -websocket を optional 依存で取り込む（examples 由来）
 
+### TASK-110
+
+- 補足: ライセンスは MIT で確定（特許明示や NOTICE 伝達などの追加条件を不要にし、
+  利用者側の義務を最小化する方針）。`LICENSE` は MIT 全文を維持
+- 補足: 親 pom の `<licenses>` を MIT に揃え、子 pom は宣言を継承
+- 注意: TASK-109 の未決事項リストから「ライセンス」は本タスクをもって確定済み
+
+### TASK-111
+
+- 中止理由: 本体ライセンスを MIT で確定したため Apache-2.0 4(d) 由来の NOTICE 伝達義務が消滅し、
+  プロジェクト本体の NOTICE ファイルは不要。依存ライブラリのライセンス一覧 (THIRD-PARTY-NOTICES)
+  も配布形態が source / Maven Central jar のみであり、依存元のライセンスは各 jar に同梱されるため再録不要
+- 注意: 将来 fat-jar / native image など依存を再配布する形態を採る場合は再開を検討
+
+### TASK-112
+
+- 補足: README 冒頭の disclaimer を強化。「not affiliated with, endorsed by, or
+  sponsored by」と Streamlit を商標と明記し nominative fair use の三要件を文面上担保
+- 注意: License セクションは MIT への単純リンクのみ（NOTICE / THIRD-PARTY-NOTICES は採用せず）
+
 ### TASK-102
 
 - 補足: postMessage の origin 検証を必須とする
@@ -311,13 +331,9 @@
 
 ### TASK-109
 
-- 補足: 終端メソッド名・プロトコル選定・キャッシュ指定方式・GraalVM 時期・ライセンス・マルチページ既定方式を確定する
+- 補足: 終端メソッド名・プロトコル選定・キャッシュ指定方式・GraalVM 時期・マルチページ既定方式を確定する
+- 補足: ライセンスは TASK-110 で MIT 確定済み（design.md §9-5 の代替候補を MIT 側で採用）
 - 注意: 決定理由と却下案を ADR として残す
-
-### TASK-112
-
-- 補足: Snowflake 社および Streamlit プロジェクトとは無関係と明記する
-- 注意: nominative fair use の第三要件を担保する文面とする
 
 ### TASK-114
 

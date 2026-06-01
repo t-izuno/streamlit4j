@@ -3,7 +3,11 @@
 An idiomatic, open-source Java framework for building interactive data apps and dashboards on the JVM
 — inspired by Streamlit, built for Java.
 
-> Independent community OSS. Not affiliated with Snowflake, Inc. or the Streamlit project.
+> **Independent community open-source software.** streamlit4j is not affiliated with,
+> endorsed by, or sponsored by Snowflake, Inc. or the Streamlit project. The name
+> "Streamlit" appears within "streamlit4j" solely as nominative fair use to describe
+> this project's design lineage; "Streamlit" is a trademark of its respective owner
+> and no trademark claim is asserted by this project.
 
 ## Requirements
 
@@ -56,4 +60,4 @@ npm run build
 
 ## License
 
-Apache License 2.0
+streamlit4j is released under the [MIT License](LICENSE).
