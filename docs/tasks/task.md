@@ -141,7 +141,7 @@
 | TASK-116 | ✅ | Getting Started チュートリアルを執筆する | TASK-115 |
 | TASK-117 | ⏳ | 機能リファレンスをドキュメントに整備する | TASK-115,TASK-089 |
 | TASK-118 | ✅ | Javadoc 公開ビルドを整備する | TASK-001 |
-| TASK-119 | ⏳ | examples モジュールに代表サンプル群を整備する | TASK-060,TASK-107 |
+| TASK-119 | ✅ | examples モジュールに代表サンプル群を整備する | TASK-060,TASK-107 |
 | TASK-120 | ✅ | Spring Boot 統合手順をドキュメント化する | TASK-107,TASK-115 |
 | TASK-121 | ⏳ | カスタムコンポーネント作成ガイドを執筆する | TASK-106,TASK-115 |
 | TASK-122 | ✅ | Maven Central パブリッシュ用 POM とメタデータを整備する | TASK-110 |
@@ -400,6 +400,17 @@
   これで `jbang app install streamlit4j@t-izuno/streamlit4j` から CLI が直接起動
 - 注意: 0.1.0 リリース時に `script-ref` の version を `0.1.0` に切り替える（TASK-128）。
   公式 JBang Community Catalog への登録は jbangdev/jbang-catalog への PR で行う（リリース後）
+
+### TASK-119
+
+- 補足: `examples` に 3 つの代表サンプルを追加。
+  `WidgetsDemo` (text/number/select/radio/checkbox/button/slider/date/time/color picker)、
+  `LayoutDemo` (sidebar/columns/tabs/expander/form)、
+  `DataDemo` (cacheData/dataframe/metric/line/bar/area/scatter chart)
+- 補足: 各サンプルは独立した `run()` 静的メソッドを公開。
+  `new Streamlit4jServer(port, () -> WidgetsDemo::run)` のように差し替えて起動
+- 注意: CLI から複数サンプルを切り替えるフラグは未整備（現状は `Hello` 固定）。
+  TASK-127（E2E スイート）で必要なら CLI 側に `--app <完全修飾クラス名>` オプションを追加検討
 
 ### TASK-102
 
