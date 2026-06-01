@@ -13,4 +13,8 @@
   <artifactId>streamlit4j-frontend-assets</artifactId>
   <name>streamlit4j frontend assets</name>
   <description>Pre-built frontend SPA bundled as classpath resources under META-INF/resources/streamlit4j/.</description>
+
+  <properties>
+    <maven.javadoc.skip>true</maven.javadoc.skip>
+  </properties>
 </project>

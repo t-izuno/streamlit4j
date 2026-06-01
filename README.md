@@ -42,6 +42,9 @@ streamlit4j 8501
 # Java 全モジュール: lint + format + test + coverage
 mvn verify
 
+# 公開ビルド: javadoc jar を同時生成（Maven Central パブリッシュ前提）
+mvn -P release -DskipTests package
+
 # フロントエンド
 cd frontend
 npm ci

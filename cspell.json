@@ -36,7 +36,9 @@
     "springframework",
     "Configurer",
     "Servlet",
-    "servlet"
+    "servlet",
+    "javadocs",
+    "doclint"
   ],
   "ignorePaths": [
     "node_modules",

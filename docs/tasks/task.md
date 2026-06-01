@@ -140,7 +140,7 @@
 | TASK-115 | ⏳ | 公式ドキュメントサイトの基盤を構築する | - |
 | TASK-116 | ⏳ | Getting Started チュートリアルを執筆する | TASK-115 |
 | TASK-117 | ⏳ | 機能リファレンスをドキュメントに整備する | TASK-115,TASK-089 |
-| TASK-118 | ⏳ | Javadoc 公開ビルドを整備する | TASK-001 |
+| TASK-118 | ✅ | Javadoc 公開ビルドを整備する | TASK-001 |
 | TASK-119 | ⏳ | examples モジュールに代表サンプル群を整備する | TASK-060,TASK-107 |
 | TASK-120 | ⏳ | Spring Boot 統合手順をドキュメント化する | TASK-107,TASK-115 |
 | TASK-121 | ⏳ | カスタムコンポーネント作成ガイドを執筆する | TASK-106,TASK-115 |
@@ -323,6 +323,14 @@
 - 補足: README 冒頭の disclaimer を強化。「not affiliated with, endorsed by, or
   sponsored by」と Streamlit を商標と明記し nominative fair use の三要件を文面上担保
 - 注意: License セクションは MIT への単純リンクのみ（NOTICE / THIRD-PARTY-NOTICES は採用せず）
+
+### TASK-118
+
+- 補足: `maven-javadoc-plugin` 3.10.1 を pluginManagement に追加、`release` profile
+  でのみ `attach-javadocs` を実行する構成。各 jar モジュールに `*-javadoc.jar` を生成
+- 補足: JDK 21 doclint 厳格化対策として `doclint=none` + `failOnError=false` を設定
+- 補足: frontend-assets は Java ソース無しのため `maven.javadoc.skip=true` で除外
+- 注意: source jar 同梱や GPG 署名は TASK-122 / TASK-123（Maven Central パブリッシュ準備）で扱う
 
 ### TASK-102
 
