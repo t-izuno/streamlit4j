@@ -53,6 +53,8 @@ jobs:
         run: npm ci
       - name: Lint
         run: npm run lint
+      - name: Architecture (dependency-cruiser)
+        run: npm run lint:arch
       - name: Format check
         run: npm run format:check
       - name: Unit tests

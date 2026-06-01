@@ -7,6 +7,64 @@
 本書は streamlit4j の内部設計（アーキテクチャー・アルゴリズム・技術選定）を定義する。
 外部からの API サーフェスやプロトコル詳細は `specification.md` を参照する。
 
+## 0. アーキテクチャースタイル
+
+採用方針: **Clean Architecture（lite）** + framework-free core。
+
+依存方向は内向き（Dependency Rule）のみを許可する。
+
+```text
+                       +-------------------+
+   (adapters / impl)   |  io.streamlit4j.  |
+   外部から見える層     |  server,          |
+                       |  spring-boot-     |
+                       |  starter, cli     |
+                       +---------+---------+
+                                 | depends on (inward)
+                                 v
+                       +---------+---------+
+                       | core.bootstrap    |   <-- 合成ルート（DI のみ）
+                       +---------+---------+
+                                 |
+                                 v
+                       +---------+---------+
+                       | core.application  |   <-- ユースケース
+                       +---------+---------+
+                                 |
+                                 v
+                       +---------+---------+
+                       | core.port         |   <-- 境界（インターフェース）
+                       +---------+---------+
+                                 |
+                                 v
+                       +---------+---------+
+                       | core.domain,      |   <-- エンティティー、DTO
+                       | core.protocol     |       （peers: domain は protocol を参照可）
+                       +-------------------+
+```
+
+採用したもの:
+
+- **framework-free core**: `core` パッケージ全体が Web フレームワーク・サーブレット・DI コンテナーに依存しない
+- **ports**: `core.port` に `SessionStore`, `EntrypointSource`, `Renderer` をインターフェース定義
+- **use cases**: `core.application` に `StartSession`, `ProcessWidgetEvent`
+- **composition root**: `core.bootstrap.Bootstrap` のみが具象クラスを new する
+- **internal infrastructure**: `core.runtime` に `ScriptRunner`, `RenderContext`, `WidgetIds`,
+  `InMemorySessionStore`（ポートのデフォルト実装）
+
+意図的に**採用しなかった**もの:
+
+- DDD 戦術パターン（Aggregate / Repository / Domain Service）: 現状の `Session` は
+  技術構造体としても十分機能するため、ドメインモデリングは過剰
+- Onion Architecture の同心円構造: パッケージ階層で十分表現可能
+- 抽象 Factory / Provider: 合成ルートを 1 つに絞ることで DI コンテナー不要
+
+依存ルールの強制:
+
+- ArchUnit の `CoreArchitectureTest` が package 間依存方向を検査
+- ArchUnit の `ServerArchitectureTest` が `server` は `core.runtime` に直接依存しないことを検査
+- frontend は `dependency-cruiser` がモジュール依存を検査
+
 ## 1. 全体アーキテクチャー
 
 ```text

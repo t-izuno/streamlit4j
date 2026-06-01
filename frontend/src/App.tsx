@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Envelope, RenderNode } from './protocol';
 import { applyPatches, RenderTree } from './render';
+import { applyTheme, readStoredTheme, type Theme } from './theme';
 import { StreamlitClient } from './ws';
 
 interface AppProps {
@@ -11,7 +12,12 @@ interface AppProps {
 export function App({ websocketUrl, client: injectedClient }: AppProps = {}) {
   const [root, setRoot] = useState<RenderNode | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [theme, setTheme] = useState<Theme>(readStoredTheme());
   const clientRef = useRef<StreamlitClient | null>(null);
+
+  useEffect(() => {
+    applyTheme(theme);
+  }, [theme]);
 
   useEffect(() => {
     const client = injectedClient ?? new StreamlitClient();
@@ -22,6 +28,8 @@ export function App({ websocketUrl, client: injectedClient }: AppProps = {}) {
         setSessionId(envelope.sessionId);
       } else if (envelope.type === 'render_delta') {
         setRoot((prev) => applyPatches(prev, envelope.patches));
+      } else if (envelope.type === 'reload' && typeof window !== 'undefined') {
+        window.location.reload();
       }
     });
     if (!injectedClient) {
@@ -35,9 +43,29 @@ export function App({ websocketUrl, client: injectedClient }: AppProps = {}) {
     };
   }, [injectedClient, websocketUrl]);
 
+  useEffect(() => {
+    if (!sessionId || !clientRef.current) return;
+    const syncPageFromHash = () => {
+      const hash = window.location.hash.replace(/^#/, '');
+      if (hash) {
+        clientRef.current?.sendWidgetEvent(sessionId, '__page__', hash);
+      }
+    };
+    syncPageFromHash();
+    window.addEventListener('hashchange', syncPageFromHash);
+    return () => window.removeEventListener('hashchange', syncPageFromHash);
+  }, [sessionId]);
+
   const handleWidgetChange = useCallback(
     (widgetId: string, value: unknown) => {
       if (!clientRef.current || !sessionId) {
+        return;
+      }
+      if (widgetId === '__page__' && typeof value === 'string') {
+        window.location.hash = value;
+      }
+      if (value instanceof File) {
+        void clientRef.current.sendFileUpload(sessionId, widgetId, value);
         return;
       }
       clientRef.current.sendWidgetEvent(sessionId, widgetId, value);
@@ -48,7 +76,22 @@ export function App({ websocketUrl, client: injectedClient }: AppProps = {}) {
   if (!root) {
     return <p role="status">Connecting…</p>;
   }
-  return <RenderTree root={root} onWidgetChange={handleWidgetChange} />;
+  return (
+    <div className="streamlit4j-shell">
+      <div className="streamlit4j-shell__toolbar">
+        <button
+          type="button"
+          aria-label="Toggle theme"
+          onClick={() => setTheme((t) => (t === 'light' ? 'dark' : 'light'))}
+        >
+          {theme === 'light' ? '🌙' : '☀️'}
+        </button>
+      </div>
+      <main className="streamlit4j-shell__main">
+        <RenderTree root={root} onWidgetChange={handleWidgetChange} />
+      </main>
+    </div>
+  );
 }
 
 function defaultWebsocketUrl(): string {

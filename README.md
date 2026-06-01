@@ -23,6 +23,15 @@ An idiomatic, open-source Java framework for building interactive data apps and 
 | `examples` | サンプルアプリ |
 | `frontend/` (非 Maven) | React + Vite + TS フロントエンドソース |
 
+## Install via JBang
+
+```sh
+jbang app install streamlit4j@t-izuno/streamlit4j
+streamlit4j 8501
+```
+
+カタログ定義は `jbang-catalog.json`。
+
 ## Build
 
 ```sh

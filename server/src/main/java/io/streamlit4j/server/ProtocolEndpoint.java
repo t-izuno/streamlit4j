@@ -1,19 +1,18 @@
 package io.streamlit4j.server;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.streamlit4j.core.application.ProcessWidgetEvent;
+import io.streamlit4j.core.application.StartSession;
 import io.streamlit4j.core.protocol.Codec;
 import io.streamlit4j.core.protocol.Envelope;
 import io.streamlit4j.core.protocol.ErrorMessage;
-import io.streamlit4j.core.protocol.Patch;
+import io.streamlit4j.core.protocol.FileUpload;
 import io.streamlit4j.core.protocol.RenderDelta;
-import io.streamlit4j.core.protocol.RenderNode;
 import io.streamlit4j.core.protocol.SessionInit;
 import io.streamlit4j.core.protocol.WidgetEvent;
-import io.streamlit4j.core.runtime.Session;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.List;
-import java.util.function.Supplier;
+import java.util.Base64;
 import org.eclipse.jetty.websocket.api.Callback;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
@@ -23,25 +22,29 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 @WebSocket
 public final class ProtocolEndpoint {
 
-    private final SessionRegistry sessions;
-    private final Supplier<Runnable> entrypointFactory;
-    private Session domainSession;
+    private final StartSession startSession;
+    private final ProcessWidgetEvent processWidgetEvent;
+    private final ConnectionRegistry connections;
+    private String sessionId;
     private org.eclipse.jetty.websocket.api.Session wsSession;
 
-    public ProtocolEndpoint(SessionRegistry sessions, Supplier<Runnable> entrypointFactory) {
-        this.sessions = sessions;
-        this.entrypointFactory = entrypointFactory;
+    public ProtocolEndpoint(
+            StartSession startSession, ProcessWidgetEvent processWidgetEvent, ConnectionRegistry connections) {
+        this.startSession = startSession;
+        this.processWidgetEvent = processWidgetEvent;
+        this.connections = connections;
     }
 
     @OnWebSocketOpen
     public void onOpen(org.eclipse.jetty.websocket.api.Session ws) {
         this.wsSession = ws;
-        this.domainSession = sessions.create();
         try {
-            RenderNode root = domainSession.rerun(entrypointFactory.get());
-            send(SessionInit.of(domainSession.id(), root));
+            StartSession.Result result = startSession.execute();
+            this.sessionId = result.sessionId();
+            connections.register(sessionId, this);
+            send(SessionInit.of(result.sessionId(), result.root()));
         } catch (Exception e) {
-            send(ErrorMessage.of(domainSession.id(), e.getMessage(), stackTrace(e)));
+            send(ErrorMessage.of(sessionId, e.getMessage(), stackTrace(e)));
         }
     }
 
@@ -50,21 +53,29 @@ public final class ProtocolEndpoint {
         try {
             Envelope incoming = Codec.decode(text);
             if (incoming instanceof WidgetEvent event) {
-                domainSession.updateWidget(event.widgetId(), unwrap(event.value()));
-                RenderNode root = domainSession.rerun(entrypointFactory.get());
-                long seq = domainSession.nextSeq();
-                send(RenderDelta.of(domainSession.id(), seq, List.of(Patch.replace("/", root))));
+                ProcessWidgetEvent.Result result =
+                        processWidgetEvent.execute(sessionId, event.widgetId(), unwrap(event.value()));
+                send(RenderDelta.of(sessionId, result.seq(), result.patches()));
+            } else if (incoming instanceof FileUpload upload) {
+                byte[] bytes = Base64.getDecoder().decode(upload.contentBase64());
+                UploadedFile file = new UploadedFile(upload.filename(), upload.mimeType(), bytes);
+                ProcessWidgetEvent.Result result = processWidgetEvent.execute(sessionId, upload.widgetId(), file);
+                send(RenderDelta.of(sessionId, result.seq(), result.patches()));
             }
         } catch (Exception e) {
-            send(ErrorMessage.of(domainSession.id(), e.getMessage(), stackTrace(e)));
+            send(ErrorMessage.of(sessionId, e.getMessage(), stackTrace(e)));
         }
     }
 
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
-        if (domainSession != null) {
-            sessions.remove(domainSession.id());
+        if (sessionId != null) {
+            connections.remove(sessionId);
         }
+    }
+
+    void deliver(Envelope envelope) {
+        send(envelope);
     }
 
     private void send(Envelope envelope) {
@@ -97,4 +108,6 @@ public final class ProtocolEndpoint {
         t.printStackTrace(new PrintWriter(sw));
         return sw.toString();
     }
+
+    public record UploadedFile(String filename, String mimeType, byte[] bytes) {}
 }

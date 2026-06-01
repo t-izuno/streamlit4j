@@ -39,8 +39,34 @@ export class StreamlitClient {
     this.socket.send(JSON.stringify(event));
   }
 
+  async sendFileUpload(sessionId: string, widgetId: string, file: File): Promise<void> {
+    if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
+      return;
+    }
+    const buffer = await file.arrayBuffer();
+    const contentBase64 = bytesToBase64(new Uint8Array(buffer));
+    const upload = {
+      v: PROTOCOL_VERSION,
+      type: 'file_upload' as const,
+      sessionId,
+      widgetId,
+      filename: file.name,
+      mimeType: file.type,
+      contentBase64,
+    };
+    this.socket.send(JSON.stringify(upload));
+  }
+
   close(): void {
     this.socket?.close();
     this.socket = null;
   }
+}
+
+function bytesToBase64(bytes: Uint8Array): string {
+  let binary = '';
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
 }

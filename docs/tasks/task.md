@@ -26,10 +26,10 @@
 | TASK-001 | ✅ | Maven でマルチモジュール骨格を構築する | - |
 | TASK-002 | ✅ | JDK 21 ツールチェーンと共通ビルド規約を設定する | TASK-001 |
 | TASK-003 | ✅ | JUnit 5 ベースの Java 単体テスト基盤を構築する | TASK-002 |
-| TASK-004 | ✅ | Spotless と Checkstyle で Java 静的解析を設定する | TASK-002 |
+| TASK-004 | ✅ | Spotless / Checkstyle / ArchUnit で Java 静的解析・アーキテクチャー検査を設定する | TASK-002 |
 | TASK-005 | ✅ | JaCoCo でカバレッジ計測とレポート出力を構築する | TASK-003 |
 | TASK-006 | ✅ | Vitest と Testing Library でフロント単体テスト基盤を構築する | TASK-001 |
-| TASK-007 | ✅ | ESLint と Prettier でフロント静的解析と整形を設定する | TASK-001 |
+| TASK-007 | ✅ | ESLint / Prettier / dependency-cruiser でフロント静的解析・整形・依存検査を設定する | TASK-001 |
 | TASK-008 | ✅ | Playwright で E2E テスト基盤を構築する | TASK-006 |
 | TASK-009 | ✅ | GitHub Actions で push/PR の CI パイプラインを構築する | TASK-003,TASK-004,TASK-005,TASK-006,TASK-007 |
 | TASK-010 | ✅ | OWASP Dependency-Check で脆弱性スキャンを CI に組み込む | TASK-009 |
@@ -50,70 +50,70 @@
 | TASK-025 | ✅ | title / markdown / write のフロント描画を実装する | TASK-024 |
 | TASK-026 | ✅ | slider のフロント描画と値変更イベント送信を実装する | TASK-024 |
 | TASK-027 | ✅ | フロント差分適用と全置換フォールバックを実装する | TASK-025,TASK-026 |
-| TASK-028 | ⏳ | PoC サンプル App を作成し E2E 動作を確認する | TASK-022,TASK-027,TASK-008 |
-| TASK-029 | ⏳ | セッションマネージャーと生成/タイムアウト/破棄を実装する | TASK-020 |
-| TASK-030 | ⏳ | セッションライフサイクルリスナー API を実装する | TASK-029 |
-| TASK-031 | ⏳ | 仮想スレッドによるセッション間並行実行を実装する | TASK-029 |
-| TASK-032 | ⏳ | セッション内直列再実行とイベントキューを実装する | TASK-031 |
-| TASK-033 | ⏳ | SessionState の Key-Value ストアを実装する | TASK-029 |
-| TASK-034 | ⏳ | SessionState の型付きアクセサー API を実装する | TASK-033 |
-| TASK-035 | ⏳ | ウィジェット値を ID キーで再実行間に保持する仕組みを実装する | TASK-033 |
-| TASK-036 | ⏳ | St.rerun / St.stop の制御 API を実装する | TASK-032 |
-| TASK-037 | ⏳ | レンダーツリーの keyed diff アルゴリズムを実装する | TASK-012 |
-| TASK-038 | ⏳ | render_delta の op/path/node パッチ生成を実装する | TASK-037 |
-| TASK-039 | ⏳ | フロント差分適用ロジックを keyed diff 対応に拡張する | TASK-027,TASK-038 |
-| TASK-040 | ⏳ | text_input / number_input ウィジェットを実装する | TASK-035 |
-| TASK-041 | ⏳ | selectbox / multiselect ウィジェットを実装する | TASK-035 |
-| TASK-042 | ⏳ | checkbox / radio / button ウィジェットを実装する | TASK-035 |
-| TASK-043 | ⏳ | date_input ウィジェットを実装する | TASK-035 |
-| TASK-044 | ⏳ | header / metric の表示系要素を実装する | TASK-018 |
-| TASK-045 | ⏳ | dataframe / table 表示要素を実装する | TASK-018 |
-| TASK-046 | ⏳ | json / code 表示要素を実装する | TASK-018 |
-| TASK-047 | ⏳ | columns / container レイアウト要素を実装する | TASK-016 |
-| TASK-048 | ⏳ | expander / tabs レイアウト要素を実装する | TASK-047 |
-| TASK-049 | ⏳ | sidebar レイアウト領域を実装する | TASK-047 |
-| TASK-050 | ⏳ | empty 相当のプレースホルダー API を実装する | TASK-047 |
-| TASK-051 | ⏳ | ファイルアップロードのストリーミング受信を実装する | TASK-032 |
-| TASK-052 | ⏳ | file_uploader ウィジェットを実装する | TASK-051 |
-| TASK-053 | ⏳ | アップロードのサイズ上限と MIME 検証を実装する | TASK-051 |
-| TASK-054 | ⏳ | error メッセージ送信とフロントのスタックトレース表示を実装する | TASK-038 |
-| TASK-055 | ⏳ | 構造化ログ（セッション ID・再実行 seq・所要時間）を実装する | TASK-032 |
-| TASK-056 | ⏳ | アクティブセッション数等のメトリクスを実装する | TASK-029 |
-| TASK-057 | ⏳ | ソース変更検知とブラウザ自動リロード機構を実装する | TASK-038 |
-| TASK-058 | ⏳ | CLI モジュールと streamlit4j run コマンドを実装する | TASK-057 |
-| TASK-059 | ⏳ | JBang による単一 .java ファイル起動を実装する | TASK-058 |
-| TASK-060 | ⏳ | フロントで全要素ノードの描画コンポーネントを整備する | TASK-040,TASK-041,TASK-042,TASK-043,TASK-044,TASK-045,TASK-046,TASK-048,TASK-049 |
-| TASK-061 | ⏳ | ページ宣言の規約ベース自動探索機構を実装する | TASK-016 |
-| TASK-062 | ⏳ | St.pages による明示登録 API を実装する | TASK-016 |
-| TASK-063 | ⏳ | ページ間ナビゲーション UI を実装する | TASK-061,TASK-062 |
-| TASK-064 | ⏳ | URL ディープリンクとルーティング同期を実装する | TASK-063 |
-| TASK-065 | ⏳ | form コンテナーと再実行抑制機構を実装する | TASK-032 |
-| TASK-066 | ⏳ | form_submit_button と一括値確定を実装する | TASK-065 |
-| TASK-067 | ⏳ | データキャッシュのアノテーション指定を実装する | TASK-016 |
-| TASK-068 | ⏳ | データキャッシュのラッパー関数指定を実装する | TASK-067 |
-| TASK-069 | ⏳ | 引数ハッシュによるキャッシュキー生成を実装する | TASK-067 |
-| TASK-070 | ⏳ | データキャッシュの TTL と無効化を実装する | TASK-069 |
-| TASK-071 | ⏳ | リソースキャッシュとスレッドセーフ共有を実装する | TASK-067 |
-| TASK-072 | ⏳ | line_chart チャート要素を実装する | TASK-018 |
-| TASK-073 | ⏳ | bar_chart チャート要素を実装する | TASK-018 |
-| TASK-074 | ⏳ | area_chart チャート要素を実装する | TASK-018 |
-| TASK-075 | ⏳ | scatter_chart チャート要素を実装する | TASK-018 |
-| TASK-076 | ⏳ | テーマ切替機構（ライト/ダーク）を実装する | TASK-023 |
-| TASK-077 | ⏳ | カスタムカラーパレット適用を実装する | TASK-076 |
-| TASK-078 | ⏳ | アクセシビリティ（コントラスト/フォーカス）を整備する | TASK-076 |
-| TASK-079 | ⏳ | キーボード操作対応をフロント全体に適用する | TASK-078 |
-| TASK-080 | ⏳ | download_button とファイル配信エンドポイントを実装する | TASK-021 |
-| TASK-081 | ⏳ | CSV/画像/PDF 生成物の配信パイプラインを実装する | TASK-080 |
-| TASK-082 | ⏳ | toast 通知要素を実装する | TASK-018 |
-| TASK-083 | ⏳ | progress / spinner / status 要素を実装する | TASK-018 |
-| TASK-084 | ⏳ | image / audio / video 表示要素を実装する | TASK-018 |
-| TASK-085 | ⏳ | divider / caption / subheader 補助要素を実装する | TASK-018 |
-| TASK-086 | ⏳ | color_picker / time_input / select_slider 入力要素を実装する | TASK-035 |
-| TASK-087 | ⏳ | text_area / data_editor 追加入力要素を実装する | TASK-035 |
-| TASK-088 | ⏳ | latex / html 表示要素を実装する | TASK-018 |
-| TASK-089 | ⏳ | 主要 40 要素のカタログ整合性を検証する | TASK-082,TASK-083,TASK-084,TASK-085,TASK-086,TASK-087,TASK-088 |
-| TASK-090 | ⏳ | core と server のモジュール境界を整理する | TASK-021 |
-| TASK-091 | ⏳ | core を Web フレームワーク非依存に分離する | TASK-090 |
+| TASK-028 | ✅ | PoC サンプル App を作成し E2E 動作を確認する | TASK-022,TASK-027,TASK-008 |
+| TASK-029 | ✅ | セッションマネージャーと生成/タイムアウト/破棄を実装する | TASK-020 |
+| TASK-030 | ✅ | セッションライフサイクルリスナー API を実装する | TASK-029 |
+| TASK-031 | ✅ | 仮想スレッドによるセッション間並行実行を実装する | TASK-029 |
+| TASK-032 | ✅ | セッション内直列再実行とイベントキューを実装する | TASK-031 |
+| TASK-033 | ✅ | SessionState の Key-Value ストアを実装する | TASK-029 |
+| TASK-034 | ✅ | SessionState の型付きアクセサー API を実装する | TASK-033 |
+| TASK-035 | ✅ | ウィジェット値を ID キーで再実行間に保持する仕組みを実装する | TASK-033 |
+| TASK-036 | ✅ | St.rerun / St.stop の制御 API を実装する | TASK-032 |
+| TASK-037 | ✅ | レンダーツリーの keyed diff アルゴリズムを実装する | TASK-012 |
+| TASK-038 | ✅ | render_delta の op/path/node パッチ生成を実装する | TASK-037 |
+| TASK-039 | ✅ | フロント差分適用ロジックを keyed diff 対応に拡張する | TASK-027,TASK-038 |
+| TASK-040 | ✅ | text_input / number_input ウィジェットを実装する | TASK-035 |
+| TASK-041 | ✅ | selectbox / multiselect ウィジェットを実装する | TASK-035 |
+| TASK-042 | ✅ | checkbox / radio / button ウィジェットを実装する | TASK-035 |
+| TASK-043 | ✅ | date_input ウィジェットを実装する | TASK-035 |
+| TASK-044 | ✅ | header / metric の表示系要素を実装する | TASK-018 |
+| TASK-045 | ✅ | dataframe / table 表示要素を実装する | TASK-018 |
+| TASK-046 | ✅ | json / code 表示要素を実装する | TASK-018 |
+| TASK-047 | ✅ | columns / container レイアウト要素を実装する | TASK-016 |
+| TASK-048 | ✅ | expander / tabs レイアウト要素を実装する | TASK-047 |
+| TASK-049 | ✅ | sidebar レイアウト領域を実装する | TASK-047 |
+| TASK-050 | ✅ | empty 相当のプレースホルダー API を実装する | TASK-047 |
+| TASK-051 | ✅ | ファイルアップロードのストリーミング受信を実装する | TASK-032 |
+| TASK-052 | ✅ | file_uploader ウィジェットを実装する | TASK-051 |
+| TASK-053 | ✅ | アップロードのサイズ上限と MIME 検証を実装する | TASK-051 |
+| TASK-054 | ✅ | error メッセージ送信とフロントのスタックトレース表示を実装する | TASK-038 |
+| TASK-055 | ✅ | 構造化ログ（セッション ID・再実行 seq・所要時間）を実装する | TASK-032 |
+| TASK-056 | ✅ | アクティブセッション数等のメトリクスを実装する | TASK-029 |
+| TASK-057 | ✅ | ソース変更検知とブラウザ自動リロード機構を実装する | TASK-038 |
+| TASK-058 | ✅ | CLI モジュールと streamlit4j run コマンドを実装する | TASK-057 |
+| TASK-059 | ✅ | JBang による単一 .java ファイル起動を実装する | TASK-058 |
+| TASK-060 | ✅ | フロントで全要素ノードの描画コンポーネントを整備する | TASK-040,TASK-041,TASK-042,TASK-043,TASK-044,TASK-045,TASK-046,TASK-048,TASK-049 |
+| TASK-061 | ✅ | ページ宣言の規約ベース自動探索機構を実装する | TASK-016 |
+| TASK-062 | ✅ | St.pages による明示登録 API を実装する | TASK-016 |
+| TASK-063 | ✅ | ページ間ナビゲーション UI を実装する | TASK-061,TASK-062 |
+| TASK-064 | ✅ | URL ディープリンクとルーティング同期を実装する | TASK-063 |
+| TASK-065 | ✅ | form コンテナーと再実行抑制機構を実装する | TASK-032 |
+| TASK-066 | ✅ | form_submit_button と一括値確定を実装する | TASK-065 |
+| TASK-067 | ✅ | データキャッシュのアノテーション指定を実装する | TASK-016 |
+| TASK-068 | ✅ | データキャッシュのラッパー関数指定を実装する | TASK-067 |
+| TASK-069 | ✅ | 引数ハッシュによるキャッシュキー生成を実装する | TASK-067 |
+| TASK-070 | ✅ | データキャッシュの TTL と無効化を実装する | TASK-069 |
+| TASK-071 | ✅ | リソースキャッシュとスレッドセーフ共有を実装する | TASK-067 |
+| TASK-072 | ✅ | line_chart チャート要素を実装する | TASK-018 |
+| TASK-073 | ✅ | bar_chart チャート要素を実装する | TASK-018 |
+| TASK-074 | ✅ | area_chart チャート要素を実装する | TASK-018 |
+| TASK-075 | ✅ | scatter_chart チャート要素を実装する | TASK-018 |
+| TASK-076 | ✅ | テーマ切替機構（ライト/ダーク）を実装する | TASK-023 |
+| TASK-077 | ✅ | カスタムカラーパレット適用を実装する | TASK-076 |
+| TASK-078 | ✅ | アクセシビリティ（コントラスト/フォーカス）を整備する | TASK-076 |
+| TASK-079 | ✅ | キーボード操作対応をフロント全体に適用する | TASK-078 |
+| TASK-080 | ✅ | download_button とファイル配信エンドポイントを実装する | TASK-021 |
+| TASK-081 | ✅ | CSV/画像/PDF 生成物の配信パイプラインを実装する | TASK-080 |
+| TASK-082 | ✅ | toast 通知要素を実装する | TASK-018 |
+| TASK-083 | ✅ | progress / spinner / status 要素を実装する | TASK-018 |
+| TASK-084 | ✅ | image / audio / video 表示要素を実装する | TASK-018 |
+| TASK-085 | ✅ | divider / caption / subheader 補助要素を実装する | TASK-018 |
+| TASK-086 | ✅ | color_picker / time_input / select_slider 入力要素を実装する | TASK-035 |
+| TASK-087 | ✅ | text_area / data_editor 追加入力要素を実装する | TASK-035 |
+| TASK-088 | ✅ | latex / html 表示要素を実装する | TASK-018 |
+| TASK-089 | ✅ | 主要 40 要素のカタログ整合性を検証する | TASK-082,TASK-083,TASK-084,TASK-085,TASK-086,TASK-087,TASK-088 |
+| TASK-090 | ✅ | core / server の境界を整理し Clean Architecture (lite) スタイルを採用する | TASK-021 |
+| TASK-091 | ✅ | core に domain / port / application / runtime / bootstrap 層を確立し ArchUnit で依存方向を強制する | TASK-090 |
 | TASK-092 | ⏳ | spring-boot-starter モジュールを新設する | TASK-091 |
 | TASK-093 | ⏳ | auto-configuration で指定パスにマウントする | TASK-092 |
 | TASK-094 | ⏳ | Spring Security への認証委譲アダプターを実装する | TASK-093 |
@@ -195,6 +195,66 @@
 
 - 補足: v1 カバレッジ目標は主要 40 要素
 - 注意: 全要素について Java API/プロトコル/フロント描画の 3 点セットを揃える
+
+### TASK-051
+
+- 補足: WS テキスト envelope `file_upload` で base64 エンコードしたバイト列を送信し `ProtocolEndpoint` で復号
+- 注意: 真のバイナリ WS フレームによる大容量ストリーミング最適化は後続改善
+
+### TASK-053
+
+- 補足: `core.port.UploadValidator` + `DefaultUploadValidator` で size/MIME 検証
+- 注意: St 側からの constraint 受け渡し API は後続で
+
+### TASK-057
+
+- 補足: `core.runtime.SourceWatcher` (NIO WatchService) + `ReloadNotice` envelope。CLI に `--watch <dir>` 追加
+- 注意: 仮想スレッドで watcher を回す。Debounce は今後検討
+
+### TASK-058
+
+- 補足: `Cli.main(args)` で `--port` と `--watch` を解析。examples の Hello.run を hardcode 起動
+- 注意: 任意 `.java` ファイル指定は TASK-059 (JBang 経由) で対応
+
+### TASK-059
+
+- 補足: `jbang-catalog.json` を repo ルートに追加。`jbang app install streamlit4j@t-izuno/streamlit4j` でインストール可能
+- 注意: 0.1.0 リリース後に JBang index 登録
+
+### TASK-064
+
+- 補足: `App.tsx` が `hashchange` を購読して `__page__` を server に同期。Page クリックは `window.location.hash` を更新
+- 注意: pushState ベースのクリーン URL は今後検討
+
+### TASK-076
+
+- 補足: `theme.ts` で localStorage 永続化 + `data-theme` 属性切替。`styles.css` の CSS 変数でライト/ダーク定義
+- 注意: System preference (`prefers-color-scheme`) との連動は今後
+
+### TASK-077
+
+- 補足: `styles.css` で `--color-accent` 等を変数化し `data-theme` ごとに上書き
+- 注意: ユーザーが独自パレットを指定する API は今後
+
+### TASK-080
+
+- 補足: `core.port.DownloadStore` + `InMemoryDownloadStore`。`DownloadHandler` が `/download/{key}` で配信
+- 注意: 大容量ファイルのストリーム配信は後続
+
+### TASK-081
+
+- 補足: `St.downloadCsv` と `St.downloadJson` を実装（CSV エスケープ含む）
+- 注意: PDF 生成は PDFBox/iText 等を選定して後続で追加
+
+### TASK-090
+
+- 補足: アーキテクチャースタイル決定は design.md §0 に明文化（Clean Architecture lite、DDD/Onion/DI コンテナーは不採用）
+- 注意: M3 着手予定だったが PoC 完了時点に前倒し実施
+
+### TASK-091
+
+- 補足: 層は `domain` / `protocol` / `port` / `application` / `runtime` / `bootstrap`、合成ルートは `Bootstrap.standalone`
+- 注意: 依存方向違反は CoreArchitectureTest 9 ルール + ServerArchitectureTest 2 ルールで CI 検査
 
 ### TASK-102
 

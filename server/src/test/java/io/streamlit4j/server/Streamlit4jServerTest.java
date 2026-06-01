@@ -68,8 +68,9 @@ class Streamlit4jServerTest {
                 assertThat(second).isInstanceOf(RenderDelta.class);
                 RenderDelta delta = (RenderDelta) second;
                 assertThat(delta.patches()).hasSize(1);
-                assertThat(delta.patches().get(0).node().children().get(0).props())
-                        .containsEntry("value", 2024);
+                assertThat(delta.patches().get(0).op()).isEqualTo("replace");
+                assertThat(delta.patches().get(0).path()).isEqualTo("main/0");
+                assertThat(delta.patches().get(0).node().props()).containsEntry("value", 2024);
 
                 ws.session.close();
             } finally {

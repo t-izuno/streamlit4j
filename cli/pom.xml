@@ -19,5 +19,13 @@
       <groupId>io.streamlit4j</groupId>
       <artifactId>streamlit4j-server</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.streamlit4j</groupId>
+      <artifactId>streamlit4j-examples</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+    </dependency>
   </dependencies>
 </project>

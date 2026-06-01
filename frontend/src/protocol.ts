@@ -42,6 +42,29 @@ export interface ErrorMessage {
   stackTrace: string;
 }
 
-export type Envelope = SessionInit | RenderDelta | WidgetEvent | ErrorMessage;
+export interface FileUpload {
+  v: number;
+  type: 'file_upload';
+  sessionId: string;
+  widgetId: string;
+  filename: string;
+  mimeType: string;
+  contentBase64: string;
+}
+
+export interface ReloadNotice {
+  v: number;
+  type: 'reload';
+  sessionId: string;
+  reason: string;
+}
+
+export type Envelope =
+  | SessionInit
+  | RenderDelta
+  | WidgetEvent
+  | ErrorMessage
+  | FileUpload
+  | ReloadNotice;
 
 export const PROTOCOL_VERSION = 1;

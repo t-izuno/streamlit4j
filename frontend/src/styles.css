@@ -1,0 +1,104 @@
+:root {
+  --color-bg: #ffffff;
+  --color-fg: #1f2933;
+  --color-accent: #4f46e5;
+  --color-muted: #6b7280;
+  --color-border: #e5e7eb;
+  --font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+:root[data-theme='dark'] {
+  --color-bg: #0f172a;
+  --color-fg: #f1f5f9;
+  --color-accent: #818cf8;
+  --color-muted: #94a3b8;
+  --color-border: #1e293b;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  background: var(--color-bg);
+  color: var(--color-fg);
+}
+
+.streamlit4j-shell {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+}
+
+.streamlit4j-shell__toolbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.streamlit4j-shell__main {
+  padding: 1rem;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+.columns {
+  display: grid;
+  gap: 1rem;
+}
+
+.columns[data-count='2'] {
+  grid-template-columns: 1fr 1fr;
+}
+
+.columns[data-count='3'] {
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.columns[data-count='4'] {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.pages {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.pages__current {
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.metric {
+  display: inline-flex;
+  flex-direction: column;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+}
+
+.metric__value {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.toast {
+  padding: 0.5rem 1rem;
+  background: var(--color-accent);
+  color: var(--color-bg);
+  border-radius: 0.25rem;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}

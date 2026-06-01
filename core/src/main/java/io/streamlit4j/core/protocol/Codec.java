@@ -31,6 +31,8 @@ public final class Codec {
                 case RenderDelta.TYPE -> MAPPER.treeToValue(node, RenderDelta.class);
                 case WidgetEvent.TYPE -> MAPPER.treeToValue(node, WidgetEvent.class);
                 case ErrorMessage.TYPE -> MAPPER.treeToValue(node, ErrorMessage.class);
+                case FileUpload.TYPE -> MAPPER.treeToValue(node, FileUpload.class);
+                case ReloadNotice.TYPE -> MAPPER.treeToValue(node, ReloadNotice.class);
                 default -> throw new IllegalArgumentException("Unknown envelope type: " + type);
             };
         } catch (JsonProcessingException e) {

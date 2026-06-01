@@ -2,18 +2,18 @@ package io.streamlit4j.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.streamlit4j.core.domain.Session;
 import io.streamlit4j.core.protocol.RenderNode;
 import io.streamlit4j.core.runtime.ScriptRunner;
-import io.streamlit4j.core.runtime.Session;
 import org.junit.jupiter.api.Test;
 
 class StTest {
 
     @Test
-    void titleEmitsTitleNode() throws Exception {
+    void titleEmitsTitleNode() {
         try (ScriptRunner runner = new ScriptRunner()) {
-            Session session = new Session("s-1", runner);
-            RenderNode root = session.rerun(() -> St.title("Hello"));
+            Session session = new Session("s-1");
+            RenderNode root = runner.render(session, () -> St.title("Hello"));
 
             assertThat(root.children()).hasSize(1);
             RenderNode title = root.children().get(0);
@@ -23,42 +23,38 @@ class StTest {
     }
 
     @Test
-    void sliderReturnsDefaultOnFirstRun() throws Exception {
+    void sliderReturnsDefaultOnFirstRun() {
         try (ScriptRunner runner = new ScriptRunner()) {
-            Session session = new Session("s-1", runner);
+            Session session = new Session("s-1");
             int[] captured = new int[1];
-            session.rerun(() -> captured[0] = St.slider("Year", 2018, 2026, 2025));
+            runner.render(session, () -> captured[0] = St.slider("Year", 2018, 2026, 2025));
 
             assertThat(captured[0]).isEqualTo(2025);
         }
     }
 
     @Test
-    void sliderReturnsStoredValueOnRerun() throws Exception {
+    void sliderReturnsStoredValueOnRerun() {
         try (ScriptRunner runner = new ScriptRunner()) {
-            Session session = new Session("s-1", runner);
-            int[] firstId = new int[1];
+            Session session = new Session("s-1");
 
-            RenderNode firstRoot = session.rerun(() -> {
-                St.slider("Year", 2018, 2026, 2025);
-                firstId[0] = 1;
-            });
+            RenderNode firstRoot = runner.render(session, () -> St.slider("Year", 2018, 2026, 2025));
             String widgetId = firstRoot.children().get(0).id();
 
             session.updateWidget(widgetId, 2024);
 
             int[] captured = new int[1];
-            session.rerun(() -> captured[0] = St.slider("Year", 2018, 2026, 2025));
+            runner.render(session, () -> captured[0] = St.slider("Year", 2018, 2026, 2025));
 
             assertThat(captured[0]).isEqualTo(2024);
         }
     }
 
     @Test
-    void multipleWidgetsGetDistinctIds() throws Exception {
+    void multipleWidgetsGetDistinctIds() {
         try (ScriptRunner runner = new ScriptRunner()) {
-            Session session = new Session("s-1", runner);
-            RenderNode root = session.rerun(() -> {
+            Session session = new Session("s-1");
+            RenderNode root = runner.render(session, () -> {
                 St.title("Dashboard");
                 St.markdown("Body");
                 St.slider("Year", 2018, 2026, 2025);
