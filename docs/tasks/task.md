@@ -114,7 +114,7 @@
 | TASK-089 | ✅ | 主要 40 要素のカタログ整合性を検証する | TASK-082,TASK-083,TASK-084,TASK-085,TASK-086,TASK-087,TASK-088 |
 | TASK-090 | ✅ | core / server の境界を整理し Clean Architecture (lite) スタイルを採用する | TASK-021 |
 | TASK-091 | ✅ | core に domain / port / application / runtime / bootstrap 層を確立し ArchUnit で依存方向を強制する | TASK-090 |
-| TASK-092 | ⏳ | spring-boot-starter モジュールを新設する | TASK-091 |
+| TASK-092 | ✅ | spring-boot-starter モジュールを新設する | TASK-091 |
 | TASK-093 | ⏳ | auto-configuration で指定パスにマウントする | TASK-092 |
 | TASK-094 | ⏳ | Spring Security への認証委譲アダプターを実装する | TASK-093 |
 | TASK-095 | ⏳ | Spring Session への委譲アダプターを実装する | TASK-093 |
@@ -255,6 +255,13 @@
 
 - 補足: 層は `domain` / `protocol` / `port` / `application` / `runtime` / `bootstrap`、合成ルートは `Bootstrap.standalone`
 - 注意: 依存方向違反は CoreArchitectureTest 9 ルール + ServerArchitectureTest 2 ルールで CI 検査
+
+### TASK-092
+
+- 補足: Spring Boot 3.5.14 を採用、`spring-boot-autoconfigure` を `optional=true` で依存追加
+- 補足: `Streamlit4jAutoConfiguration` + `Streamlit4jProperties` のスケルトンを実装
+- 補足: `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` を整備
+- 注意: bean 配線・マウント処理は TASK-093 以降。親 pom に `spring-boot-dependencies` BOM を import 済み
 
 ### TASK-102
 

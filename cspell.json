@@ -31,7 +31,9 @@
     "Javadoc",
     "POM",
     "envelope",
-    "rerun"
+    "rerun",
+    "autoconfigure",
+    "springframework"
   ],
   "ignorePaths": [
     "node_modules",
