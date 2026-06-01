@@ -38,7 +38,13 @@
     "Servlet",
     "servlet",
     "javadocs",
-    "doclint"
+    "doclint",
+    "vitepress",
+    "VitePress",
+    "pinentry",
+    "Dgpg",
+    "izuno",
+    "jbangdev"
   ],
   "ignorePaths": [
     "node_modules",

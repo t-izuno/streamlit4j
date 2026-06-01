@@ -14,6 +14,12 @@
   <name>streamlit4j examples</name>
   <description>Example applications demonstrating streamlit4j features.</description>
 
+  <properties>
+    <!-- examples module is not published to Maven Central -->
+    <maven.deploy.skip>true</maven.deploy.skip>
+    <central-publishing.skip>true</central-publishing.skip>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.streamlit4j</groupId>

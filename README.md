@@ -52,6 +52,12 @@ npm run lint
 npm run format:check
 npm test
 npm run build
+
+# ドキュメントサイト (VitePress)
+cd docs
+npm install
+npm run docs:dev    # ローカルプレビュー (http://localhost:5173)
+npm run docs:build  # 静的サイトを docs/.vitepress/dist へ出力
 ```
 
 ## Documentation

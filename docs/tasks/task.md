@@ -135,19 +135,19 @@
 | TASK-110 | ✅ | MIT ライセンスを全モジュールに適用する | - |
 | TASK-111 | 🚫 | NOTICE と third-party ライセンス一覧を整備する | TASK-110 |
 | TASK-112 | ✅ | 独立 OSS 旨の disclaimer を README 冒頭に明記する | - |
-| TASK-113 | ⏳ | 独立 OSS 旨の disclaimer を公式ドキュメント冒頭に明記する | TASK-115 |
+| TASK-113 | ✅ | 独立 OSS 旨の disclaimer を公式ドキュメント冒頭に明記する | TASK-115 |
 | TASK-114 | ⏳ | 独自ロゴと独自カラーパレットを策定しテーマに反映する | TASK-077 |
-| TASK-115 | ⏳ | 公式ドキュメントサイトの基盤を構築する | - |
-| TASK-116 | ⏳ | Getting Started チュートリアルを執筆する | TASK-115 |
+| TASK-115 | ✅ | 公式ドキュメントサイトの基盤を構築する | - |
+| TASK-116 | ✅ | Getting Started チュートリアルを執筆する | TASK-115 |
 | TASK-117 | ⏳ | 機能リファレンスをドキュメントに整備する | TASK-115,TASK-089 |
 | TASK-118 | ✅ | Javadoc 公開ビルドを整備する | TASK-001 |
 | TASK-119 | ⏳ | examples モジュールに代表サンプル群を整備する | TASK-060,TASK-107 |
-| TASK-120 | ⏳ | Spring Boot 統合手順をドキュメント化する | TASK-107,TASK-115 |
+| TASK-120 | ✅ | Spring Boot 統合手順をドキュメント化する | TASK-107,TASK-115 |
 | TASK-121 | ⏳ | カスタムコンポーネント作成ガイドを執筆する | TASK-106,TASK-115 |
-| TASK-122 | ⏳ | Maven Central パブリッシュ用 POM とメタデータを整備する | TASK-110 |
-| TASK-123 | ⏳ | GPG 署名と Sonatype アカウント設定を整備する | TASK-122 |
-| TASK-124 | ⏳ | Maven 利用者向け導入手順を整備する | TASK-122 |
-| TASK-125 | ⏳ | JBang カタログに CLI を登録する | TASK-059 |
+| TASK-122 | ✅ | Maven Central パブリッシュ用 POM とメタデータを整備する | TASK-110 |
+| TASK-123 | ✅ | GPG 署名と Sonatype アカウント設定を整備する | TASK-122 |
+| TASK-124 | ✅ | Maven 利用者向け導入手順を整備する | TASK-122 |
+| TASK-125 | ✅ | JBang カタログに CLI を登録する | TASK-059 |
 | TASK-126 | ⏳ | playground（ホストされたデモ）を構築する | TASK-119 |
 | TASK-127 | ⏳ | コア・互換要素・統合機能の E2E テストスイートを整備する | TASK-060,TASK-064,TASK-066,TASK-070,TASK-071,TASK-081,TASK-089,TASK-107,TASK-108 |
 | TASK-128 | ⏳ | 0.1.0 リリースタグとリリースノートを作成する | TASK-109,TASK-112,TASK-113,TASK-114,TASK-116,TASK-117,TASK-118,TASK-120,TASK-121,TASK-124,TASK-125,TASK-127 |
@@ -331,6 +331,75 @@
 - 補足: JDK 21 doclint 厳格化対策として `doclint=none` + `failOnError=false` を設定
 - 補足: frontend-assets は Java ソース無しのため `maven.javadoc.skip=true` で除外
 - 注意: source jar 同梱や GPG 署名は TASK-122 / TASK-123（Maven Central パブリッシュ準備）で扱う
+
+### TASK-115
+
+- 補足: VitePress 1.6.4 を採用。`docs/.vitepress/config.ts` でナビ / サイドバー / 検索 /
+  footer disclaimer を設定。`docs/package.json` に `docs:dev` / `docs:build` / `docs:preview`
+  スクリプトを定義
+- 補足: ランディング `docs/index.md` (hero + features) と、`docs/guide/getting-started.md`、
+  `docs/guide/spring-boot.md`、`docs/reference/overview.md` のスケルトンを配置
+- 補足: 既存 `docs/requirements.md` / `docs/specification.md` / `docs/design.md` をサイトから
+  参照。`docs/tasks/**` はサイト対象外
+- 注意: 詳細コンテンツは TASK-116 / 117 / 120 / 121 で肉付け。デプロイ自動化は未定義。
+  GitHub Pages 想定だが本タスクのスコープ外
+
+### TASK-113
+
+- 補足: ランディング (`docs/index.md`) hero 直下に強調表示の disclaimer を配置。
+  `themeConfig.footer.message` でサイト全ページのフッターにも常時掲出
+- 注意: 各ガイドページにも個別 disclaimer を出すかは TASK-116 以降の編集方針に委ねる
+
+### TASK-116
+
+- 補足: `docs/guide/getting-started.md` を完成版に差し替え。Prerequisites / CLI 起動 /
+  Maven 経由でのアプリ作成 / 再実行モデル解説 / `--watch` フラグ案内まで網羅
+- 補足: コード例は `examples/Hello.java` と整合。Maven Central パブリッシュ前提のため
+  バージョンは `0.1.0-SNAPSHOT` 表記
+
+### TASK-120
+
+- 補足: `docs/guide/spring-boot.md` を完成版に差し替え。starter 依存・EntrypointSource /
+  base-path 設定・Spring Security 委譲・Spring Session 自動連動・auto-config 配線一覧を網羅
+- 補足: `examples/spring/SpringBootHelloApp` を参照する end-to-end 例を含む
+- 注意: `spring-boot-maven-plugin` 統合は TASK-122（Maven Central パブリッシュ準備）に持ち越し
+
+### TASK-122
+
+- 補足: 親 pom に Maven Central 公開要件メタデータを追加。developers / scm /
+  issueManagement / ciManagement
+- 補足: `maven-source-plugin` 3.3.1 を pluginManagement に追加し `release` profile で
+  `attach-sources` 発火。各 jar モジュールに `*-sources.jar` を生成
+- 補足: `central-publishing-maven-plugin` 0.6.0 を導入。`autoPublish=false` で
+  最初は手動公開、`publishingServerId=central` で Central Portal 認証を参照
+- 補足: examples モジュールは `maven.deploy.skip=true` + `central-publishing.skip=true`
+  で公開対象から除外
+- 注意: GPG 署名・Sonatype 認証情報設定は TASK-123 で別途整備
+
+### TASK-123
+
+- 補足: `maven-gpg-plugin` 3.2.7 を pluginManagement に追加、`release` profile の
+  `verify` フェーズで `sign` ゴール発火。`--pinentry-mode loopback` で CI 環境対応
+- 補足: `gpg.skip=true` をデフォルトにし、リリース時のみ `-Dgpg.skip=false` で
+  明示的に署名発火する運用。普段の `mvn -P release package` は失敗しない
+- 補足: Sonatype Central Portal アカウント情報は pom にハードコードせず、
+  `~/.m2/settings.xml` の `<server id="central">` で扱う運用。手順は `docs/publishing.md`
+- 注意: 実際の鍵生成・鍵公開・Portal アカウント作成は配布者責任。CI でのシークレット注入は
+  TASK-128 のリリース工程で扱う想定
+
+### TASK-124
+
+- 補足: `docs/guide/installation.md` を新設。Maven 座標一覧 / 標準 / Spring Boot /
+  Gradle / JBang / Snapshot / GPG 検証手順を網羅
+- 補足: VitePress サイドバーに Installation ページを追加
+- 注意: 0.1.0 が Maven Central に上がるまでは Snapshot 取得手順がメインパス
+
+### TASK-125
+
+- 補足: `jbang-catalog.json` に `main: io.streamlit4j.cli.Cli` を明示。
+  これで `jbang app install streamlit4j@t-izuno/streamlit4j` から CLI が直接起動
+- 注意: 0.1.0 リリース時に `script-ref` の version を `0.1.0` に切り替える（TASK-128）。
+  公式 JBang Community Catalog への登録は jbangdev/jbang-catalog への PR で行う（リリース後）
 
 ### TASK-102
 
