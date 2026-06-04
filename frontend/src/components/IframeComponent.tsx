@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react';
+import { validateIframePayload } from '../iframe-payload-validator';
 
 export interface IframeComponentProps {
   name: string;
@@ -29,8 +30,9 @@ const NULL_ORIGIN = 'null';
  *      iframe cannot inject events for unrelated widgets
  *
  * <p>CSP policy for the host page (frame-src allowlist, script nonce strategy)
- * is documented in {@code docs/design.md} §9-3. Argument / return value boundary
- * validation (type narrowing, size limits) is layered on by TASK-103.
+ * is documented in {@code docs/design.md} §9-3. Inbound widget values and
+ * outbound state are funneled through {@link validateIframePayload}
+ * (TASK-103) to bound size, nesting depth, and forbidden prototype keys.
  */
 export function IframeComponent({ name, src, args, value, onChange }: IframeComponentProps) {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
@@ -47,6 +49,10 @@ export function IframeComponent({ name, src, args, value, onChange }: IframeComp
     const sendState = () => {
       const iframeWindow = iframeRef.current?.contentWindow;
       if (!iframeWindow) {
+        return;
+      }
+      const payload = { args, value };
+      if (!validateIframePayload(payload).ok) {
         return;
       }
       const targetOrigin = expectedOrigin && expectedOrigin !== NULL_ORIGIN ? expectedOrigin : '*';
@@ -70,6 +76,9 @@ export function IframeComponent({ name, src, args, value, onChange }: IframeComp
       if (record.type === READY_TYPE) {
         sendState();
       } else if (record.type === WIDGET_EVENT_TYPE) {
+        if (!validateIframePayload(record.value).ok) {
+          return;
+        }
         onChange(record.value);
       }
     };

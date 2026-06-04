@@ -219,6 +219,67 @@ describe('App', () => {
     ]);
   });
 
+  it('rejects iframe widget events that violate payload boundaries', () => {
+    const client = createStubClient();
+    render(<App client={client} />);
+    act(() => {
+      client.emit({
+        v: 1,
+        type: 'session_init',
+        sessionId: 's-1',
+        root: {
+          kind: 'root',
+          id: 'root',
+          props: {},
+          children: [
+            {
+              kind: 'component',
+              id: 'w_remote',
+              props: {
+                name: 'remote-widget',
+                iframeSrc: 'https://example.com/widget.html',
+                args: {},
+              },
+              children: [],
+            },
+          ],
+        },
+      });
+    });
+    const iframe = document.querySelector(
+      'iframe[data-component-name="remote-widget"]',
+    ) as HTMLIFrameElement;
+    act(() => {
+      window.dispatchEvent(
+        new MessageEvent('message', {
+          source: iframe.contentWindow,
+          origin: 'https://example.com',
+          data: {
+            type: 'streamlit4j:widget_event',
+            name: 'remote-widget',
+            // JSON.parse creates __proto__ as an own property, simulating
+            // a structured-clone postMessage payload from a malicious iframe.
+            value: JSON.parse('{"__proto__": {"polluted": true}}'),
+          },
+        }),
+      );
+    });
+    act(() => {
+      window.dispatchEvent(
+        new MessageEvent('message', {
+          source: iframe.contentWindow,
+          origin: 'https://example.com',
+          data: {
+            type: 'streamlit4j:widget_event',
+            name: 'remote-widget',
+            value: { huge: 'x'.repeat(300_000) },
+          },
+        }),
+      );
+    });
+    expect((client as unknown as { sent: unknown[] }).sent).toEqual([]);
+  });
+
   it('rejects iframe widget events from unrelated windows or origins', () => {
     const client = createStubClient();
     render(<App client={client} />);

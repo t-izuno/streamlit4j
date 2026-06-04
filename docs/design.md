@@ -201,8 +201,8 @@
   保持する `contentWindow` で一意に特定できる）
 - iframe→親の受信は次の 3 段階で検証する:
   1. `event.source === iframeRef.current.contentWindow`（他ウィンドウからの偽装拒否）
-  2. `event.origin === 'null'` または `event.origin === expectedOrigin`
-     （sandbox 緩和時の origin 検証）
+  2. `event.origin === 'null'` または `event.origin === expectedOrigin` で
+     sandbox 緩和時の origin 検証
   3. `data.name` が当該 component の name と一致（メッセージの誤配送防止）
 
 ### 9-3. CSP 方針
