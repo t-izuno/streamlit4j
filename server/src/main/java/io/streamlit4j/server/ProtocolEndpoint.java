@@ -100,7 +100,10 @@ public final class ProtocolEndpoint {
         if (node.isBoolean()) {
             return node.asBoolean();
         }
-        return node.asText();
+        if (node.isTextual()) {
+            return node.asText();
+        }
+        return node;
     }
 
     private static String stackTrace(Throwable t) {

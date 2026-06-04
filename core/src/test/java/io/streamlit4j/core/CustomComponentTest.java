@@ -5,12 +5,15 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import io.streamlit4j.core.domain.CustomComponent;
 import io.streamlit4j.core.domain.Session;
+import io.streamlit4j.core.protocol.ComponentCodec;
 import io.streamlit4j.core.protocol.RenderNode;
 import io.streamlit4j.core.runtime.ScriptRunner;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class CustomComponentTest {
+
+    record ColorRgb(int r, int g, int b) {}
 
     @Test
     void componentEmitsNodeWithNameAndArgs() {
@@ -104,5 +107,22 @@ class CustomComponentTest {
         CustomComponent<Void> banner = CustomComponent.ofVoid("banner");
         assertThat(banner.name()).isEqualTo("banner");
         assertThat(banner.resultType()).isEqualTo(Void.class);
+    }
+
+    @Test
+    void componentDecodesJsonNodeStoredValueIntoDeclaredType() {
+        try (ScriptRunner runner = new ScriptRunner()) {
+            Session session = new Session("s-1");
+            CustomComponent<ColorRgb> picker = new CustomComponent<>("rgb-picker", ColorRgb.class);
+
+            RenderNode firstRoot = runner.render(session, () -> St.component(picker, Map.of(), new ColorRgb(0, 0, 0)));
+            String widgetId = firstRoot.children().get(0).id();
+            session.updateWidget(widgetId, ComponentCodec.encodeArg(new ColorRgb(255, 128, 64)));
+
+            ColorRgb[] captured = new ColorRgb[1];
+            runner.render(session, () -> captured[0] = St.component(picker, Map.of(), new ColorRgb(0, 0, 0)));
+
+            assertThat(captured[0]).isEqualTo(new ColorRgb(255, 128, 64));
+        }
     }
 }

@@ -120,7 +120,7 @@
 | TASK-095 | ✅ | Spring Session への委譲アダプターを実装する | TASK-093 |
 | TASK-096 | ✅ | 埋め込みパス配下のリソース提供を実装する | TASK-093 |
 | TASK-097 | ✅ | カスタムコンポーネント宣言用の型安全 API を実装する | TASK-016 |
-| TASK-098 | ⏳ | コンポーネントの引数/戻り値シリアライザーを実装する | TASK-097 |
+| TASK-098 | ✅ | コンポーネントの引数/戻り値シリアライザーを実装する | TASK-097 |
 | TASK-099 | ⏳ | インプロセス component の登録機構を実装する | TASK-097 |
 | TASK-100 | ⏳ | 同梱バンドルへの React 部品登録パイプラインを構築する | TASK-099 |
 | TASK-101 | ⏳ | iframe 隔離 component のホスト機構を実装する | TASK-097 |
@@ -423,6 +423,23 @@
 - 補足: 7 ケースのテスト（emit / default / rerun / display-only / 別 args / blank name 拒否 / void factory）
 - 注意: 引数 / 戻り値のシリアライザー、インプロセス component 登録、iframe 隔離、フロント TS SDK は
   TASK-098 / TASK-099 / TASK-101 / TASK-104 で別途整備
+
+### TASK-098
+
+- 補足: `core.protocol.ComponentCodec` を新設し、引数を JsonNode に符号化する
+  `encodeArg(Object)`、戻り値を宣言型に復号する `decodeReturn(JsonNode, Class)`、
+  両者をまとめた `coerce(Object, Class, fallback)` を提供。共有 `Codec.mapper()` を
+  再利用して `render_delta` / `widget_event` の符号化規約を一本化
+- 補足: `St.component(spec, args, default)` の読出しを `ComponentCodec.coerce` に
+  差し替え。WS から JsonNode で届いた複合型を宣言型 (`spec.resultType()`) に
+  自動デコードする
+- 補足: 両 WS アダプター (`ProtocolEndpoint` / `Streamlit4jWebSocketHandler`) の
+  `unwrap()` を修正し、object/array は文字列化せず JsonNode のまま下流へ渡す
+- 補足: `ComponentCodecTest` 13 ケース（primitive/Map/record/List 符号化、null/object
+  /primitive 復号、fallback、Map→record 変換、不変換時 fallback）と
+  `CustomComponentTest` に JsonNode 復号ラウンドトリップを追加
+- 注意: フロント TS SDK 側の値受け渡し API（TASK-104）でこの符号化規約に合わせる。
+  iframe 隔離 component の境界検証（TASK-103）は別タスク
 
 ### TASK-102
 

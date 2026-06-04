@@ -4,6 +4,7 @@ import io.streamlit4j.core.domain.CustomComponent;
 import io.streamlit4j.core.domain.Page;
 import io.streamlit4j.core.domain.SessionState;
 import io.streamlit4j.core.port.DownloadStore;
+import io.streamlit4j.core.protocol.ComponentCodec;
 import io.streamlit4j.core.protocol.RenderNode;
 import io.streamlit4j.core.runtime.ControlSignals;
 import io.streamlit4j.core.runtime.DownloadAccess;
@@ -417,7 +418,8 @@ public final class St {
 
     public static <R> R component(CustomComponent<R> spec, Map<String, Object> args, R defaultValue) {
         String id = widgetId("component", spec.name(), args);
-        R value = readStored(id, spec.resultType(), defaultValue);
+        Object stored = RenderContext.current().sessionState().get(id);
+        R value = ComponentCodec.coerce(stored, spec.resultType(), defaultValue);
         Map<String, Object> props = new LinkedHashMap<>();
         props.put("name", spec.name());
         props.put("args", args);
