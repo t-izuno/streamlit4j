@@ -121,8 +121,8 @@
 | TASK-096 | ✅ | 埋め込みパス配下のリソース提供を実装する | TASK-093 |
 | TASK-097 | ✅ | カスタムコンポーネント宣言用の型安全 API を実装する | TASK-016 |
 | TASK-098 | ✅ | コンポーネントの引数/戻り値シリアライザーを実装する | TASK-097 |
-| TASK-099 | ⏳ | インプロセス component の登録機構を実装する | TASK-097 |
-| TASK-100 | ⏳ | 同梱バンドルへの React 部品登録パイプラインを構築する | TASK-099 |
+| TASK-099 | ✅ | インプロセス component の登録機構を実装する | TASK-097 |
+| TASK-100 | ✅ | 同梱バンドルへの React 部品登録パイプラインを構築する | TASK-099 |
 | TASK-101 | ⏳ | iframe 隔離 component のホスト機構を実装する | TASK-097 |
 | TASK-102 | ⏳ | iframe sandbox 属性と CSP を適用する | TASK-101 |
 | TASK-103 | ⏳ | iframe component の値検証と境界チェックを実装する | TASK-101 |
@@ -440,6 +440,46 @@
   `CustomComponentTest` に JsonNode 復号ラウンドトリップを追加
 - 注意: フロント TS SDK 側の値受け渡し API（TASK-104）でこの符号化規約に合わせる。
   iframe 隔離 component の境界検証（TASK-103）は別タスク
+
+### TASK-099
+
+- 補足: `core.port.ComponentRegistry` ポートを新設（`register` / `find` / `all` / `size`）。
+  名前重複は上書き、`all()` は読み取り専用スナップショットを返す
+- 補足: `core.runtime.InMemoryComponentRegistry` をデフォルト実装として提供。
+  `ConcurrentHashMap` ベースでスレッドセーフ
+- 補足: `core.runtime.ComponentRegistryAccess` で静的アクセサーを公開（`DownloadAccess`
+  と同パターン）。テストでは `use(...)` で差し替え可能
+- 補足: `Bootstrap.standalone(...)` で配線し、`Streamlit4jApplication#components()` で
+  外部公開
+- 補足: `St.registerComponent(spec)` を追加。返り値は spec 自体（流暢宣言向け）
+- 補足: 7 ケースのテスト（registry 単体 6 + St.registerComponent 1）。Bootstrap 配線は
+  既存の `Streamlit4jApplication` 構築経路でカバー
+- 注意: フロントへの登録名通知 / バンドルパイプライン連携は TASK-100、iframe との
+  分岐（mode マーカー）は TASK-101 で扱う
+
+### TASK-100
+
+- 補足: フロント側に `src/component-registry.ts` を新設し、`registerComponent(name, renderer)`
+  / `findComponent(name)` / `registeredNames()` / `clearComponents()` を提供。
+  `CustomComponentRenderProps` (args/value/onChange) で型契約を明示
+- 補足: `src/component-builtins.ts` を first-party 登録のエントリーポイントとして
+  追加。`main.tsx` から無条件 import し、起動時に組み込みコンポーネントを登録する
+  パイプラインを確立。組み込みコンポーネント追加手順を JSDoc にまとめた
+- 補足: `render.tsx` に `case 'component':` を追加。`props.name` でレジストリを引いて
+  描画。未登録時は `.component--unregistered` プレースホルダーにフォールバックし、
+  TASK-101 で iframe ホストに置き換える境界とする
+- 補足: dependency-cruiser ルール `components-do-not-cross-depend` に合わせ、
+  レジストリと builtins は `src/components/` の外（UI コンポーネントの一段上）に配置
+- 補足: TASK-096 の注記通り、frontend-assets pom に `maven-antrun-plugin` を追加し、
+  `generate-resources` フェーズで `frontend/dist/**` を
+  `META-INF/resources/streamlit4j/` にコピー。`erroronmissingdir="false"` で
+  dist 未生成環境でも build を継続（プレースホルダー index.html が残る）
+- 補足: フロント vitest 12 ケース（registry 単体 6 + App 統合 2: 登録レンダラー描画 +
+  未登録フォールバック）。eslint / prettier / depcruise / `vite build` / `mvn verify`
+  すべて通過
+- 注意: フロント TS SDK のラッパー API（TASK-104）と再描画ブリッジ（TASK-105）は
+  レジストリ上で `CustomComponentRenderProps` を成形して提供する。CLI 雛形生成は
+  TASK-106 でこのレジストリ呼び出しを生成する
 
 ### TASK-102
 

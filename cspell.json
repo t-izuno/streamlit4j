@@ -44,7 +44,10 @@
     "pinentry",
     "Dgpg",
     "izuno",
-    "jbangdev"
+    "jbangdev",
+    "antrun",
+    "erroronmissingdir",
+    "depcruise"
   ],
   "ignorePaths": [
     "node_modules",

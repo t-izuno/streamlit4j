@@ -4,7 +4,9 @@ import io.streamlit4j.core.application.ProcessWidgetEvent;
 import io.streamlit4j.core.application.StartSession;
 import io.streamlit4j.core.port.EntrypointSource;
 import io.streamlit4j.core.port.SessionLifecycleListener;
+import io.streamlit4j.core.runtime.ComponentRegistryAccess;
 import io.streamlit4j.core.runtime.DownloadAccess;
+import io.streamlit4j.core.runtime.InMemoryComponentRegistry;
 import io.streamlit4j.core.runtime.InMemoryDownloadStore;
 import io.streamlit4j.core.runtime.InMemorySessionStore;
 import io.streamlit4j.core.runtime.ScriptRunner;
@@ -19,6 +21,8 @@ public final class Bootstrap {
         InMemorySessionStore store = new InMemorySessionStore();
         InMemoryDownloadStore downloads = new InMemoryDownloadStore();
         DownloadAccess.use(downloads);
+        InMemoryComponentRegistry components = new InMemoryComponentRegistry();
+        ComponentRegistryAccess.use(components);
         store.addListener((event, session) -> {
             switch (event) {
                 case CREATED -> StructuredLog.sessionCreated(session.id());
@@ -28,7 +32,7 @@ public final class Bootstrap {
         });
         StartSession start = new StartSession(store, entrypoints, renderer);
         ProcessWidgetEvent process = new ProcessWidgetEvent(store, entrypoints, renderer);
-        return new Streamlit4jApplication(start, process, store, downloads, renderer);
+        return new Streamlit4jApplication(start, process, store, downloads, components, renderer);
     }
 
     public static SessionLifecycleListener loggingListener() {

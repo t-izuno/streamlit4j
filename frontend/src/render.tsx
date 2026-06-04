@@ -1,5 +1,6 @@
 import DOMPurify from 'dompurify';
 import type { JSX } from 'react';
+import { findComponent } from './component-registry';
 import { Markdown } from './components/Markdown';
 import { Slider } from './components/Slider';
 import { Title } from './components/Title';
@@ -363,6 +364,26 @@ function renderNode(node: RenderNode, onChange: WidgetChangeHandler): JSX.Elemen
           {String(props.label ?? '')}
         </button>
       );
+    case 'component': {
+      const name = String(props.name ?? '');
+      const args = (props.args as Record<string, unknown> | undefined) ?? {};
+      const value = props.value;
+      const Renderer = findComponent(name);
+      if (!Renderer) {
+        return (
+          <div
+            key={node.id}
+            className="component component--unregistered"
+            data-component-name={name}
+          >
+            <strong>Unregistered component:</strong> {name}
+          </div>
+        );
+      }
+      return (
+        <Renderer key={node.id} args={args} value={value} onChange={(v) => onChange(node.id, v)} />
+      );
+    }
     case 'pages': {
       const pages = (props.pages as Array<{ name: string; path: string }> | undefined) ?? [];
       const current = String(props.current ?? '');

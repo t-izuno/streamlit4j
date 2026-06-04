@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { App } from './App';
+import { clearComponents, registerComponent } from './component-registry';
 import type { Envelope } from './protocol';
 import type { EnvelopeHandler } from './ws';
 import { StreamlitClient } from './ws';
@@ -25,6 +26,10 @@ function createStubClient() {
 }
 
 describe('App', () => {
+  afterEach(() => {
+    clearComponents();
+  });
+
   it('shows connecting status before SessionInit arrives', () => {
     const client = createStubClient();
     render(<App client={client} />);
@@ -87,6 +92,70 @@ describe('App', () => {
       });
     });
     expect(screen.getByRole('heading', { name: 'After' })).toBeInTheDocument();
+  });
+
+  it('renders a registered custom component and forwards widget events', () => {
+    registerComponent('color-badge', ({ args, value, onChange }) => (
+      <button type="button" data-tone={String(args.tone ?? '')} onClick={() => onChange('clicked')}>
+        badge:{String(value ?? 'none')}
+      </button>
+    ));
+    const client = createStubClient();
+    render(<App client={client} />);
+    act(() => {
+      client.emit({
+        v: 1,
+        type: 'session_init',
+        sessionId: 's-1',
+        root: {
+          kind: 'root',
+          id: 'root',
+          props: {},
+          children: [
+            {
+              kind: 'component',
+              id: 'w_c',
+              props: { name: 'color-badge', args: { tone: 'warm' }, value: 'initial' },
+              children: [],
+            },
+          ],
+        },
+      });
+    });
+    const badge = screen.getByRole('button', { name: /badge:initial/ });
+    expect(badge).toHaveAttribute('data-tone', 'warm');
+    fireEvent.click(badge);
+    expect((client as unknown as { sent: unknown[] }).sent).toEqual([
+      { sessionId: 's-1', widgetId: 'w_c', value: 'clicked' },
+    ]);
+  });
+
+  it('falls back to placeholder for unregistered component names', () => {
+    const client = createStubClient();
+    render(<App client={client} />);
+    act(() => {
+      client.emit({
+        v: 1,
+        type: 'session_init',
+        sessionId: 's-1',
+        root: {
+          kind: 'root',
+          id: 'root',
+          props: {},
+          children: [
+            {
+              kind: 'component',
+              id: 'w_u',
+              props: { name: 'unknown-comp', args: {} },
+              children: [],
+            },
+          ],
+        },
+      });
+    });
+    const placeholder = document.querySelector('.component--unregistered');
+    expect(placeholder).not.toBeNull();
+    expect(placeholder?.getAttribute('data-component-name')).toBe('unknown-comp');
   });
 
   it('sends widget_event when slider changes', () => {

@@ -6,6 +6,7 @@ import io.streamlit4j.core.domain.SessionState;
 import io.streamlit4j.core.port.DownloadStore;
 import io.streamlit4j.core.protocol.ComponentCodec;
 import io.streamlit4j.core.protocol.RenderNode;
+import io.streamlit4j.core.runtime.ComponentRegistryAccess;
 import io.streamlit4j.core.runtime.ControlSignals;
 import io.streamlit4j.core.runtime.DownloadAccess;
 import io.streamlit4j.core.runtime.RenderContext;
@@ -405,6 +406,17 @@ public final class St {
         body.run();
         List<RenderNode> children = ctx.popFrame();
         ctx.addNode(new RenderNode(kind, id, props, children));
+    }
+
+    /**
+     * Registers a custom component as an in-process component — i.e. one whose React
+     * renderer is expected to ship in the bundled frontend (see TASK-100). The same
+     * {@code spec} can be invoked later via {@link #component(CustomComponent, Map)}.
+     * Returns the spec for fluent declarations.
+     */
+    public static <R> CustomComponent<R> registerComponent(CustomComponent<R> spec) {
+        ComponentRegistryAccess.registry().register(spec);
+        return spec;
     }
 
     /**

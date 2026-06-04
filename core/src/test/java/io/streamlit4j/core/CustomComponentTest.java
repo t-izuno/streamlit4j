@@ -7,6 +7,8 @@ import io.streamlit4j.core.domain.CustomComponent;
 import io.streamlit4j.core.domain.Session;
 import io.streamlit4j.core.protocol.ComponentCodec;
 import io.streamlit4j.core.protocol.RenderNode;
+import io.streamlit4j.core.runtime.ComponentRegistryAccess;
+import io.streamlit4j.core.runtime.InMemoryComponentRegistry;
 import io.streamlit4j.core.runtime.ScriptRunner;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -107,6 +109,21 @@ class CustomComponentTest {
         CustomComponent<Void> banner = CustomComponent.ofVoid("banner");
         assertThat(banner.name()).isEqualTo("banner");
         assertThat(banner.resultType()).isEqualTo(Void.class);
+    }
+
+    @Test
+    void registerComponentStoresInActiveRegistry() {
+        InMemoryComponentRegistry registry = new InMemoryComponentRegistry();
+        ComponentRegistryAccess.use(registry);
+        try {
+            CustomComponent<String> chart = new CustomComponent<>("registered-chart", String.class);
+            CustomComponent<String> returned = St.registerComponent(chart);
+
+            assertThat(returned).isSameAs(chart);
+            assertThat(registry.find("registered-chart")).contains(chart);
+        } finally {
+            ComponentRegistryAccess.use(new InMemoryComponentRegistry());
+        }
     }
 
     @Test
