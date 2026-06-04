@@ -130,6 +130,148 @@ describe('App', () => {
     ]);
   });
 
+  it('renders an iframe-hosted component with sandbox attribute', () => {
+    const client = createStubClient();
+    render(<App client={client} />);
+    act(() => {
+      client.emit({
+        v: 1,
+        type: 'session_init',
+        sessionId: 's-1',
+        root: {
+          kind: 'root',
+          id: 'root',
+          props: {},
+          children: [
+            {
+              kind: 'component',
+              id: 'w_i',
+              props: {
+                name: 'remote-widget',
+                iframeSrc: 'https://example.com/widget.html',
+                args: { theme: 'dark' },
+              },
+              children: [],
+            },
+          ],
+        },
+      });
+    });
+    const iframe = document.querySelector(
+      'iframe[data-component-name="remote-widget"]',
+    ) as HTMLIFrameElement | null;
+    expect(iframe).not.toBeNull();
+    expect(iframe?.getAttribute('src')).toBe('https://example.com/widget.html');
+    expect(iframe?.getAttribute('sandbox')).toBe('allow-scripts');
+  });
+
+  it('forwards iframe widget events from the iframe window filtered by component name', () => {
+    const client = createStubClient();
+    render(<App client={client} />);
+    act(() => {
+      client.emit({
+        v: 1,
+        type: 'session_init',
+        sessionId: 's-1',
+        root: {
+          kind: 'root',
+          id: 'root',
+          props: {},
+          children: [
+            {
+              kind: 'component',
+              id: 'w_remote',
+              props: {
+                name: 'remote-widget',
+                iframeSrc: 'https://example.com/widget.html',
+                args: {},
+              },
+              children: [],
+            },
+          ],
+        },
+      });
+    });
+    const iframe = document.querySelector(
+      'iframe[data-component-name="remote-widget"]',
+    ) as HTMLIFrameElement;
+    const iframeWindow = iframe.contentWindow;
+    act(() => {
+      window.dispatchEvent(
+        new MessageEvent('message', {
+          source: iframeWindow,
+          origin: 'https://example.com',
+          data: { type: 'streamlit4j:widget_event', name: 'other-widget', value: 'ignored' },
+        }),
+      );
+    });
+    act(() => {
+      window.dispatchEvent(
+        new MessageEvent('message', {
+          source: iframeWindow,
+          origin: 'https://example.com',
+          data: { type: 'streamlit4j:widget_event', name: 'remote-widget', value: 'accepted' },
+        }),
+      );
+    });
+    expect((client as unknown as { sent: unknown[] }).sent).toEqual([
+      { sessionId: 's-1', widgetId: 'w_remote', value: 'accepted' },
+    ]);
+  });
+
+  it('rejects iframe widget events from unrelated windows or origins', () => {
+    const client = createStubClient();
+    render(<App client={client} />);
+    act(() => {
+      client.emit({
+        v: 1,
+        type: 'session_init',
+        sessionId: 's-1',
+        root: {
+          kind: 'root',
+          id: 'root',
+          props: {},
+          children: [
+            {
+              kind: 'component',
+              id: 'w_remote',
+              props: {
+                name: 'remote-widget',
+                iframeSrc: 'https://example.com/widget.html',
+                args: {},
+              },
+              children: [],
+            },
+          ],
+        },
+      });
+    });
+    const iframe = document.querySelector(
+      'iframe[data-component-name="remote-widget"]',
+    ) as HTMLIFrameElement;
+    // Reject: wrong source (not the iframe window)
+    act(() => {
+      window.dispatchEvent(
+        new MessageEvent('message', {
+          source: window,
+          origin: 'https://example.com',
+          data: { type: 'streamlit4j:widget_event', name: 'remote-widget', value: 'spoofed' },
+        }),
+      );
+    });
+    // Reject: wrong origin (correct source but different domain)
+    act(() => {
+      window.dispatchEvent(
+        new MessageEvent('message', {
+          source: iframe.contentWindow,
+          origin: 'https://attacker.example',
+          data: { type: 'streamlit4j:widget_event', name: 'remote-widget', value: 'spoofed' },
+        }),
+      );
+    });
+    expect((client as unknown as { sent: unknown[] }).sent).toEqual([]);
+  });
+
   it('falls back to placeholder for unregistered component names', () => {
     const client = createStubClient();
     render(<App client={client} />);

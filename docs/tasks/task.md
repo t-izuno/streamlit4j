@@ -123,8 +123,8 @@
 | TASK-098 | ✅ | コンポーネントの引数/戻り値シリアライザーを実装する | TASK-097 |
 | TASK-099 | ✅ | インプロセス component の登録機構を実装する | TASK-097 |
 | TASK-100 | ✅ | 同梱バンドルへの React 部品登録パイプラインを構築する | TASK-099 |
-| TASK-101 | ⏳ | iframe 隔離 component のホスト機構を実装する | TASK-097 |
-| TASK-102 | ⏳ | iframe sandbox 属性と CSP を適用する | TASK-101 |
+| TASK-101 | ✅ | iframe 隔離 component のホスト機構を実装する | TASK-097 |
+| TASK-102 | ✅ | iframe sandbox 属性と CSP を適用する | TASK-101 |
 | TASK-103 | ⏳ | iframe component の値検証と境界チェックを実装する | TASK-101 |
 | TASK-104 | ⏳ | フロント TS SDK の値受け渡し API を実装する | TASK-098 |
 | TASK-105 | ⏳ | フロント TS SDK の再描画通知ブリッジを実装する | TASK-104 |
@@ -481,10 +481,41 @@
   レジストリ上で `CustomComponentRenderProps` を成形して提供する。CLI 雛形生成は
   TASK-106 でこのレジストリ呼び出しを生成する
 
+### TASK-101
+
+- 補足: Java 側に `St.iframeComponent(spec, src, args[, default])` と表示専用
+  `St.iframeComponent(name, src, args)` を追加。`props.iframeSrc` を render
+  ノードに埋め込み、空白 src は `IllegalArgumentException` で拒否
+- 補足: フロントに `src/components/IframeComponent.tsx` を新設。
+  `sandbox="allow-scripts"` の最小プロファイルで iframe を起こし、
+  `streamlit4j:ready` / `streamlit4j:state` / `streamlit4j:widget_event` の
+  postMessage ブリッジを実装。component name でフィルタリングして他コンポーネント
+  のメッセージを取り違えないようにする
+- 補足: `render.tsx` の `case 'component':` は `iframeSrc` 優先、なければ
+  in-process レジストリ、最後に未登録プレースホルダーへフォールバック
+- 補足: Java 4 ケース（emit / 値復元 / blank src 拒否 / display-only）+
+  Frontend 2 ケース（sandbox 属性 / 名前フィルター付きメッセージ転送）。
+  `mvn verify`、`npm test` / `lint` / `lint:arch` / `format:check` / `build` 全通過
+- 注意: postMessage の origin 検証と CSP nonce 戦略は TASK-102 で追加。
+  args / 戻り値の境界検証（型 / サイズ）は TASK-103 で扱う
+
 ### TASK-102
 
-- 補足: postMessage の origin 検証を必須とする
-- 注意: CSP の nonce 戦略を文書化する
+- 補足: `IframeComponent` の受信検証を 3 段階に強化。`event.source === iframe.contentWindow`、
+  `event.origin in {'null', expectedOrigin}`、`data.name === name` のすべてを満たす場合のみ
+  メッセージを受理する
+- 補足: 親→iframe の `postMessage` `targetOrigin` を iframe `src` の origin に固定。
+  opaque origin (`'null'`) のときのみ `'*'` を許容（contentWindow 自体で一意特定可能）
+- 補足: `design.md` §9 に「カスタムコンポーネントのセキュリティー方針」を新設。
+  インプロセス／iframe 隔離それぞれの信頼境界、`allow-scripts` 単独 sandbox の理由、
+  推奨 CSP（`default-src 'self'` / `frame-src` allowlist / `connect-src ws: wss:`）、
+  nonce 戦略（リクエストスコープ、256bit、`script-src 'nonce-<value>'` と `<script nonce>`
+  への双方注入）を文書化
+- 補足: `specification.md` の `design.md` 章参照を 9 → 10 に追従更新
+- 補足: フロント test を 1 ケース追加（unrelated window / wrong origin からの偽装拒否）。
+  既存のメッセージ転送テストも source/origin を明示するよう更新
+- 注意: 実際の CSP ヘッダー付与は宿主側責務（spring-security ないし server モジュール
+  での設定）。スコープ外で TASK-128 リリース工程の運用ドキュメントに含める
 
 ### TASK-109
 

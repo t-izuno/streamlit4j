@@ -182,7 +182,46 @@
 | 配布 | Maven Central + JBang | OSS 標準 + CLI 配布の容易さ | GitHub Packages |
 | 起動最適化 | GraalVM native image（中期） | 高速起動・省メモリーの差別化 | CDS / AppCDS |
 
-## 9. 未決事項（要決定）
+## 9. カスタムコンポーネントのセキュリティー方針
+
+### 9-1. インプロセス component
+
+- 同梱バンドルに登録される first-party 部品。レジストリに登録された名前を信頼する
+- 第三者コードを混ぜないため特別な隔離は行わず、通常の React レンダリングで実行
+- Java 側 `St.registerComponent(spec)` と TS 側 `registerComponent(name, renderer)` の
+  両方で登録されていない限り unregistered プレースホルダーへ落とす
+
+### 9-2. iframe 隔離 component
+
+- 第三者 component は `<iframe sandbox="allow-scripts" src={...}>` でホストする
+- `allow-scripts` 単独のため、iframe のオリジンは opaque (`'null'`) となり、
+  親ドキュメントの Cookie / localStorage には到達できない
+- 親→iframe の `postMessage` は `targetOrigin` を iframe `src` の origin に固定する。
+  ただし opaque origin (`'null'`) のときは `'*'` で対応する（iframe 自体は親が生成・
+  保持する `contentWindow` で一意に特定できる）
+- iframe→親の受信は次の 3 段階で検証する:
+  1. `event.source === iframeRef.current.contentWindow`（他ウィンドウからの偽装拒否）
+  2. `event.origin === 'null'` または `event.origin === expectedOrigin`
+     （sandbox 緩和時の origin 検証）
+  3. `data.name` が当該 component の name と一致（メッセージの誤配送防止）
+
+### 9-3. CSP 方針
+
+- 推奨される本番 CSP ヘッダー / `<meta http-equiv="Content-Security-Policy">`:
+  - `default-src 'self'`
+  - `script-src 'self'`（インラインスクリプト不可）
+  - `style-src 'self' 'unsafe-inline'`（CSS-in-JS / Vite の挙動許容）
+  - `connect-src 'self' ws: wss:`（WebSocket 接続）
+  - `frame-src <iframe component の origin リスト>`
+- SPA バンドル自体はインラインスクリプトを含まないため nonce は不要
+- 将来サーバーレンダリングや動的 HTML を生成する場合に備え、サーバー側で
+  リクエストごとに 256bit nonce を発行し、`<script nonce=...>` と
+  `script-src 'nonce-<value>'` の双方に注入する戦略を採用する
+- nonce の保持はリクエストスコープ。セッションを跨いだ再利用は禁止する
+- 本書は方針の文書化に留め、CSP ヘッダーの自動付与は組み込み側（Spring Security
+  または埋め込みサーバー）の設定責務とする
+
+## 10. 未決事項（要決定）
 
 以下は ADR として確定し、`tasks/task.md` の TASK-109 で扱う。
 
