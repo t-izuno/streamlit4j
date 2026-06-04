@@ -1,5 +1,6 @@
 package io.streamlit4j.core;
 
+import io.streamlit4j.core.domain.CustomComponent;
 import io.streamlit4j.core.domain.Page;
 import io.streamlit4j.core.domain.SessionState;
 import io.streamlit4j.core.port.DownloadStore;
@@ -403,6 +404,34 @@ public final class St {
         body.run();
         List<RenderNode> children = ctx.popFrame();
         ctx.addNode(new RenderNode(kind, id, props, children));
+    }
+
+    /**
+     * Invokes a custom component declared via {@link CustomComponent}. Returns the value
+     * the component yields through widget events, or {@code null} on the first render
+     * before the user has interacted. Use the 3-arg overload to supply a default.
+     */
+    public static <R> R component(CustomComponent<R> spec, Map<String, Object> args) {
+        return component(spec, args, null);
+    }
+
+    public static <R> R component(CustomComponent<R> spec, Map<String, Object> args, R defaultValue) {
+        String id = widgetId("component", spec.name(), args);
+        R value = readStored(id, spec.resultType(), defaultValue);
+        Map<String, Object> props = new LinkedHashMap<>();
+        props.put("name", spec.name());
+        props.put("args", args);
+        if (value != null) {
+            props.put("value", value);
+        }
+        emit("component", id, props);
+        return value;
+    }
+
+    /** Convenience for display-only components that don't yield a value. */
+    public static void component(String name, Map<String, Object> args) {
+        String id = widgetId("component", name, args);
+        emit("component", id, ordered("name", name, "args", args));
     }
 
     private static void emit(String kind, String id, Map<String, Object> props) {

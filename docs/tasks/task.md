@@ -119,7 +119,7 @@
 | TASK-094 | ✅ | Spring Security への認証委譲アダプターを実装する | TASK-093 |
 | TASK-095 | ✅ | Spring Session への委譲アダプターを実装する | TASK-093 |
 | TASK-096 | ✅ | 埋め込みパス配下のリソース提供を実装する | TASK-093 |
-| TASK-097 | ⏳ | カスタムコンポーネント宣言用の型安全 API を実装する | TASK-016 |
+| TASK-097 | ✅ | カスタムコンポーネント宣言用の型安全 API を実装する | TASK-016 |
 | TASK-098 | ⏳ | コンポーネントの引数/戻り値シリアライザーを実装する | TASK-097 |
 | TASK-099 | ⏳ | インプロセス component の登録機構を実装する | TASK-097 |
 | TASK-100 | ⏳ | 同梱バンドルへの React 部品登録パイプラインを構築する | TASK-099 |
@@ -411,6 +411,18 @@
   `new Streamlit4jServer(port, () -> WidgetsDemo::run)` のように差し替えて起動
 - 注意: CLI から複数サンプルを切り替えるフラグは未整備（現状は `Hello` 固定）。
   TASK-127（E2E スイート）で必要なら CLI 側に `--app <完全修飾クラス名>` オプションを追加検討
+
+### TASK-097
+
+- 補足: `core.domain.CustomComponent<R>` Record でコンポーネントの型安全宣言。
+  `name` と `resultType` を保持し、`ofVoid(name)` factory も提供
+- 補足: `St.component(spec, args)` / `St.component(spec, args, default)` /
+  `St.component(name, args)` の 3 メソッドを追加。戻り値型は宣言と一致（compile-time 型安全）
+- 補足: ノード `kind="component"`、props は `name` / `args` / `value`（値が null の場合は省略）
+- 補足: ウィジェット ID は既存と同じ `WidgetIds.generate(...)` で安定生成、args ハッシュ込み
+- 補足: 7 ケースのテスト（emit / default / rerun / display-only / 別 args / blank name 拒否 / void factory）
+- 注意: 引数 / 戻り値のシリアライザー、インプロセス component 登録、iframe 隔離、フロント TS SDK は
+  TASK-098 / TASK-099 / TASK-101 / TASK-104 で別途整備
 
 ### TASK-102
 
