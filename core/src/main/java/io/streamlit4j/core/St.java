@@ -448,47 +448,6 @@ public final class St {
         emit("component", id, ordered("name", name, "args", args));
     }
 
-    /**
-     * Hosts a third-party custom component in a sandboxed iframe at {@code iframeSrc}.
-     * The frontend renders the iframe with the streamlit4j sandbox profile and bridges
-     * widget events via {@code postMessage}. Returns the value the iframe yields, or
-     * the supplied default before any interaction.
-     *
-     * <p>Origin validation and CSP are layered on top by TASK-102; argument and value
-     * boundary checks are added by TASK-103.
-     */
-    public static <R> R iframeComponent(
-            CustomComponent<R> spec, String iframeSrc, Map<String, Object> args, R defaultValue) {
-        if (iframeSrc == null || iframeSrc.isBlank()) {
-            throw new IllegalArgumentException("iframeSrc must not be blank");
-        }
-        String id = widgetId("component", spec.name(), iframeSrc, args);
-        Object stored = RenderContext.current().sessionState().get(id);
-        R value = ComponentCodec.coerce(stored, spec.resultType(), defaultValue);
-        Map<String, Object> props = new LinkedHashMap<>();
-        props.put("name", spec.name());
-        props.put("iframeSrc", iframeSrc);
-        props.put("args", args);
-        if (value != null) {
-            props.put("value", value);
-        }
-        emit("component", id, props);
-        return value;
-    }
-
-    public static <R> R iframeComponent(CustomComponent<R> spec, String iframeSrc, Map<String, Object> args) {
-        return iframeComponent(spec, iframeSrc, args, null);
-    }
-
-    /** Display-only iframe component variant for components that don't yield a value. */
-    public static void iframeComponent(String name, String iframeSrc, Map<String, Object> args) {
-        if (iframeSrc == null || iframeSrc.isBlank()) {
-            throw new IllegalArgumentException("iframeSrc must not be blank");
-        }
-        String id = widgetId("component", name, iframeSrc, args);
-        emit("component", id, ordered("name", name, "iframeSrc", iframeSrc, "args", args));
-    }
-
     private static void emit(String kind, String id, Map<String, Object> props) {
         RenderContext.current().addNode(new RenderNode(kind, id, props, List.of()));
     }

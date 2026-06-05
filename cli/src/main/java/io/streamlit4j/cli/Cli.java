@@ -6,7 +6,6 @@ import io.streamlit4j.examples.Hello;
 import io.streamlit4j.server.Streamlit4jServer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 public final class Cli {
 
@@ -15,26 +14,6 @@ public final class Cli {
     private Cli() {}
 
     public static void main(String[] args) throws Exception {
-        if (args.length > 0 && "component".equals(args[0])) {
-            componentSubcommand(Arrays.copyOfRange(args, 1, args.length));
-            return;
-        }
-        runServer(args);
-    }
-
-    private static void componentSubcommand(String[] args) throws Exception {
-        if (args.length < 2 || !"create".equals(args[0])) {
-            System.err.println("Usage: streamlit4j component create <name> [<target-dir>]");
-            System.exit(1);
-            return;
-        }
-        String name = args[1];
-        Path targetDir = args.length >= 3 ? Paths.get(args[2]) : Paths.get(name);
-        ComponentScaffold.create(name, targetDir);
-        System.out.println("scaffolded streamlit4j component '" + name + "' in " + targetDir);
-    }
-
-    private static void runServer(String[] args) throws Exception {
         int port = DEFAULT_PORT;
         Path watchDir = null;
         for (int i = 0; i < args.length; i++) {

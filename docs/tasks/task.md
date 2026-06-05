@@ -123,14 +123,14 @@
 | TASK-098 | ✅ | コンポーネントの引数/戻り値シリアライザーを実装する | TASK-097 |
 | TASK-099 | ✅ | インプロセス component の登録機構を実装する | TASK-097 |
 | TASK-100 | ✅ | 同梱バンドルへの React 部品登録パイプラインを構築する | TASK-099 |
-| TASK-101 | ✅ | iframe 隔離 component のホスト機構を実装する | TASK-097 |
-| TASK-102 | ✅ | iframe sandbox 属性と CSP を適用する | TASK-101 |
-| TASK-103 | ✅ | iframe component の値検証と境界チェックを実装する | TASK-101 |
-| TASK-104 | ✅ | フロント TS SDK の値受け渡し API を実装する | TASK-098 |
-| TASK-105 | ✅ | フロント TS SDK の再描画通知ブリッジを実装する | TASK-104 |
-| TASK-106 | ✅ | streamlit4j component create 雛形生成コマンドを実装する | TASK-104 |
+| TASK-101 | 🚫 | iframe 隔離 component のホスト機構を実装する | TASK-097 |
+| TASK-102 | 🚫 | iframe sandbox 属性と CSP を適用する | TASK-101 |
+| TASK-103 | 🚫 | iframe component の値検証と境界チェックを実装する | TASK-101 |
+| TASK-104 | 🚫 | フロント TS SDK の値受け渡し API を実装する | TASK-098 |
+| TASK-105 | 🚫 | フロント TS SDK の再描画通知ブリッジを実装する | TASK-104 |
+| TASK-106 | 🚫 | streamlit4j component create 雛形生成コマンドを実装する | TASK-104 |
 | TASK-107 | ✅ | Spring Boot 埋め込みサンプルアプリを作成する | TASK-094,TASK-095,TASK-096 |
-| TASK-108 | ⏳ | カスタムコンポーネントサンプル（インプロセス/iframe）を作成する | TASK-100,TASK-103 |
+| TASK-108 | ✅ | カスタムコンポーネントサンプル（インプロセス）を作成する | TASK-100 |
 | TASK-109 | ⏳ | 未決事項（終端 API 名/プロトコル等）を ADR で最終決定する | - |
 | TASK-110 | ✅ | MIT ライセンスを全モジュールに適用する | - |
 | TASK-111 | 🚫 | NOTICE と third-party ライセンス一覧を整備する | TASK-110 |
@@ -143,13 +143,13 @@
 | TASK-118 | ✅ | Javadoc 公開ビルドを整備する | TASK-001 |
 | TASK-119 | ✅ | examples モジュールに代表サンプル群を整備する | TASK-060,TASK-107 |
 | TASK-120 | ✅ | Spring Boot 統合手順をドキュメント化する | TASK-107,TASK-115 |
-| TASK-121 | ⏳ | カスタムコンポーネント作成ガイドを執筆する | TASK-106,TASK-115 |
+| TASK-121 | ⏳ | カスタムコンポーネント作成ガイドを執筆する | TASK-100,TASK-115 |
 | TASK-122 | ✅ | Maven Central パブリッシュ用 POM とメタデータを整備する | TASK-110 |
 | TASK-123 | ✅ | GPG 署名と Sonatype アカウント設定を整備する | TASK-122 |
 | TASK-124 | ✅ | Maven 利用者向け導入手順を整備する | TASK-122 |
 | TASK-125 | ✅ | JBang カタログに CLI を登録する | TASK-059 |
 | TASK-126 | ⏳ | playground（ホストされたデモ）を構築する | TASK-119 |
-| TASK-127 | ⏳ | コア・互換要素・統合機能の E2E テストスイートを整備する | TASK-060,TASK-064,TASK-066,TASK-070,TASK-071,TASK-081,TASK-089,TASK-107,TASK-108 |
+| TASK-127 | ⏳ | コア・互換要素・統合機能の E2E テストスイートを整備する | TASK-060,TASK-064,TASK-066,TASK-070,TASK-071,TASK-081,TASK-089,TASK-107 |
 | TASK-128 | ⏳ | 0.1.0 リリースタグとリリースノートを作成する | TASK-109,TASK-112,TASK-113,TASK-114,TASK-116,TASK-117,TASK-118,TASK-120,TASK-121,TASK-124,TASK-125,TASK-127 |
 | TASK-129 | ⏳ | Maven Central へ 0.1.0 を公開する | TASK-123,TASK-128 |
 | TASK-130 | ⏳ | playground を 0.1.0 ビルドに更新し公開する | TASK-126,TASK-129 |
@@ -481,106 +481,43 @@
   レジストリ上で `CustomComponentRenderProps` を成形して提供する。CLI 雛形生成は
   TASK-106 でこのレジストリ呼び出しを生成する
 
-### TASK-101
+### TASK-101 〜 TASK-106（iframe 系: 中止）
 
-- 補足: Java 側に `St.iframeComponent(spec, src, args[, default])` と表示専用
-  `St.iframeComponent(name, src, args)` を追加。`props.iframeSrc` を render
-  ノードに埋め込み、空白 src は `IllegalArgumentException` で拒否
-- 補足: フロントに `src/components/IframeComponent.tsx` を新設。
-  `sandbox="allow-scripts"` の最小プロファイルで iframe を起こし、
-  `streamlit4j:ready` / `streamlit4j:state` / `streamlit4j:widget_event` の
-  postMessage ブリッジを実装。component name でフィルターリングして他コンポーネント
-  のメッセージを取り違えないようにする
-- 補足: `render.tsx` の `case 'component':` は `iframeSrc` 優先、なければ
-  in-process レジストリ、最後に未登録プレースホルダーへフォールバック
-- 補足: Java 4 ケース（emit / 値復元 / blank src 拒否 / display-only）+
-  Frontend 2 ケース（sandbox 属性 / 名前フィルターー付きメッセージ転送）。
-  `mvn verify`、`npm test` / `lint` / `lint:arch` / `format:check` / `build` 全通過
-- 注意: postMessage の origin 検証と CSP nonce 戦略は TASK-102 で追加。
-  args / 戻り値の境界検証（型 / サイズ）は TASK-103 で扱う
+- 中止理由: 本家 Streamlit V2 Components が iframe を廃止しホスト直マウントへ
+  移行している動向、`allow-scripts` 単独 sandbox の機能制約、postMessage 境界
+  検証 / CSP / payload size などの運用負荷を踏まえ、iframe 隔離方式の採用を
+  取りやめた。詳細は `design.md` §9 を参照
+- 削除内容:
+  - Core: `St.iframeComponent(...)` メソッド群および対応するテスト 4 件
+  - Frontend: `components/IframeComponent.tsx` /
+    `iframe-payload-validator.ts` / `sdk/Streamlit4jComponent.ts` /
+    `sdk/useComponentState.ts` および各々のテスト計 21 件、`App.test.tsx`
+    の iframe 経路テスト 4 件、`render.tsx` の iframeSrc 分岐
+  - CLI: `ComponentScaffold` クラス・テスト、`Cli` のサブコマンドルーター、
+    `cli/pom.xml` の JUnit / AssertJ テスト依存
+  - Docs: `design.md` §9-2 / §9-3、`specification.md` 9.1 第三者向け項、
+    9.3 / 9.4
+- 注意: カスタムコンポーネントは in-process 方式のみで提供（TASK-098〜100
+  の成果物は維持）。第三者コンポーネントが必要になった場合は npm 依存と同様
+  に取り込み in-process として配布する運用とする
 
-### TASK-102
+### TASK-108
 
-- 補足: `IframeComponent` の受信検証を 3 段階に強化。`event.source === iframe.contentWindow`、
-  `event.origin in {'null', expectedOrigin}`、`data.name === name` のすべてを満たす場合のみ
-  メッセージを受理する
-- 補足: 親→iframe の `postMessage` `targetOrigin` を iframe `src` の origin に固定。
-  opaque origin (`'null'`) のときのみ `'*'` を許容（contentWindow 自体で一意特定可能）
-- 補足: `design.md` §9 に「カスタムコンポーネントのセキュリティー方針」を新設。
-  インプロセス／iframe 隔離それぞれの信頼境界、`allow-scripts` 単独 sandbox の理由、
-  推奨 CSP（`default-src 'self'` / `frame-src` allowlist / `connect-src ws: wss:`）、
-  nonce 戦略（リクエストスコープ、256bit、`script-src 'nonce-<value>'` と `<script nonce>`
-  への双方注入）を文書化
-- 補足: `specification.md` の `design.md` 章参照を 9 → 10 に追従更新
-- 補足: フロント test を 1 ケース追加（unrelated window / wrong origin からの偽装拒否）。
-  既存のメッセージ転送テストも source/origin を明示するよう更新
-- 注意: 実際の CSP ヘッダー付与は宿主側責務（spring-security ないし server モジュール
-  での設定）。スコープ外で TASK-128 リリース工程の運用ドキュメントに含める
-
-### TASK-103
-
-- 補足: `frontend/src/iframe-payload-validator.ts` を新設。
-  `validateIframePayload(value)` は次の 3 ルールで境界検証する:
-  サイズ ≤ 256 KiB、ネスト深度 ≤ 32、`__proto__` / `constructor` / `prototype`
-  のいずれもキーとして含まない
-- 補足: `IframeComponent` の inbound (`streamlit4j:widget_event`) と outbound
-  (`streamlit4j:state`) の双方でこの validator を通過させる。不合格 payload は
-  サイレントに破棄（onChange を呼ばない）
-- 補足: validator 単体 7 ケース（primitives / 深度境界 / サイズ / 各種禁止キー /
-  unserializable / 配列）。`__proto__` テストは `JSON.parse` で own property
-  化することで実際の structured-clone postMessage 環境を再現
-- 補足: App 統合 1 ケース追加（malicious payload が widget event として転送されない）
-- 注意: サーバー側（Java）の args/return 検証は `ComponentCodec` の Jackson
-  デシリアライズで型レベルで担保済み（TASK-098）。深度・サイズの制限は
-  Jetty / Spring Boot の WebSocket メッセージサイズ設定が一次防御線
-
-### TASK-104
-
-- 補足: `frontend/src/sdk/Streamlit4jComponent.ts` を新設。iframe ゲスト側で
-  ホスト（streamlit4j SPA）と通信するスタンドアロン SDK。React など追加依存なし
-- 補足: API は `ready()` / `onState(handler)` / `setValue(value)` /
-  `currentState()` / `dispose()`。TypeScript ジェネリクスで args/value 型を
-  指定可能（`Streamlit4jComponent<TArgs, TValue>`）
-- 補足: 受信は `event.source === window.parent` と `data.name === this.name`
-  の二段フィルター。サイブリング iframe や同一ウィンドウからの偽装を遮断する
-- 補足: `onState` は購読時点で最新状態をリプレイ（遅延サブスクライバー対応）、
-  返り値は unsubscribe 関数
-- 補足: 9 ケースのテスト（ready / setValue / 名前フィルター / source フィルター /
-  リプレイ / unsubscribe / dispose / 空名拒否）
-- 注意: 再描画通知ブリッジ（state 更新時の再レンダリングフック）は TASK-105 で、
-  CLI 雛形コマンドが本 SDK を使うコードを生成するのは TASK-106 で対応
-
-### TASK-105
-
-- 補足: `frontend/src/sdk/useComponentState.ts` を新設。`Streamlit4jComponent`
-  SDK を React コンポーネントから使うためのフックブリッジ
-- 補足: 戻り値は `{ state, setValue, name }`。マウント時に `sdk.ready()` を発火、
-  state 受信時に `useState` 経由で再レンダリング、アンマウント時に
-  `sdk.dispose()` で listener を解除する
-- 補足: ジェネリクスで `useComponentState<TArgs, TValue>(name)` の型契約を維持
-- 補足: 4 ケースの React Testing Library テスト（初期 null / ready 送信 /
-  state 受信時の再描画 / setValue 送信）
-- 注意: フック以外の UI フレームワーク（Lit / Vue 等）への bridge は当面提供
-  しない。SDK 基底クラスの `onState` で代替可能
-
-### TASK-106
-
-- 補足: `cli/ComponentScaffold` を新設。`streamlit4j component create <name>
-  [<target-dir>]` で iframe 隔離コンポーネントの雛形（index.html / main.ts /
-  package.json / README.md）を生成する
-- 補足: `Cli#main` をサブコマンド対応にリファクタリング。`component create ...`
-  以外は従来通り server 起動にフォールバック
-- 補足: コンポーネント名は `[a-z][a-z0-9-]*` に正規化し、path traversal や
-  シンボル混在を弾く。生成先ディレクトリは未存在 or 空ディレクトリのみ許容
-- 補足: 雛形 `main.ts` は `Streamlit4jComponent` SDK（TASK-104）を import し
-  `onState` / `setValue` / `ready` のミニマルな例を含む。`README.md` には
-  Java 側の `St.iframeComponent(...)` 呼び出し例を併記
-- 補足: cli モジュールに JUnit / AssertJ の test 依存を追加。
-  `ComponentScaffoldTest` 5 ケース（4 ファイル生成 / 名前埋め込み /
-  不正名拒否 / 非空ディレクトリ拒否 / 空ディレクトリ許容）
-- 注意: SDK パッケージ `@streamlit4j/component-sdk` は将来 npm 公開予定。
-  当面は frontend/src/sdk のソースを vendor する運用とし、TASK-121 の
-  カスタムコンポーネント作成ガイドで手順を文書化する
+- 補足: in-process カスタムコンポーネントの代表例として `star-rating`
+  レンダラー（`frontend/src/components/StarRating.tsx`）を新設。
+  `component-builtins.ts` で `registerComponent('star-rating', StarRating)`
+  を実行することで TS 側登録を実施
+- 補足: Java 側サンプル `examples/.../ComponentDemo.java` を追加。
+  `St.registerComponent(new CustomComponent<>("star-rating", Integer.class))`
+  と `St.component(spec, args, default)` の最小フルパスを提示
+- 補足: `StarRating.tsx` は `args.label` / `args.max`（1〜10 にクランプ）/
+  `value`（0〜max にクランプ）を受け取り、クリックでレーティング更新を
+  `onChange` 経由で送信。同じ値をクリックすると 0 にリセット
+- 補足: `frontend/src/components/StarRating.test.tsx` 6 ケース（初期表示 /
+  value 反映 / クリック発火 / 同値リセット / 不正 args / max クランプ）
+  および `styles.css` の `.component--star-rating` 追加
+- 注意: 本来スコープに含めていた iframe 系サンプルは「iframe 機能自体の廃止」
+  に伴い対象外。TASK-127 の E2E 依存も TASK-108 を外して整合化済み
 
 ### TASK-109
 

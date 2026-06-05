@@ -46,7 +46,7 @@
 採用したもの:
 
 - **framework-free core**: `core` パッケージ全体が Web フレームワーク・サーブレット・DI コンテナーに依存しない
-- **ports**: `core.port` に `SessionStore`, `EntrypointSource`, `Renderer` をインターフェース定義
+- **ports**: `core.port` に `SessionStore`, `EntrypointSource`, `Renderer` をインターフェイス定義
 - **use cases**: `core.application` に `StartSession`, `ProcessWidgetEvent`
 - **composition root**: `core.bootstrap.Bootstrap` のみが具象クラスを new する
 - **internal infrastructure**: `core.runtime` に `ScriptRunner`, `RenderContext`, `WidgetIds`,
@@ -118,8 +118,8 @@
 - 各再実行は「キー付き要素ノードのツリー」を生成する
 - 直前ツリーとの keyed diff で最小パッチ列を作る
 - 生成したパッチ列を `render_delta` で送信する
-- ノードは `kind` / `id` / `props` / `children` を持つ不変表現とする
-  （ノードのプロトコル仕様は `specification.md` 3 章を参照）
+- ノードは `kind` / `id` / `props` / `children` を持つ不変表現とする。
+  ノードのプロトコル仕様は `specification.md` 3 章を参照
 
 ## 4. フロントエンド設計
 
@@ -182,44 +182,21 @@
 | 配布 | Maven Central + JBang | OSS 標準 + CLI 配布の容易さ | GitHub Packages |
 | 起動最適化 | GraalVM native image（中期） | 高速起動・省メモリーの差別化 | CDS / AppCDS |
 
-## 9. カスタムコンポーネントのセキュリティー方針
+## 9. カスタムコンポーネントの方針
 
-### 9-1. インプロセス component
-
-- 同梱バンドルに登録される first-party 部品。レジストリに登録された名前を信頼する
-- 第三者コードを混ぜないため特別な隔離は行わず、通常の React レンダリングで実行
+- カスタムコンポーネントは「インプロセス」方式のみ提供する。同梱バンドルに登録される
+  first-party 部品はレジストリに登録された名前を信頼し、通常の React レンダリングで実行する
 - Java 側 `St.registerComponent(spec)` と TS 側 `registerComponent(name, renderer)` の
   両方で登録されていない限り unregistered プレースホルダーへ落とす
-
-### 9-2. iframe 隔離 component
-
-- 第三者 component は `<iframe sandbox="allow-scripts" src={...}>` でホストする
-- `allow-scripts` 単独のため、iframe のオリジンは opaque (`'null'`) となり、
-  親ドキュメントの Cookie / localStorage には到達できない
-- 親→iframe の `postMessage` は `targetOrigin` を iframe `src` の origin に固定する。
-  ただし opaque origin (`'null'`) のときは `'*'` で対応する（iframe 自体は親が生成・
-  保持する `contentWindow` で一意に特定できる）
-- iframe→親の受信は次の 3 段階で検証する:
-  1. `event.source === iframeRef.current.contentWindow`（他ウィンドウからの偽装拒否）
-  2. `event.origin === 'null'` または `event.origin === expectedOrigin` で
-     sandbox 緩和時の origin 検証
-  3. `data.name` が当該 component の name と一致（メッセージの誤配送防止）
-
-### 9-3. CSP 方針
-
-- 推奨される本番 CSP ヘッダー / `<meta http-equiv="Content-Security-Policy">`:
-  - `default-src 'self'`
-  - `script-src 'self'`（インラインスクリプト不可）
-  - `style-src 'self' 'unsafe-inline'`（CSS-in-JS / Vite の挙動許容）
-  - `connect-src 'self' ws: wss:`（WebSocket 接続）
-  - `frame-src <iframe component の origin リスト>`
-- SPA バンドル自体はインラインスクリプトを含まないため nonce は不要
-- 将来サーバーレンダリングや動的 HTML を生成する場合に備え、サーバー側で
-  リクエストごとに 256bit nonce を発行し、`<script nonce=...>` と
-  `script-src 'nonce-<value>'` の双方に注入する戦略を採用する
-- nonce の保持はリクエストスコープ。セッションを跨いだ再利用は禁止する
-- 本書は方針の文書化に留め、CSP ヘッダーの自動付与は組み込み側（Spring Security
-  または埋め込みサーバー）の設定責務とする
+- iframe 隔離方式は採用しない。理由は次の 2 点:
+  - **本家 Streamlit の動向**: V2 Components 以降は iframe を廃止し、ホストアプリへの
+    直接マウントへ移行している。隔離より統合の方向で標準化が進んでいる
+  - **DX とパフォーマンスの不利**: iframe 越しの postMessage 連携は同期点が増え、
+    境界検証 / payload size / CSP `frame-src` 管理など運用コストが大きい一方、
+    `allow-scripts` 単独の sandbox では同一オリジン解放が無くカスタム要件によっては
+    実現できないケースが多い
+- 第三者コンポーネントを取り込む必要が出た場合は npm 依存と同じ扱いとし、
+  ソースを vendor したうえで in-process として配布する運用を想定する
 
 ## 10. 未決事項（要決定）
 

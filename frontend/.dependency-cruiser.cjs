@@ -29,14 +29,14 @@ module.exports = {
       name: 'components-do-not-cross-depend',
       severity: 'error',
       comment: 'UI components must be composed only by render.tsx, not directly by each other.',
-      from: { path: '^src/components/' },
+      from: { path: '^src/components/', pathNot: '\\.test\\.tsx?$' },
       to: { path: '^src/components/', pathNot: '$0' },
     },
     {
       name: 'components-no-upstream-deps',
       severity: 'error',
       comment: 'Components must not depend on the dispatcher or App.',
-      from: { path: '^src/components/' },
+      from: { path: '^src/components/', pathNot: '\\.test\\.tsx?$' },
       to: { path: '^src/(render|App)' },
     },
     {

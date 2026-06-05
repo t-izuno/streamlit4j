@@ -6,12 +6,11 @@ import java.util.Optional;
 
 /**
  * Registry of in-process custom components — i.e. components whose React renderer
- * ships in the frontend bundle distributed with streamlit4j (as opposed to
- * third-party {@code iframe}-isolated components handled by TASK-101).
+ * ships in the frontend bundle distributed with streamlit4j.
  *
  * <p>Registration is the canonical way for an app to declare which component
  * names the bundled frontend is expected to resolve to a built-in renderer.
- * Downstream tasks (bundle pipeline, frontend bridge) consult this registry to
+ * The bundle pipeline and the frontend render path consult this registry to
  * surface the available components to the client.
  */
 public interface ComponentRegistry {

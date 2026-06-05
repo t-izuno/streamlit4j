@@ -1,3 +1,6 @@
+import { registerComponent } from './component-registry';
+import { StarRating } from './components/StarRating';
+
 /**
  * First-party in-process components bundled with the streamlit4j SPA. Importing
  * this module triggers registration via {@link registerComponent}, so it MUST
@@ -10,4 +13,4 @@
  *   3. ensure the Java side declares the matching {@code CustomComponent} and
  *      calls {@code St.registerComponent(...)}
  */
-export {};
+registerComponent('star-rating', StarRating);

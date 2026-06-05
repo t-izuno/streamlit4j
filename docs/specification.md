@@ -96,8 +96,8 @@ public class App {
 ### 2.3 メッセージ種別
 
 - `session_init`: セッション確立・初期レンダー
-- `render_delta`: サーバー → クライアント の差分
-- `widget_event`: クライアント → サーバー の値変更・ボタン押下
+- `render_delta`: サーバーからクライアントへの差分
+- `widget_event`: クライアントからサーバーへの値変更・ボタン押下
 - `rerun_request`: 明示再実行
 - `file_upload` / `download_ready`: ファイル入出力
 - `error`: 実行エラーの通知
@@ -181,21 +181,12 @@ public class App {
 
 ### 9.1 種別
 
-- 第一者向け「インプロセス component」: 同梱バンドルに React 部品を登録
-- 第三者向け「iframe 隔離 component」: sandbox 属性で隔離
+- 「インプロセス component」のみ提供: 同梱バンドルに React 部品を登録
+- iframe 隔離方式は採用しない（理由は `design.md` 9 章参照）
 
 ### 9.2 Java 側 API
 
 - コンポーネントの引数・戻り値を型で宣言する
-
-### 9.3 フロント TS SDK
-
-- 値の受け渡しのブリッジを提供する
-- 再描画通知のブリッジを提供する
-
-### 9.4 CLI
-
-- `streamlit4j component create` 相当の雛形生成コマンドを提供する
 
 ## 10. テーマ仕様
 

@@ -1,7 +1,6 @@
 import DOMPurify from 'dompurify';
 import type { JSX } from 'react';
 import { findComponent } from './component-registry';
-import { IframeComponent } from './components/IframeComponent';
 import { Markdown } from './components/Markdown';
 import { Slider } from './components/Slider';
 import { Title } from './components/Title';
@@ -369,19 +368,6 @@ function renderNode(node: RenderNode, onChange: WidgetChangeHandler): JSX.Elemen
       const name = String(props.name ?? '');
       const args = (props.args as Record<string, unknown> | undefined) ?? {};
       const value = props.value;
-      const iframeSrc = typeof props.iframeSrc === 'string' ? props.iframeSrc : '';
-      if (iframeSrc) {
-        return (
-          <IframeComponent
-            key={node.id}
-            name={name}
-            src={iframeSrc}
-            args={args}
-            value={value}
-            onChange={(v) => onChange(node.id, v)}
-          />
-        );
-      }
       const Renderer = findComponent(name);
       if (!Renderer) {
         return (
