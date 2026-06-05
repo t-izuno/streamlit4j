@@ -58,12 +58,38 @@ public final class Codec {
     }
 
     /**
-     * Returns the shared {@link ObjectMapper} so callers can opt into the same
-     * serialization configuration (mainly {@link ComponentCodec}).
+     * Converts an arbitrary Java value to a {@link JsonNode} using the shared
+     * mapper. Encapsulates the mapper so it never escapes this class.
      *
-     * @return shared mapper instance
+     * @param value value to convert
+     * @return JSON tree representation
      */
-    public static ObjectMapper mapper() {
-        return MAPPER;
+    public static JsonNode valueToTree(Object value) {
+        return MAPPER.valueToTree(value);
+    }
+
+    /**
+     * Converts a {@link JsonNode} into the requested type using the shared mapper.
+     *
+     * @param <T> target type
+     * @param node JSON node to convert
+     * @param type target class
+     * @return converted value
+     * @throws JsonProcessingException when the node cannot be bound to {@code type}
+     */
+    public static <T> T treeToValue(JsonNode node, Class<T> type) throws JsonProcessingException {
+        return MAPPER.treeToValue(node, type);
+    }
+
+    /**
+     * Converts a Java value to another Java type using the shared mapper.
+     *
+     * @param <T> target type
+     * @param raw source value
+     * @param type target class
+     * @return converted value
+     */
+    public static <T> T convertValue(Object raw, Class<T> type) {
+        return MAPPER.convertValue(raw, type);
     }
 }

@@ -16,9 +16,21 @@ public record RenderDelta(int v, String type, String sessionId, long seq, List<P
     /** Envelope type discriminator. */
     public static final String TYPE = "render_delta";
 
-    /** Freezes the patches list to an immutable copy. */
-    public RenderDelta {
-        patches = patches == null ? List.of() : List.copyOf(patches);
+    /**
+     * Canonical constructor; freezes the patches list to an immutable copy.
+     *
+     * @param v protocol version
+     * @param type envelope type discriminator
+     * @param sessionId owning session id
+     * @param seq monotonic frame sequence number
+     * @param patches keyed-diff patches (null treated as empty)
+     */
+    public RenderDelta(int v, String type, String sessionId, long seq, List<Patch> patches) {
+        this.v = v;
+        this.type = type;
+        this.sessionId = sessionId;
+        this.seq = seq;
+        this.patches = patches == null ? List.of() : List.copyOf(patches);
     }
 
     /**

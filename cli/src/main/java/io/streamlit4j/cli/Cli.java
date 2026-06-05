@@ -6,6 +6,8 @@ import io.streamlit4j.examples.Hello;
 import io.streamlit4j.server.Streamlit4jServer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Standalone CLI entry point that boots an embedded Jetty server with the
@@ -14,6 +16,7 @@ import java.nio.file.Paths;
 public final class Cli {
 
     private static final int DEFAULT_PORT = 8501;
+    private static final Logger LOG = LoggerFactory.getLogger(Cli.class);
 
     private Cli() {}
 
@@ -26,25 +29,32 @@ public final class Cli {
     public static void main(String[] args) throws Exception {
         int port = DEFAULT_PORT;
         Path watchDir = null;
-        for (int i = 0; i < args.length; i++) {
-            if ("--watch".equals(args[i]) && i + 1 < args.length) {
-                watchDir = Paths.get(args[++i]);
-            } else if ("--port".equals(args[i]) && i + 1 < args.length) {
-                port = Integer.parseInt(args[++i]);
-            } else if (args[i].matches("\\d+")) {
-                port = Integer.parseInt(args[i]);
+        int i = 0;
+        while (i < args.length) {
+            String arg = args[i];
+            if ("--watch".equals(arg) && i + 1 < args.length) {
+                watchDir = Paths.get(args[i + 1]);
+                i += 2;
+            } else if ("--port".equals(arg) && i + 1 < args.length) {
+                port = Integer.parseInt(args[i + 1]);
+                i += 2;
+            } else {
+                if (arg.matches("\\d+")) {
+                    port = Integer.parseInt(arg);
+                }
+                i++;
             }
         }
 
         EntrypointSource entrypoints = () -> Hello::run;
         try (Streamlit4jServer server = new Streamlit4jServer(port, entrypoints)) {
             server.start();
-            System.out.println("streamlit4j listening on ws://localhost:" + server.port() + "/ws");
+            LOG.info("streamlit4j listening on ws://localhost:{}/ws", server.port());
 
             if (watchDir != null) {
                 try (SourceWatcher ignored =
                         new SourceWatcher(watchDir, p -> server.notifyReload("source_change:" + p))) {
-                    System.out.println("watching " + watchDir + " for source changes");
+                    LOG.info("watching {} for source changes", watchDir);
                     Thread.currentThread().join();
                 }
             } else {

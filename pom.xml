@@ -69,6 +69,9 @@
     <spotless-maven-plugin.version>2.43.0</spotless-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.5.0</maven-checkstyle-plugin.version>
     <checkstyle.version>10.18.2</checkstyle.version>
+    <spotbugs-maven-plugin.version>4.8.6.6</spotbugs-maven-plugin.version>
+    <maven-pmd-plugin.version>3.26.0</maven-pmd-plugin.version>
+    <pmd.version>7.7.0</pmd.version>
     <dependency-check-maven.version>10.0.4</dependency-check-maven.version>
     <palantir-java-format.version>2.50.0</palantir-java-format.version>
     <maven-javadoc-plugin.version>3.10.1</maven-javadoc-plugin.version>
@@ -237,6 +240,44 @@
           <version>${maven-checkstyle-plugin.version}</version>
         </plugin>
         <plugin>
+          <groupId>com.github.spotbugs</groupId>
+          <artifactId>spotbugs-maven-plugin</artifactId>
+          <version>${spotbugs-maven-plugin.version}</version>
+          <configuration>
+            <effort>Max</effort>
+            <threshold>Medium</threshold>
+            <failOnError>true</failOnError>
+            <includeTests>false</includeTests>
+            <xmlOutput>true</xmlOutput>
+            <excludeFilterFile>${maven.multiModuleProjectDirectory}/spotbugs-exclude.xml</excludeFilterFile>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-pmd-plugin</artifactId>
+          <version>${maven-pmd-plugin.version}</version>
+          <configuration>
+            <linkXRef>false</linkXRef>
+            <includeTests>false</includeTests>
+            <printFailingErrors>true</printFailingErrors>
+            <rulesets>
+              <ruleset>${maven.multiModuleProjectDirectory}/pmd-ruleset.xml</ruleset>
+            </rulesets>
+          </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-core</artifactId>
+              <version>${pmd.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-java</artifactId>
+              <version>${pmd.version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
           <groupId>org.owasp</groupId>
           <artifactId>dependency-check-maven</artifactId>
           <version>${dependency-check-maven.version}</version>
@@ -390,6 +431,48 @@
             <goals>
               <goal>report</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>spotbugs-check</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>pmd-check</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>cpd-measure</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>cpd-check</goal>
+            </goals>
+            <configuration>
+              <failOnViolation>false</failOnViolation>
+              <minimumTokens>100</minimumTokens>
+              <excludeRoots>
+                <excludeRoot>${project.basedir}/src/test/java</excludeRoot>
+              </excludeRoots>
+            </configuration>
           </execution>
         </executions>
       </plugin>

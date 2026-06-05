@@ -39,12 +39,14 @@ public final class ScriptRunner implements Renderer, AutoCloseable {
                                 try {
                                     entrypoint.run();
                                     break;
-                                } catch (ControlSignals.RerunRequested rerun) {
-                                    if (++reruns > MAX_RERUNS_PER_REQUEST) {
-                                        throw new IllegalStateException("Rerun signal triggered more than "
-                                                + MAX_RERUNS_PER_REQUEST + " times");
+                                } catch (RerunRequested rerun) {
+                                    reruns++;
+                                    if (reruns > MAX_RERUNS_PER_REQUEST) {
+                                        throw new IllegalStateException(
+                                                "Rerun signal triggered more than " + MAX_RERUNS_PER_REQUEST + " times",
+                                                rerun);
                                     }
-                                } catch (ControlSignals.StopRequested stop) {
+                                } catch (StopRequested stop) {
                                     break;
                                 }
                             }
@@ -61,11 +63,7 @@ public final class ScriptRunner implements Renderer, AutoCloseable {
             Thread.currentThread().interrupt();
             throw new RuntimeException("Render interrupted", e);
         } catch (ExecutionException e) {
-            Throwable cause = e.getCause();
-            if (cause instanceof RuntimeException re) {
-                throw re;
-            }
-            throw new RuntimeException(cause);
+            throw new RuntimeException("Render failed", e);
         }
     }
 

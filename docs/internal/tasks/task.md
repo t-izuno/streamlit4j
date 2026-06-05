@@ -153,6 +153,11 @@
 | TASK-128 | 🚫 | 0.1.0 リリースタグとリリースノートを作成する | TASK-109,TASK-112,TASK-113,TASK-114,TASK-116,TASK-117,TASK-118,TASK-120,TASK-121,TASK-124,TASK-125,TASK-127 |
 | TASK-129 | 🚫 | Maven Central へ 0.1.0 を公開する | TASK-123,TASK-128 |
 | TASK-130 | 🚫 | playground を 0.1.0 ビルドに更新し公開する | TASK-126,TASK-129 |
+| TASK-131 | ⏳ | VitePress docs サイトの build を CI に組み込む | - |
+| TASK-132 | ⏳ | OSV-Scanner 検出時の対応フローを security-scan.md に追記する | - |
+| TASK-133 | ⏳ | cli の maven-shade-plugin で発生する同名ファイル警告を整理する | - |
+| TASK-134 | ✅ | SpotBugs を Java 静的解析層として導入する | - |
+| TASK-135 | ✅ | PMD + CPD を導入し重複コード検出を含む追加静的解析を実施する | - |
 
 ## タスク詳細
 
@@ -600,6 +605,83 @@
 - 注意: 内部利用フェーズで判明した問題は新タスク（TASK-131 以降）として登録
   する。本中止項目は将来再開する際に同番号 / タイトルのまま新設しない
 
+### TASK-131
+
+- 補足: 現状 `site/` の VitePress build は `docs/guide/custom-components.md` で
+  `vue/server-renderer` の解決失敗により失敗する。CI フロントジョブが
+  `frontend/` しか触っていないため、docs サイト破損が PR を通過してしまう
+- 補足: `.github/workflows/ci.yml` に docs build ステップを追加し、
+  `cd site && npm ci && npm run docs:build` を走らせる
+- 注意: 現在の build 失敗自体の原因究明も本タスクの範囲（VitePress と Vue の
+  peer dep バージョン整合 / コードブロック内の Vue テンプレート誤評価が候補）
+
+### TASK-132
+
+- 補足: `docs/internal/security-scan.md` は OWASP の手動実行手順と suppression
+  運用を扱うが、`ci.yml` の OSV-Scanner で検出された脆弱性への対応フローは
+  別途必要。OSV は OWASP と suppression の仕組みが異なる（`osv-scanner.toml`）
+- 補足: 検出 → 真陽性なら依存更新 / 偽陽性なら `osv-scanner.toml` で
+  `IgnoredVulns` 追記、というフローを文書化
+- 注意: OWASP の `owasp-suppressions.xml` と OSV の `osv-scanner.toml` を
+  混在運用するため、どちらに何を書くかの境界を明確化する
+
+### TASK-133
+
+- 補足: 今回 cli モジュールに `maven-shade-plugin` を導入したことで複数 JAR に
+  同名ファイル警告が出ている（動作には影響なし）。将来 SPI / META-INF 同名
+  ファイルの取り扱いでトラブル源になる可能性
+- 補足: `mvn -pl cli package -X` で重複ファイル一覧を取得し、必要に応じて
+  ServicesResourceTransformer / ApacheNoticeResourceTransformer 等を追加、
+  もしくは filter で除外
+- 注意: Jetty 12 / Jackson 周りの `META-INF/services/*` を消すと実行時 fail
+  するため、安易に exclude しない
+
+### TASK-134
+
+- 補足: `spotbugs-maven-plugin` 4.8.6.6 を導入。`effort=Max` / `threshold=Medium` /
+  `failOnError=true` / `includeTests=false` / `excludeFilterFile=spotbugs-exclude.xml`
+- 補足: ユーザー承認済み exclude（`spotbugs-exclude.xml` に根拠コメント付きで記録）:
+  - `EI` / `EI2`（EI_EXPOSE_REP / EI_EXPOSE_REP2）— record auto-accessor / port-based DI が
+    interface ref を field 保持するパターン。defensive copy 不能 / 不適切
+  - `NM_SAME_SIMPLE_NAME_AS_SUPERCLASS` — sentinel 例外型の命名衝突
+  - `UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD` / `URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD` —
+    公開 API / シリアライズ対象フィールド
+- 補足: コード修正で解消したもの: `Codec.mapper()` を廃止し、shared `ObjectMapper` を
+  encapsulate する `Codec.valueToTree` / `treeToValue` / `convertValue` の static
+  ヘルパー化（MS_EXPOSE_REP 解消）
+- 注意: exclude の追加は **ユーザー承認必須**（`feedback-no-suppression` 参照）。
+  AI が reactive に追加するのは禁止
+- 注意: ErrorProne は引き続き不採用（BACKLOG-011 維持）
+
+### TASK-135
+
+- 補足: `maven-pmd-plugin` 3.26.0 + `pmd-core` / `pmd-java` 7.7.0 を導入。
+  `category/java/bestpractices.xml` + `category/java/errorprone.xml` の 2 カテゴリーを採用
+- 補足: ユーザー承認済み exclude（`pmd-ruleset.xml` に根拠コメント付き）:
+  - errorprone: `AvoidFieldNameMatchingMethodName` — 現代 Java の accessor 規約
+    （`int id()` で `id` field を返す）と本質的に衝突
+  - bestpractices: `GuardLogStatement` — SLF4J の parameterized format（`{}`）が
+    内部で `toString()` を遅延評価するため、`isXxxEnabled()` guard は冗長
+- 補足: コード修正（合計 11+ 件、suppress なし）:
+  - `UploadValidator.Constraints` / `RenderDelta` / `RenderNode` の record を
+    compact constructor → **canonical constructor** に書き換え（`this.field = X`
+    が field 書込みであるため PMD UnusedAssignment 対象外になる性質を利用）
+  - widget facade ファイル 5 つで重複リテラルを `private static final` 定数化
+    （`PROP_TEXT` / `PROP_BODY` / `KIND_CODE` / `PROP_LABEL` / `PROP_VALUE` /
+    `PROP_OPTIONS` / `PROP_DATA` / `KIND_METRIC` / `KIND_COMPONENT`）
+  - `ControlSignals` ホルダーを削除、`RerunRequested` / `StopRequested` を
+    top-level クラスに昇格 + `serialVersionUID` 追加
+  - `ScriptRunner` の `ExecutionException` unwrap を `throw new RuntimeException("Render failed", e)`
+    に簡素化（PreserveStackTrace 解消）。`++reruns` を increment と condition に分割
+  - `Streamlit4jAutoConfiguration` で Yoda 比較（`"/".equals(basePath)`）+ 単一要素
+    最適化分岐削除（AvoidLiteralsInIfCondition 解消）
+  - `Cli` で `System.out.println` → SLF4J ログ化、`for (int i=...; i++)` の `args[++i]` を
+    while ループ + 明示的 `i += 2` に変更
+- 補足: CPD（Copy-Paste Detector）は `failOnViolation=false` で計測のみ（minimumTokens=100）。
+  現状検出 0 件
+- 注意: PMD `UnusedAssignment` は record の compact constructor を理解しない既知バグ。
+  将来 PMD が対応したら canonical constructor を compact に戻して可読性を回復する余地あり
+
 ## Backlog一覧
 
 | ID | Status | Summary | DependsOn |
@@ -612,6 +694,11 @@
 | BACKLOG-006 | ⏳ | 共有・ホスティング基盤（Community Cloud 相当）を提供する | - |
 | BACKLOG-007 | ⏳ | リアルタイム協調編集を実装する | - |
 | BACKLOG-008 | ⏳ | gRPC / SSE フォールバックトランスポートを実装する | - |
+| BACKLOG-009 | 🚫 | CycloneDX で SBOM を自動生成しリリース成果物に同梱する | - |
+| BACKLOG-010 | 🚫 | license-maven-plugin で第三者ライセンスをホワイトリスト管理する | - |
+| BACKLOG-011 | 🚫 | SpotBugs / ErrorProne による Java 静的解析層を追加する | - |
+| BACKLOG-012 | 🚫 | PIT で mutation testing を導入しカバレッジの質を担保する | - |
+| BACKLOG-013 | 🚫 | OpenAPI / AsyncAPI で WebSocket プロトコルを機械可読化する | - |
 
 ## Backlog詳細
 
@@ -624,3 +711,47 @@
 
 - 補足: reflection 設定の網羅が必要
 - 注意: 着手時期は TASK-109 で決定する
+
+### BACKLOG-009（中止）
+
+- 中止理由: 個人 OSS スケールでは SBOM 生成のメンテナンスコストが先行し、
+  受益者（取り込み先の SCA ツール / エンタープライズ利用者）が限定的。
+  現時点では Maven Central の POM メタデータ + GPG 署名で供給網検証は十分。
+  エンタープライズ採用が見えたタイミングで再評価する
+- 再開条件: SBOM 提供を前提とする利用者要望が出た場合、または
+  Maven Central / 業界標準として SBOM 同梱が必須化された場合
+
+### BACKLOG-010（中止）
+
+- 中止理由: 依存は BOM 経由で Spring Boot / Jetty / Jackson / JUnit / AssertJ /
+  Mockito / ArchUnit に限定されており、いずれも Apache 2.0 / EPL / MIT の
+  許諾系。ホワイトリスト機械検査を入れずとも、依存追加時の目視確認で十分カバー可能
+- 再開条件: 依存ツリーが大幅に拡大する、または GPL / AGPL 等のコピーレフト系を
+  含む可能性があるエコシステムの依存を追加する場合
+
+### BACKLOG-011（中止 → 部分的に再評価）
+
+- 中止理由（初回判断）: Checkstyle（フォーマット / 命名 / 構造）+ ArchUnit
+  （レイヤー強制）+ 単体 / 結合テスト + Javadoc 厳格 ですでに本プロジェクト規模では
+  十分な検査層。SpotBugs / ErrorProne を追加すると false positive 抑制と
+  suppression 管理の運用コストが先行する
+- 再評価結果: SpotBugs と PMD/CPD は TASK-134 / TASK-135 として個別採用。
+  ErrorProne は引き続き不採用（SpotBugs と機能重複・併用維持コスト）
+
+### BACKLOG-012（中止）
+
+- 中止理由: カバレッジ閾値強制を採用しない方針（[[feedback-coverage-threshold]]）
+  と整合せず、mutation testing は計算コストと CI 時間を大幅に増やす割に
+  本プロジェクト規模では新規バグの検出効率が低い
+- 再開条件: テスト品質に明確な問題が観測される、または外部ツール（SonarQube
+  等）と統合して非同期で回せる構成が成立した場合
+
+### BACKLOG-013（中止）
+
+- 中止理由: 現在 WebSocket クライアントは同一リポジトリーの React SPA 単一
+  実装で、多言語クライアント実装計画は未定。プロトコル仕様は
+  `protocol/Envelope` 等の Java DTO + JSON コーデックで一元管理されており、
+  これが事実上の仕様書として機能している
+- 再開条件: Python / TypeScript / Go 等の独立クライアント実装計画が
+  立ち上がった場合、または外部開発者に WebSocket 互換実装を提供する需要が出た場合
+

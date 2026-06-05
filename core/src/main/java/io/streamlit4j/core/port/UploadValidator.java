@@ -16,10 +16,14 @@ public interface UploadValidator {
     record Constraints(long maxSizeBytes, Set<String> allowedMimeTypes) {
 
         /**
-         * Normalizes a null {@code allowedMimeTypes} to an empty immutable set.
+         * Canonical constructor; normalizes a null {@code allowedMimeTypes} to an empty immutable set.
+         *
+         * @param maxSizeBytes maximum allowed payload size in bytes
+         * @param allowedMimeTypes accepted MIME types (null treated as empty)
          */
-        public Constraints {
-            allowedMimeTypes = allowedMimeTypes == null ? Set.of() : Set.copyOf(allowedMimeTypes);
+        public Constraints(long maxSizeBytes, Set<String> allowedMimeTypes) {
+            this.maxSizeBytes = maxSizeBytes;
+            this.allowedMimeTypes = allowedMimeTypes == null ? Set.of() : Set.copyOf(allowedMimeTypes);
         }
     }
 

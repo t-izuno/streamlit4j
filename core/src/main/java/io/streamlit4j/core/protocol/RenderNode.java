@@ -17,13 +17,18 @@ import java.util.Objects;
 public record RenderNode(String kind, String id, Map<String, Object> props, List<RenderNode> children) {
 
     /**
-     * Validates required fields and freezes the props / children collections.
+     * Canonical constructor; validates required fields and freezes the props / children collections.
+     *
+     * @param kind element type tag
+     * @param id stable widget identifier
+     * @param props element-specific properties (null treated as empty)
+     * @param children child nodes (null treated as empty)
      */
-    public RenderNode {
-        Objects.requireNonNull(kind, "kind");
-        Objects.requireNonNull(id, "id");
-        props = props == null ? Map.of() : Map.copyOf(props);
-        children = children == null ? List.of() : List.copyOf(children);
+    public RenderNode(String kind, String id, Map<String, Object> props, List<RenderNode> children) {
+        this.kind = Objects.requireNonNull(kind, "kind");
+        this.id = Objects.requireNonNull(id, "id");
+        this.props = props == null ? Map.of() : Map.copyOf(props);
+        this.children = children == null ? List.of() : List.copyOf(children);
     }
 
     /**

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<ruleset name="streamlit4j PMD ruleset"
+         xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+  <description>
+    streamlit4j PMD ruleset. Bestpractices + errorprone categories.
+
+    Excludes here are NOT for hiding individual violations — they are for rules
+    that are structurally incompatible with this codebase's conventions. Adding
+    a new exclude requires explicit maintainer approval (see memory:
+    feedback-no-suppression).
+  </description>
+
+  <rule ref="category/java/bestpractices.xml">
+    <!--
+      Approved 2026-06-05.
+      SLF4J's parameterized format (`LOG.info("msg {}", arg)`) already defers
+      `toString()` until after level check internally, so the `isXxxEnabled()`
+      guard the rule mandates is redundant clutter on every log statement.
+    -->
+    <exclude name="GuardLogStatement"/>
+  </rule>
+
+  <rule ref="category/java/errorprone.xml">
+    <!--
+      Approved 2026-06-05.
+      Modern Java's accessor convention (`int id()` returning `id` field) and
+      record auto-generated accessors fundamentally conflict with this rule.
+      Renaming every accessor or field would defeat idiomatic Java naming.
+    -->
+    <exclude name="AvoidFieldNameMatchingMethodName"/>
+  </rule>
+</ruleset>

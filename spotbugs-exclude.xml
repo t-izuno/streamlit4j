@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SpotBugs exclude filter.
+
+  Policy: exclude entries here MUST be reviewed and approved by the maintainer.
+  Do NOT add reactive excludes for newly discovered violations without explicit
+  approval. See ~/.claude memory: feedback-no-suppression.
+
+  Each <Match> block must carry a comment block explaining:
+    - what pattern is excluded
+    - why this is a structural / framework mismatch rather than a real bug
+-->
+<FindBugsFilter
+    xmlns="https://github.com/spotbugs/filter/3.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/master/spotbugs/etc/findbugsfilter.xsd">
+
+  <!--
+    Approved 2026-06-05.
+
+    NM_SAME_SIMPLE_NAME_AS_SUPERCLASS:
+      Sentinel exception types (ControlSignals.RerunRequested / StopRequested)
+      and similar nested types may share a simple name with their superclass.
+      Renaming for SpotBugs' benefit would be cosmetic noise.
+
+    UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD / URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD:
+      Public/protected fields on framework-facing types (records, DTOs, port
+      contracts) may not be read inside this codebase but are part of the public
+      API for consumers / serialization. SpotBugs cannot see the external readers.
+  -->
+  <Match>
+    <BugPattern name="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+    <BugPattern name="UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD"/>
+    <BugPattern name="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <!--
+    Approved 2026-06-05.
+
+    EI / EI2 (EI_EXPOSE_REP / EI_EXPOSE_REP2):
+      Triggered by record auto-generated accessors returning field references,
+      and by port-based DI fields storing interface references (SessionStore,
+      Renderer, EntrypointSource). Defensive copy is not meaningful for an
+      interface ref, and overriding every record accessor with List.copyOf would
+      defeat record ergonomics. Streamlit's session-state model also requires
+      mutable shared state by design — defensive snapshotting would break it.
+
+      Note: MS_EXPOSE_REP (static-field exposure) is NOT excluded — Codec.mapper()
+      etc. are addressed via code fix.
+  -->
+  <Match>
+    <BugCode name="EI,EI2"/>
+  </Match>
+
+</FindBugsFilter>

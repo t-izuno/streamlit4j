@@ -26,7 +26,7 @@ public final class ComponentCodec {
      * @return the JSON tree representation
      */
     public static JsonNode encodeArg(Object value) {
-        return Codec.mapper().valueToTree(value);
+        return Codec.valueToTree(value);
     }
 
     /**
@@ -43,7 +43,7 @@ public final class ComponentCodec {
             return null;
         }
         try {
-            return Codec.mapper().treeToValue(node, resultType);
+            return Codec.treeToValue(node, resultType);
         } catch (JsonProcessingException e) {
             throw new IllegalArgumentException("Failed to decode component value as " + resultType.getName(), e);
         }
@@ -76,7 +76,7 @@ public final class ComponentCodec {
             }
         }
         try {
-            return Codec.mapper().convertValue(raw, resultType);
+            return Codec.convertValue(raw, resultType);
         } catch (IllegalArgumentException e) {
             return fallback;
         }

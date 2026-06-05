@@ -9,14 +9,16 @@ import java.util.Map;
 /** Status / notification widgets (metric, toast, progress, spinner, status). */
 final class StatusWidgets {
 
+    private static final String KIND_METRIC = "metric";
+
     private StatusWidgets() {}
 
     static void metric(String label, Object value) {
-        emit("metric", widgetId("metric", label), ordered("label", label, "value", value));
+        emit(KIND_METRIC, widgetId(KIND_METRIC, label), ordered("label", label, "value", value));
     }
 
     static void metric(String label, Object value, Object delta) {
-        emit("metric", widgetId("metric", label), ordered("label", label, "value", value, "delta", delta));
+        emit(KIND_METRIC, widgetId(KIND_METRIC, label), ordered("label", label, "value", value, "delta", delta));
     }
 
     static void toast(String text) {

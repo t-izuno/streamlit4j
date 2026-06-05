@@ -42,7 +42,7 @@ public class Streamlit4jAutoConfiguration {
 
     /** Normalizes a configured base path into a leading-slash, no-trailing-slash form ({@code ""} for root). */
     static String normalizeBasePath(String basePath) {
-        if (basePath == null || basePath.isBlank() || basePath.equals("/")) {
+        if (basePath == null || basePath.isBlank() || "/".equals(basePath)) {
             return "";
         }
         String trimmed = basePath.endsWith("/") ? basePath.substring(0, basePath.length() - 1) : basePath;
@@ -92,9 +92,6 @@ public class Streamlit4jAutoConfiguration {
         List<Streamlit4jConnectionListener> ordered = listeners.orderedStream().toList();
         if (ordered.isEmpty()) {
             return Streamlit4jConnectionListener.NO_OP;
-        }
-        if (ordered.size() == 1) {
-            return ordered.get(0);
         }
         return new Streamlit4jConnectionListener() {
             @Override
