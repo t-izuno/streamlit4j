@@ -22,7 +22,9 @@ streamlit4j は CLI / JBang 単体起動と Spring Boot 埋め込みの両モー
 
 ## Decision
 
-スタンドアロンモードの組み込み HTTP サーバーに **Eclipse Jetty 12** を採用する。Spring Boot 埋め込みモード（`spring-boot-starter` モジュール）では Spring Boot 既定の Tomcat をそのまま使用し、Jetty とは独立に共存させる。
+スタンドアロンモードの組み込み HTTP サーバーに **Eclipse Jetty 12** を採用する。
+Spring Boot 埋め込みモード（`spring-boot-starter` モジュール）では Spring Boot
+既定の Tomcat をそのまま使用し、Jetty とは独立に共存させる。
 
 主な理由:
 

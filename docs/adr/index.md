@@ -1,6 +1,8 @@
 # Architecture Decision Records
 
-設計上の重要決定をテンプレート（Context / Decision / Consequences / Alternatives Considered）に沿って記録する。各 ADR は一度確定したら原則として書き換えず、覆す場合は新しい ADR で `Supersedes: ADR-xxxx` を明記する。
+設計上の重要決定をテンプレート（Context / Decision / Consequences /
+Alternatives Considered）に沿って記録する。各 ADR は一度確定したら原則として
+書き換えず、覆す場合は新しい ADR で `Supersedes: ADR-xxxx` を明記する。
 
 ADR にはアーキテクチャー境界・非機能特性・外部依存・セキュリティーモデルなどに影響する判断のみを残す。命名や API スタイルなどの実装レベルの選択は `design.md` / `specification.md` に併記する。
 

@@ -214,7 +214,7 @@
 ### TASK-058
 
 - 補足: `Cli.main(args)` で `--port` と `--watch` を解析。examples の Hello.run を hardcode 起動
-- 注意: 任意 `.java` ファイル指定は TASK-059 (JBang 経由) で対応
+- 注意: 任意 `.java` ファイル指定は TASK-059（JBang 経由）で対応
 
 ### TASK-059
 

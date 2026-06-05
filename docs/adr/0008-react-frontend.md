@@ -19,8 +19,11 @@ streamlit4j SPA は WebSocket で受け取るレンダーツリー（`kind` / `i
 
 ### 周辺事実（一次情報）
 
-- 本家 Streamlit のコアアプリは **React + webpack（CRA）**（[streamlit/streamlit#6588](https://github.com/streamlit/streamlit/issues/6588) で webpack → Vite の移行要望）
-- 本家 Streamlit Components V2（新版）の公式推奨スタックは **React 18.3 + TypeScript 5.8 + Vite 6.4**（[Streamlit Docs](https://docs.streamlit.io/develop/concepts/custom-components/components-v2/package-based)）
+- 本家 Streamlit のコアアプリは **React + webpack（CRA）**。webpack → Vite
+  の移行要望は [streamlit/streamlit#6588](https://github.com/streamlit/streamlit/issues/6588)
+- 本家 Streamlit Components V2（新版）の公式推奨スタックは
+  **React 18.3 + TypeScript 5.8 + Vite 6.4**。出典は
+  [Streamlit Docs — package-based components](https://docs.streamlit.io/develop/concepts/custom-components/components-v2/package-based)
 - 2026 年時点で React の利用率は約 40%（Strapi 調べ）、依然首位
 
 ## Decision
