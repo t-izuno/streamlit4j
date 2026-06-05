@@ -7,9 +7,10 @@ export default defineConfig({
   lang: "en-US",
   lastUpdated: true,
   cleanUrls: true,
-  // タスクのソースは docs/tasks/ にあるが、Markdown ドキュメントとして
-  // サイトへ含めると常に変動するため除外する
-  srcExclude: ["tasks/**", "**/README.md"],
+  // ../docs/ をコンテンツルートとして読む
+  srcDir: "../docs",
+  // tasks は変動が激しいためサイトには含めない。README.md も同様
+  srcExclude: ["internal/tasks/**", "**/README.md"],
   ignoreDeadLinks: [/^https?:\/\/localhost(:\d+)?/, /^https?:\/\/127\.0\.0\.1/],
   head: [
     ["link", { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
@@ -24,7 +25,7 @@ export default defineConfig({
     nav: [
       { text: "Guide", link: "/guide/getting-started" },
       { text: "Reference", link: "/reference/overview" },
-      { text: "Design", link: "/design" },
+      { text: "Design", link: "/internal/design" },
       {
         text: "GitHub",
         link: "https://github.com/t-izuno/streamlit4j",
@@ -63,32 +64,33 @@ export default defineConfig({
           ],
         },
       ],
-      "/": [
+      "/internal/": [
         {
-          text: "Specification",
+          text: "Internal specs",
           items: [
-            { text: "Requirements", link: "/requirements" },
-            { text: "Specification", link: "/specification" },
-            { text: "Design", link: "/design" },
+            { text: "Requirements", link: "/internal/requirements" },
+            { text: "Specification", link: "/internal/specification" },
+            { text: "Design", link: "/internal/design" },
+            { text: "Publishing", link: "/internal/publishing" },
           ],
         },
         {
           text: "Architecture Decisions",
           collapsed: true,
           items: [
-            { text: "Index", link: "/adr/" },
-            { text: "ADR-0002 JSON protocol", link: "/adr/0002-json-over-messagepack" },
-            { text: "ADR-0004 GraalVM deferred", link: "/adr/0004-graalvm-deferred" },
+            { text: "Index", link: "/internal/adr/" },
+            { text: "ADR-0002 JSON protocol", link: "/internal/adr/0002-json-over-messagepack" },
+            { text: "ADR-0004 GraalVM deferred", link: "/internal/adr/0004-graalvm-deferred" },
             {
               text: "ADR-0005 Explicit page registration",
-              link: "/adr/0005-explicit-page-registration",
+              link: "/internal/adr/0005-explicit-page-registration",
             },
-            { text: "ADR-0006 MIT license", link: "/adr/0006-mit-license" },
-            { text: "ADR-0007 No iframe components", link: "/adr/0007-no-iframe-components" },
-            { text: "ADR-0008 React frontend", link: "/adr/0008-react-frontend" },
-            { text: "ADR-0009 Vite for frontend", link: "/adr/0009-vite-for-frontend" },
-            { text: "ADR-0010 VitePress for docs", link: "/adr/0010-vitepress-for-docs" },
-            { text: "ADR-0011 Jetty embedded server", link: "/adr/0011-jetty-embedded-server" },
+            { text: "ADR-0006 MIT license", link: "/internal/adr/0006-mit-license" },
+            { text: "ADR-0007 No iframe components", link: "/internal/adr/0007-no-iframe-components" },
+            { text: "ADR-0008 React frontend", link: "/internal/adr/0008-react-frontend" },
+            { text: "ADR-0009 Vite for frontend", link: "/internal/adr/0009-vite-for-frontend" },
+            { text: "ADR-0010 VitePress for docs", link: "/internal/adr/0010-vitepress-for-docs" },
+            { text: "ADR-0011 Jetty embedded server", link: "/internal/adr/0011-jetty-embedded-server" },
           ],
         },
       ],

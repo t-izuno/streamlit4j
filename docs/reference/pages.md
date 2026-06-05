@@ -1,6 +1,6 @@
 # マルチページ
 
-明示登録方式のページナビゲーター。規約ベース自動登録は採用しない（[ADR-0005](../adr/0005-explicit-page-registration) 参照）。
+明示登録方式のページナビゲーター。規約ベース自動登録は採用しない（[ADR-0005](../internal/adr/0005-explicit-page-registration) 参照）。
 
 | Java API | プロトコル `kind` | props | 戻り値 |
 | --- | --- | --- | --- |

@@ -1,6 +1,6 @@
 # カスタムコンポーネント作成ガイド
 
-streamlit4j に独自の React 部品を追加し、Java スクリプトから `St.component(...)` で呼び出せるようにする手順。in-process 方式のみ提供（iframe 隔離は [ADR-0007](../adr/0007-no-iframe-components) で不採用）。
+streamlit4j に独自の React 部品を追加し、Java スクリプトから `St.component(...)` で呼び出せるようにする手順。in-process 方式のみ提供（iframe 隔離は [ADR-0007](../internal/adr/0007-no-iframe-components) で不採用）。
 
 ## 前提
 
@@ -145,7 +145,7 @@ cd frontend && npm test
 
 ## SDK の vendor について
 
-将来、外部リポジトリーで開発したコンポーネントを共有する場合は `frontend/src/sdk/` 系の SDK を npm 公開する予定（[ADR-0009](../adr/0009-vite-for-frontend) の Vite ベースで配布）。0.1.0 時点では vendor 運用とし、利用者は本リポジトリーの `frontend/` をフォーク or サブモジュールで取り込んで `component-builtins.ts` に登録する。
+将来、外部リポジトリーで開発したコンポーネントを共有する場合は `frontend/src/sdk/` 系の SDK を npm 公開する予定（[ADR-0009](../internal/adr/0009-vite-for-frontend) の Vite ベースで配布）。0.1.0 時点では vendor 運用とし、利用者は本リポジトリーの `frontend/` をフォーク or サブモジュールで取り込んで `component-builtins.ts` に登録する。
 
 ## チェックリスト
 

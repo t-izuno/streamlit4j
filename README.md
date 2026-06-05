@@ -129,24 +129,25 @@ Declare one `@Bean EntrypointSource` and your script is mounted with full Spring
 
 Things you should know before adopting.
 
-- **Java 21 LTS or newer is required.** Virtual threads are mandatory; JDK 17 and below are not supported (see [ADRs](docs/adr/)).
+- **Java 21 LTS or newer is required.** Virtual threads are mandatory; JDK 17 and below are not supported.
 - **Protocol is fixed to JSON.** MessagePack and similar are not supported (a v1.x consideration).
 - **Charts render placeholders in v1.** A real charting library is on the backlog.
 - **`dataEditor` is one-way.** Edited values are not propagated back to the server yet.
-- **Multi-page is explicit registration only.** No `pages/` directory convention ([ADR-0005](docs/adr/0005-explicit-page-registration.md)).
-- **Custom components are in-process only.** Iframe isolation is not adopted ([ADR-0007](docs/adr/0007-no-iframe-components.md)).
-- **GraalVM native is deferred to v1.x** ([ADR-0004](docs/adr/0004-graalvm-deferred.md)).
+- **Multi-page is explicit registration only.** No `pages/` directory convention.
+- **Custom components are in-process only.** Iframe isolation is not supported.
+- **GraalVM native is deferred to v1.x.**
 
-See [`docs/adr/`](docs/adr/index.md) for the full set of architecture decisions.
+## Documentation
 
-## Next steps
+- [Getting Started](docs/guide/getting-started.md) — evaluation paths for JBang / library / Spring Boot
+- [Reference](docs/reference/overview.md) — Java signature, protocol envelope, and frontend rendering for every `St.*` element
+- [Custom Components Guide](docs/guide/custom-components.md) — adding your own React renderers
+- [Spring Boot Integration](docs/guide/spring-boot.md) — auto-config, Security, and Session interop
 
-- **Want to try it out**: [Getting Started](docs/guide/getting-started.md) — evaluation paths for JBang / library / Spring Boot.
-- **Want the full API**: [Reference](docs/reference/overview.md) — Java signature, protocol, and frontend rendering for every `St.*` element.
-- **Want to build custom components**: [Custom Components Guide](docs/guide/custom-components.md).
-- **Want to understand the internals**: [Design](docs/design.md) / [ADRs](docs/adr/index.md).
-- **Want to contribute**: [CONTRIBUTING.md](CONTRIBUTING.md).
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for build, test, and pull-request guidelines.
 
 ## License
 
-[MIT License](LICENSE). Commercial use / modification / redistribution / sublicensing are permitted ([ADR-0006](docs/adr/0006-mit-license.md)).
+[MIT License](LICENSE).

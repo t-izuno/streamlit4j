@@ -76,11 +76,14 @@ E2E は Playwright を使用（`npm run e2e`、未統合タスクは TASK-127）
 
 ### ドキュメントサイト
 
+ドキュメントのコンテンツは `docs/` 配下、VitePress サイト基盤は `site/`
+配下に分離されている。サイトを起動するには `site/` で操作する。
+
 ```sh
-cd docs
+cd site
 npm install
 npm run docs:dev        # ローカルプレビュー http://localhost:5173
-npm run docs:build      # docs/.vitepress/dist へ静的出力
+npm run docs:build      # site/.vitepress/dist へ静的出力
 ```
 
 ## コーディング規約

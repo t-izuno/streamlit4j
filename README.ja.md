@@ -129,24 +129,25 @@ streamlit4j:
 
 採用時に把握しておくべき主な制限。
 
-- **Java 21 LTS 以上が必須**。仮想スレッド前提のため JDK 17 以下では動作しない（[ADR-0010 議論](docs/adr/) 参照）
+- **Java 21 LTS 以上が必須**。仮想スレッド前提のため JDK 17 以下では動作しない
 - **プロトコルは JSON 固定**。MessagePack 等は未対応（v1.x 以降の検討事項）
 - **チャートは v1 ではプレースホルダー描画**。実描画ライブラリー対応は backlog
 - **`dataEditor` の双方向同期は未実装**（編集値はサーバーに反映されない）
-- **マルチページは明示登録のみ**。`pages/` ディレクトリー規約はサポートしない（[ADR-0005](docs/adr/0005-explicit-page-registration.md)）
-- **カスタムコンポーネントは in-process 方式のみ**。iframe 隔離は採用しない（[ADR-0007](docs/adr/0007-no-iframe-components.md)）
-- **GraalVM ネイティブ対応は v1.x 以降**（[ADR-0004](docs/adr/0004-graalvm-deferred.md)）
+- **マルチページは明示登録のみ**。`pages/` ディレクトリー規約はサポートしない
+- **カスタムコンポーネントは in-process 方式のみ**。iframe 隔離は採用しない
+- **GraalVM ネイティブ対応は v1.x 以降**
 
-詳細は [`docs/adr/`](docs/adr/index.md) のアーキテクチャー判断記録を参照。
+## ドキュメント
 
-## 次の一歩
+- [Getting Started](docs/guide/getting-started.md) — JBang / ライブラリー / Spring Boot での評価手順
+- [Reference](docs/reference/overview.md) — `St.*` 全要素の Java シグネチャー / プロトコル / フロント描画
+- [Custom Components Guide](docs/guide/custom-components.md) — 独自 React レンダラーの追加
+- [Spring Boot Integration](docs/guide/spring-boot.md) — auto-config と Security / Session 連携
 
-- **動かしてみたい**: [Getting Started](docs/guide/getting-started.md) — JBang / ライブラリー / Spring Boot の評価手順
-- **API を網羅したい**: [Reference](docs/reference/overview.md) — `St.*` 全要素の Java 側シグネチャー / プロトコル / フロント描画
-- **カスタムコンポーネントを書きたい**: [Custom Components Guide](docs/guide/custom-components.md)
-- **設計を知りたい**: [Design](docs/design.md) / [ADRs](docs/adr/index.md)
-- **開発に貢献したい**: [CONTRIBUTING.md](CONTRIBUTING.md)
+## Contributing
+
+ビルド / テスト / プルリクエストの手順は [CONTRIBUTING.md](CONTRIBUTING.md) を参照。
 
 ## ライセンス
 
-[MIT License](LICENSE)。商用利用 / 改変 / 再配布 / サブライセンス可（[ADR-0006](docs/adr/0006-mit-license.md)）。
+[MIT License](LICENSE)。
