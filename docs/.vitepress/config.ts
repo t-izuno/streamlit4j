@@ -11,8 +11,16 @@ export default defineConfig({
   // サイトへ含めると常に変動するため除外する
   srcExclude: ["tasks/**", "**/README.md"],
   ignoreDeadLinks: [/^https?:\/\/localhost(:\d+)?/, /^https?:\/\/127\.0\.0\.1/],
+  head: [
+    ["link", { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
+  ],
   themeConfig: {
     siteTitle: "streamlit4j",
+    logo: {
+      light: "/streamlit4j-logo.svg",
+      dark: "/streamlit4j-logo-dark.svg",
+      alt: "streamlit4j",
+    },
     nav: [
       { text: "Guide", link: "/guide/getting-started" },
       { text: "Reference", link: "/reference/overview" },

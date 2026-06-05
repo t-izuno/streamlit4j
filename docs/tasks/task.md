@@ -136,7 +136,7 @@
 | TASK-111 | 🚫 | NOTICE と third-party ライセンス一覧を整備する | TASK-110 |
 | TASK-112 | ✅ | 独立 OSS 旨の disclaimer を README 冒頭に明記する | - |
 | TASK-113 | ✅ | 独立 OSS 旨の disclaimer を公式ドキュメント冒頭に明記する | TASK-115 |
-| TASK-114 | ⏳ | 独自ロゴと独自カラーパレットを策定しテーマに反映する | TASK-077 |
+| TASK-114 | ✅ | 独自ロゴと独自カラーパレットを策定しテーマに反映する | TASK-077 |
 | TASK-115 | ✅ | 公式ドキュメントサイトの基盤を構築する | - |
 | TASK-116 | ✅ | Getting Started チュートリアルを執筆する | TASK-115 |
 | TASK-117 | ⏳ | 機能リファレンスをドキュメントに整備する | TASK-115,TASK-089 |
@@ -536,8 +536,20 @@
 
 ### TASK-114
 
-- 補足: Streamlit のロゴ/カラー/公式マークを流用しない
-- 注意: 商用利用可能なライセンスで配布できるアセットとする
+- 補足: ブランドカラーは teal 主軸（light `#0d9488` / dark `#2dd4bf`）。
+  Streamlit 赤系（`#FF4B4B`）と明確に区別。サポート色は slate（fg / muted /
+  border）。`design.md` §11-1 にトークン定義表を追記
+- 補足: ロゴは「並列データストリーム」を抽象化したシンボルマーク。
+  Streamlit の swirl 模様は流用せず、上下に細い短バー / 中央に太い長バーの
+  3 本構成 SVG を採用。light / dark 版と favicon の 3 ファイルを
+  `docs/public/` と `frontend/public/` に配置
+- 補足: 反映先 3 箇所:
+  - `frontend/src/styles.css`: CSS 変数を teal パレットに刷新
+  - `frontend/index.html`: `link rel="icon"` で favicon を読み込み
+  - `docs/.vitepress/config.ts`: `logo` / `head` favicon を設定、
+    `docs/.vitepress/theme/{index.ts,brand.css}` で `--vp-c-brand-*` を上書き
+- 注意: ロゴ SVG は本リポジトリの MIT ライセンス下で配布（商用利用可）。
+  ロゴアセットを更新するときは 4 ファイル（2 ディレクトリー）すべて同期させる
 
 ## Backlog一覧
 

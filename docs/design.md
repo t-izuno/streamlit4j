@@ -218,3 +218,30 @@ ADR で扱うほどではないが API シグネチャーとして固定する�
 
 - **終端 API**: `St.title("...")` の静的メソッドを呼んだ時点で `RenderContext` へ即時 emit する。ビルダー方式（`.show()` / `.render()` / `.use()`）は採用しない。Streamlit Python の DX を踏襲し、中間オブジェクト生成を避ける
 - **キャッシュ指定**: `St.cacheData(key, ttl, Supplier<T>)` / `St.cacheResource(key, Supplier<T>)` のラッパー関数で提供する。アノテーション（`@StCache` 等）は採用しない。AOP / バイトコード変換に依存せず、`core` モジュールを IoC コンテナーから独立させる目的（[ADR-0004](./adr/0004-graalvm-deferred.md) の GraalVM 整合性とも親和）
+
+## 11. 視覚アイデンティティー
+
+### 11-1. カラーパレット
+
+ブランド主軸は teal を採用し、Streamlit の赤系（`#FF4B4B`）とは明確に区別する。データ表示と相性が良く、ダーク背景でも視認性を維持できる色相を選定。
+
+| Token | Light | Dark | 用途 |
+| --- | --- | --- | --- |
+| `--color-bg` | `#ffffff` | `#0f1a1f` | 背景 |
+| `--color-fg` | `#0f172a` | `#f1f5f9` | 本文 |
+| `--color-accent` | `#0d9488` | `#2dd4bf` | プライマリーアクション・リンク・ロゴ |
+| `--color-accent-strong` | `#0f766e` | `#5eead4` | ホバー / 強調 |
+| `--color-muted` | `#64748b` | `#94a3b8` | キャプション・サブテキスト |
+| `--color-border` | `#e2e8f0` | `#1e293b` | 境界線 |
+
+定義は `frontend/src/styles.css` と `docs/.vitepress/theme/brand.css` の 2 箇所で同色相を共有する。
+
+### 11-2. ロゴ
+
+ロゴは Streamlit の swirl 模様を流用せず、横方向に並ぶ 3 本のバーで「並列データストリーム」を抽象化したシンボルマークを採用する。
+
+- 正方形ベース（64x64 viewBox）の角丸（rx=12）背景
+- 上下に細い短バー、中央に太い長バー（中央寄せ）を白で描画
+- ライト用は teal `#0d9488` 背景、ダーク用は `#2dd4bf` 背景に `#0f1a1f` のバー
+
+ファイル: `docs/public/streamlit4j-logo.svg`、`docs/public/streamlit4j-logo-dark.svg`、`docs/public/favicon.svg`、`frontend/public/` にも同ファイルを配置。SVG は本リポジトリの MIT ライセンス下で配布する（商用利用可）。
