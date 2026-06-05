@@ -38,6 +38,7 @@ export default defineConfig({
             { text: "Getting Started", link: "/guide/getting-started" },
             { text: "Installation", link: "/guide/installation" },
             { text: "Spring Boot Integration", link: "/guide/spring-boot" },
+            { text: "Custom Components", link: "/guide/custom-components" },
           ],
         },
       ],

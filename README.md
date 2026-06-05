@@ -1,7 +1,8 @@
 # streamlit4j
 
-An idiomatic, open-source Java framework for building interactive data apps and dashboards on the JVM
-— inspired by Streamlit, built for Java.
+> 日本語: [README.ja.md](./README.ja.md)
+
+An interactive data-app and dashboard framework for Java. streamlit4j brings the same "script re-run + automatic re-render" model that Streamlit Python is known for to the JVM.
 
 > **Independent community open-source software.** streamlit4j is not affiliated with,
 > endorsed by, or sponsored by Snowflake, Inc. or the Streamlit project. The name
@@ -9,64 +10,143 @@ An idiomatic, open-source Java framework for building interactive data apps and 
 > this project's design lineage; "Streamlit" is a trademark of its respective owner
 > and no trademark claim is asserted by this project.
 
-## Requirements
+## What it does
 
-- JDK 21 LTS（24 以下も可。JDK 25 は formatter 内部 API 非互換のため未サポート）
-- Maven 3.9+
-- Node.js 22+（frontend のビルド/テスト時のみ）
+Compose static calls on `St.*` and a WebSocket + React UI is produced for you.
 
-## Modules
+```java
+import io.streamlit4j.core.api.St;
 
-| Module | Description |
+public final class SalesDashboard {
+  public static void run() {
+    St.title("Sales dashboard");
+    int year = St.slider("Year", 2020, 2030, 2026);
+    St.metric("Selected", year);
+    St.lineChart(loadSales(year));
+  }
+}
+```
+
+Categories provided (full list: [Reference overview](docs/reference/overview.md)):
+
+| Category | Main elements |
 | --- | --- |
-| `core` | Web フレームワーク非依存の実行エンジン |
-| `server` | 組み込み HTTP/WS サーバー |
-| `frontend-assets` | 事前ビルド済みフロントを jar 同梱 |
-| `cli` | スタンドアロン CLI (JBang 対応) |
-| `spring-boot-starter` | Spring Boot 統合 |
-| `examples` | サンプルアプリ |
-| `frontend/` (非 Maven) | React + Vite + TS フロントエンドソース |
+| Text | title / header / markdown / write / code / latex / html / divider |
+| Status | metric / toast / progress / spinner / status |
+| Tables & charts | dataframe / table / data_editor / line / bar / area / scatter |
+| Inputs | slider / textInput / selectbox / button / date / time / colorPicker and 14 more |
+| Files | fileUploader / downloadButton (bytes) / downloadCsv / downloadJson |
+| Layout | columns / container / expander / tabs / sidebar / empty |
+| Other | form / cache / pages / custom components / rerun / state |
 
-## Install via JBang
+## How to adopt (three options)
+
+Pick the form that fits your scenario.
+
+| Form | Use case | Entry point |
+| --- | --- | --- |
+| **A. JBang one-liner** | Run it on your machine quickly | `jbang app install streamlit4j@t-izuno/streamlit4j` |
+| **B. Library (core + server)** | Embed in an existing Java project / launch from your own `main` | Add `streamlit4j-core` + `streamlit4j-server` as dependencies |
+| **C. Spring Boot Starter** | Mount as one feature of a Spring Boot app | Add `streamlit4j-spring-boot-starter` as a dependency |
+
+### A. JBang one-liner (for evaluation)
 
 ```sh
 jbang app install streamlit4j@t-izuno/streamlit4j
-streamlit4j 8501
+streamlit4j 8501          # → http://localhost:8501
 ```
 
-カタログ定義は `jbang-catalog.json`。
+Runs the minimal demo in `examples/Hello.java`.
 
-## Build
+### B. Library (for your own script)
 
-```sh
-# Java 全モジュール: lint + format + test + coverage
-mvn verify
+`pom.xml`:
 
-# 公開ビルド: javadoc jar を同時生成（Maven Central パブリッシュ前提）
-mvn -P release -DskipTests package
-
-# フロントエンド
-cd frontend
-npm ci
-npm run lint
-npm run format:check
-npm test
-npm run build
-
-# ドキュメントサイト (VitePress)
-cd docs
-npm install
-npm run docs:dev    # ローカルプレビュー (http://localhost:5173)
-npm run docs:build  # 静的サイトを docs/.vitepress/dist へ出力
+```xml
+<dependency>
+  <groupId>io.streamlit4j</groupId>
+  <artifactId>streamlit4j-core</artifactId>
+  <version>0.1.0</version>
+</dependency>
+<dependency>
+  <groupId>io.streamlit4j</groupId>
+  <artifactId>streamlit4j-server</artifactId>
+  <version>0.1.0</version>
+</dependency>
 ```
 
-## Documentation
+`main`:
 
-- 要件: [`docs/requirements.md`](docs/requirements.md)
-- 仕様: [`docs/specification.md`](docs/specification.md)
-- 設計: [`docs/design.md`](docs/design.md)
-- 実行計画: [`docs/tasks/task.md`](docs/tasks/task.md)
+```java
+import io.streamlit4j.core.api.St;
+import io.streamlit4j.server.Streamlit4jServer;
+
+public final class App {
+  public static void main(String[] args) throws Exception {
+    try (var server = new Streamlit4jServer(8501, () -> App::render)) {
+      server.start();
+      Thread.currentThread().join();
+    }
+  }
+  static void render() {
+    St.title("Hello");
+    St.write("Hello, " + St.textInput("Name", "world"));
+  }
+}
+```
+
+### C. Spring Boot Starter (mount inside an existing web app)
+
+```xml
+<dependency>
+  <groupId>io.streamlit4j</groupId>
+  <artifactId>streamlit4j-spring-boot-starter</artifactId>
+  <version>0.1.0</version>
+</dependency>
+```
+
+`application.yml`:
+
+```yaml
+streamlit4j:
+  base-path: /streamlit       # default /streamlit
+```
+
+Declare one `@Bean EntrypointSource` and your script is mounted with full Spring Security / Spring Session integration. See [Spring Boot Integration](docs/guide/spring-boot.md) for details.
+
+## Modules
+
+| Maven coordinate | Role |
+| --- | --- |
+| `io.streamlit4j:streamlit4j-core` | Framework-agnostic execution engine |
+| `io.streamlit4j:streamlit4j-server` | Embedded Jetty + WebSocket |
+| `io.streamlit4j:streamlit4j-frontend-assets` | Pre-built frontend bundled in classpath |
+| `io.streamlit4j:streamlit4j-cli` | CLI distributed via JBang |
+| `io.streamlit4j:streamlit4j-spring-boot-starter` | Spring Boot auto-configuration |
+| `io.streamlit4j:streamlit4j-examples` | Sample apps (Hello / Widgets / Data / Layout / Component) |
+
+## Constraints
+
+Things you should know before adopting.
+
+- **Java 21 LTS or newer is required.** Virtual threads are mandatory; JDK 17 and below are not supported (see [ADRs](docs/adr/)).
+- **Protocol is fixed to JSON.** MessagePack and similar are not supported (a v1.x consideration).
+- **Charts render placeholders in v1.** A real charting library is on the backlog.
+- **`dataEditor` is one-way.** Edited values are not propagated back to the server yet.
+- **Multi-page is explicit registration only.** No `pages/` directory convention ([ADR-0005](docs/adr/0005-explicit-page-registration.md)).
+- **Custom components are in-process only.** Iframe isolation is not adopted ([ADR-0007](docs/adr/0007-no-iframe-components.md)).
+- **GraalVM native is deferred to v1.x** ([ADR-0004](docs/adr/0004-graalvm-deferred.md)).
+
+See [`docs/adr/`](docs/adr/index.md) for the full set of architecture decisions.
+
+## Next steps
+
+- **Want to try it out**: [Getting Started](docs/guide/getting-started.md) — evaluation paths for JBang / library / Spring Boot.
+- **Want the full API**: [Reference](docs/reference/overview.md) — Java signature, protocol, and frontend rendering for every `St.*` element.
+- **Want to build custom components**: [Custom Components Guide](docs/guide/custom-components.md).
+- **Want to understand the internals**: [Design](docs/design.md) / [ADRs](docs/adr/index.md).
+- **Want to contribute**: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
-streamlit4j is released under the [MIT License](LICENSE).
+[MIT License](LICENSE). Commercial use / modification / redistribution / sublicensing are permitted ([ADR-0006](docs/adr/0006-mit-license.md)).

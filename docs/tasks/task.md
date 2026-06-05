@@ -143,7 +143,7 @@
 | TASK-118 | ✅ | Javadoc 公開ビルドを整備する | TASK-001 |
 | TASK-119 | ✅ | examples モジュールに代表サンプル群を整備する | TASK-060,TASK-107 |
 | TASK-120 | ✅ | Spring Boot 統合手順をドキュメント化する | TASK-107,TASK-115 |
-| TASK-121 | ⏳ | カスタムコンポーネント作成ガイドを執筆する | TASK-100,TASK-115 |
+| TASK-121 | ✅ | カスタムコンポーネント作成ガイドを執筆する | TASK-100,TASK-115 |
 | TASK-122 | ✅ | Maven Central パブリッシュ用 POM とメタデータを整備する | TASK-110 |
 | TASK-123 | ✅ | GPG 署名と Sonatype アカウント設定を整備する | TASK-122 |
 | TASK-124 | ✅ | Maven 利用者向け導入手順を整備する | TASK-122 |
@@ -569,6 +569,20 @@
 - 補足: `overview.md` から ADR / specification への横断リンクを整備
 - 注意: chart 系は v1 ではプレースホルダー描画。実描画ライブラリー対応は backlog
 - 注意: `dataEditor` の編集 → サーバー反映は v1 未実装。ノード描画のみ
+
+### TASK-121
+
+- 補足: `docs/guide/custom-components.md` を新設。in-process 方式の手順を
+  Java（CustomComponent 宣言 → registerComponent → St.component）/
+  React（CustomComponentRenderProps を受けるレンダラー → component-builtins
+  への登録）の 2 系統で示し、star-rating を実装例として全文掲載
+- 補足: 戻り値型変換テーブル（`ComponentCodec.coerce` の 4 段階）と
+  チェックリストを併記
+- 補足: `docs/.vitepress/config.ts` の `/guide/` サイドバーに Custom Components
+  リンクを追加
+- 補足: 同タイミングで `getting-started.md` の `mvnw 未提供` 記述を解消し、
+  `St` import パスを `io.streamlit4j.core.api.St` に更新（A の sub-package
+  移動の追従）
 
 ## Backlog一覧
 

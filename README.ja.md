@@ -1,0 +1,152 @@
+# streamlit4j
+
+> English: [README.md](./README.md)
+
+Java 向けの対話型データアプリ / ダッシュボードフレームワーク。Streamlit Python と同じ「スクリプト再実行 + 自動再描画」モデルを JVM 上で実現する。
+
+> **Independent community open-source software.** streamlit4j is not affiliated with,
+> endorsed by, or sponsored by Snowflake, Inc. or the Streamlit project. The name
+> "Streamlit" appears within "streamlit4j" solely as nominative fair use to describe
+> this project's design lineage; "Streamlit" is a trademark of its respective owner
+> and no trademark claim is asserted by this project.
+
+## 何ができるか
+
+`St.*` の静的メソッド呼び出しを並べるだけで、WebSocket + React 製の UI が自動生成される。
+
+```java
+import io.streamlit4j.core.api.St;
+
+public final class SalesDashboard {
+  public static void run() {
+    St.title("Sales dashboard");
+    int year = St.slider("Year", 2020, 2030, 2026);
+    St.metric("Selected", year);
+    St.lineChart(loadSales(year));
+  }
+}
+```
+
+提供されるカテゴリーは次のとおり（[reference 一覧](docs/reference/overview.md)）。
+
+| カテゴリー | 主な要素 |
+| --- | --- |
+| テキスト | title / header / markdown / write / code / latex / html / divider |
+| ステータス | metric / toast / progress / spinner / status |
+| 表 / グラフ | dataframe / table / data_editor / line / bar / area / scatter |
+| 入力 | slider / textInput / selectbox / button / date / time / colorPicker など 14 種 |
+| ファイル | fileUploader / downloadButton（バイト列対応） / downloadCsv / downloadJson |
+| レイアウト | columns / container / expander / tabs / sidebar / empty |
+| その他 | form / cache / pages / カスタムコンポーネント / rerun / state |
+
+## 導入方法（3 つの選択肢）
+
+利用シナリオに応じて 3 つの形態から選べる。
+
+| 形態 | 用途 | 起点 |
+| --- | --- | --- |
+| **A. JBang ワンライナー** | 手元で素早く動かす | `jbang app install streamlit4j@t-izuno/streamlit4j` |
+| **B. ライブラリー（core + server）** | 既存 Java プロジェクトに組み込む / 独自 `main` で起動 | `streamlit4j-core` + `streamlit4j-server` を依存に追加 |
+| **C. Spring Boot Starter** | Spring Boot アプリの一機能としてマウント | `streamlit4j-spring-boot-starter` を依存に追加 |
+
+### A. JBang ワンライナー（評価向け）
+
+```sh
+jbang app install streamlit4j@t-izuno/streamlit4j
+streamlit4j 8501          # → http://localhost:8501
+```
+
+`examples/Hello.java` の最小デモが起動する。
+
+### B. ライブラリー導入（独自スクリプト用）
+
+`pom.xml`:
+
+```xml
+<dependency>
+  <groupId>io.streamlit4j</groupId>
+  <artifactId>streamlit4j-core</artifactId>
+  <version>0.1.0</version>
+</dependency>
+<dependency>
+  <groupId>io.streamlit4j</groupId>
+  <artifactId>streamlit4j-server</artifactId>
+  <version>0.1.0</version>
+</dependency>
+```
+
+`main`:
+
+```java
+import io.streamlit4j.core.api.St;
+import io.streamlit4j.server.Streamlit4jServer;
+
+public final class App {
+  public static void main(String[] args) throws Exception {
+    try (var server = new Streamlit4jServer(8501, () -> App::render)) {
+      server.start();
+      Thread.currentThread().join();
+    }
+  }
+  static void render() {
+    St.title("Hello");
+    St.write("Hello, " + St.textInput("Name", "world"));
+  }
+}
+```
+
+### C. Spring Boot Starter（既存 Web アプリへの組み込み）
+
+```xml
+<dependency>
+  <groupId>io.streamlit4j</groupId>
+  <artifactId>streamlit4j-spring-boot-starter</artifactId>
+  <version>0.1.0</version>
+</dependency>
+```
+
+`application.yml`:
+
+```yaml
+streamlit4j:
+  base-path: /streamlit       # 既定 /streamlit
+```
+
+`@Bean EntrypointSource` を 1 つ宣言するだけで、Spring Security / Spring Session と連携した状態でマウントされる。詳細は [Spring Boot Integration](docs/guide/spring-boot.md)。
+
+## モジュール一覧
+
+| Maven 座標 | 役割 |
+| --- | --- |
+| `io.streamlit4j:streamlit4j-core` | フレームワーク非依存の実行エンジン |
+| `io.streamlit4j:streamlit4j-server` | 組み込み Jetty + WebSocket |
+| `io.streamlit4j:streamlit4j-frontend-assets` | 事前ビルド済みフロントを classpath に同梱 |
+| `io.streamlit4j:streamlit4j-cli` | JBang 配布される CLI |
+| `io.streamlit4j:streamlit4j-spring-boot-starter` | Spring Boot 自動構成 |
+| `io.streamlit4j:streamlit4j-examples` | サンプルアプリ群（Hello / Widgets / Data / Layout / Component） |
+
+## 制約事項
+
+採用時に把握しておくべき主な制限。
+
+- **Java 21 LTS 以上が必須**。仮想スレッド前提のため JDK 17 以下では動作しない（[ADR-0010 議論](docs/adr/) 参照）
+- **プロトコルは JSON 固定**。MessagePack 等は未対応（v1.x 以降の検討事項）
+- **チャートは v1 ではプレースホルダー描画**。実描画ライブラリー対応は backlog
+- **`dataEditor` の双方向同期は未実装**（編集値はサーバーに反映されない）
+- **マルチページは明示登録のみ**。`pages/` ディレクトリー規約はサポートしない（[ADR-0005](docs/adr/0005-explicit-page-registration.md)）
+- **カスタムコンポーネントは in-process 方式のみ**。iframe 隔離は採用しない（[ADR-0007](docs/adr/0007-no-iframe-components.md)）
+- **GraalVM ネイティブ対応は v1.x 以降**（[ADR-0004](docs/adr/0004-graalvm-deferred.md)）
+
+詳細は [`docs/adr/`](docs/adr/index.md) のアーキテクチャー判断記録を参照。
+
+## 次の一歩
+
+- **動かしてみたい**: [Getting Started](docs/guide/getting-started.md) — JBang / ライブラリー / Spring Boot の評価手順
+- **API を網羅したい**: [Reference](docs/reference/overview.md) — `St.*` 全要素の Java 側シグネチャー / プロトコル / フロント描画
+- **カスタムコンポーネントを書きたい**: [Custom Components Guide](docs/guide/custom-components.md)
+- **設計を知りたい**: [Design](docs/design.md) / [ADRs](docs/adr/index.md)
+- **開発に貢献したい**: [CONTRIBUTING.md](CONTRIBUTING.md)
+
+## ライセンス
+
+[MIT License](LICENSE)。商用利用 / 改変 / 再配布 / サブライセンス可（[ADR-0006](docs/adr/0006-mit-license.md)）。

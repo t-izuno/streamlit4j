@@ -27,6 +27,8 @@ jobs:
           cache: maven
       - name: Verify
         run: mvn -B -ntp verify
+      - name: Javadoc strict check
+        run: mvn -B -ntp javadoc:javadoc
       - name: Upload JaCoCo aggregate
         if: always()
         uses: actions/upload-artifact@v4
