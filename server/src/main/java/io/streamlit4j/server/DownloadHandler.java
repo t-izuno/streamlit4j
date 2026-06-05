@@ -9,12 +9,21 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.Response;
 import org.eclipse.jetty.util.Callback;
 
+/**
+ * Jetty handler that serves bytes registered in a {@link DownloadStore} under
+ * the {@code /download/<key>} URL prefix.
+ */
 public final class DownloadHandler extends Handler.Abstract {
 
     private static final String PREFIX = "/download/";
 
     private final DownloadStore store;
 
+    /**
+     * Creates a handler backed by the given store.
+     *
+     * @param store download store to serve assets from
+     */
     public DownloadHandler(DownloadStore store) {
         this.store = store;
     }

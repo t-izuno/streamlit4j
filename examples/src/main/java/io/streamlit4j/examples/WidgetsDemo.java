@@ -21,6 +21,7 @@ public final class WidgetsDemo {
 
     private WidgetsDemo() {}
 
+    /** Renders the demo. Invoked once per session by the runtime. */
     public static void run() {
         St.title("Widgets gallery");
         St.markdown("A quick tour of the input widgets available in **streamlit4j**.");

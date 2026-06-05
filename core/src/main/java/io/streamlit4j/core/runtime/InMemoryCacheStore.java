@@ -8,9 +8,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
 
+/**
+ * In-memory {@link CacheStore} with TTL-based expiration. Suitable for
+ * single-process deployments; expired entries are removed lazily on access.
+ */
 public final class InMemoryCacheStore implements CacheStore {
 
     private final ConcurrentMap<String, Entry> entries = new ConcurrentHashMap<>();
+
+    /** Creates an empty cache. */
+    public InMemoryCacheStore() {}
 
     @Override
     @SuppressWarnings("unchecked")
@@ -44,6 +51,11 @@ public final class InMemoryCacheStore implements CacheStore {
         entries.clear();
     }
 
+    /**
+     * Returns the current entry count (including any not-yet-evicted expired entries).
+     *
+     * @return total entry count
+     */
     public int size() {
         return entries.size();
     }

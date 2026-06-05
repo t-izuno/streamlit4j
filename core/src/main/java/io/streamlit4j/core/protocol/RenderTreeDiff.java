@@ -3,10 +3,20 @@ package io.streamlit4j.core.protocol;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Computes the minimal {@link Patch} list to transform one render tree into another.
+ */
 public final class RenderTreeDiff {
 
     private RenderTreeDiff() {}
 
+    /**
+     * Diffs two render trees and returns the patch list to apply on the client.
+     *
+     * @param oldRoot previous render root (may be {@code null} for the first frame)
+     * @param newRoot new render root
+     * @return ordered patch list
+     */
     public static List<Patch> diff(RenderNode oldRoot, RenderNode newRoot) {
         if (oldRoot == null) {
             return List.of(Patch.replace("/", newRoot));

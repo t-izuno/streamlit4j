@@ -7,12 +7,17 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * Default {@link Renderer} that executes each render on a fresh virtual thread.
+ * Holds the executor lifecycle; call {@link #close()} during shutdown.
+ */
 public final class ScriptRunner implements Renderer, AutoCloseable {
 
     private static final int MAX_RERUNS_PER_REQUEST = 5;
 
     private final ExecutorService executor;
 
+    /** Creates a runner backed by a virtual-thread-per-task executor. */
     public ScriptRunner() {
         this.executor = Executors.newVirtualThreadPerTaskExecutor();
     }

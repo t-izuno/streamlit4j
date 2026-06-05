@@ -28,6 +28,7 @@ public final class ComponentDemo {
 
     private ComponentDemo() {}
 
+    /** Renders the demo. Invoked once per session by the runtime. */
     public static void run() {
         St.title("Custom components");
         St.markdown("An in-process React renderer registered on both the Java and TypeScript sides.");

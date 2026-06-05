@@ -21,6 +21,9 @@ public final class ComponentCodec {
     /**
      * Encodes a component argument value to its JSON tree representation. Supports
      * primitives, {@code Map}/{@code List}, records, and any Jackson-bindable POJO.
+     *
+     * @param value the Java-side argument to encode
+     * @return the JSON tree representation
      */
     public static JsonNode encodeArg(Object value) {
         return Codec.mapper().valueToTree(value);
@@ -29,6 +32,11 @@ public final class ComponentCodec {
     /**
      * Decodes a JSON tree node into the declared result type. Returns {@code null}
      * when the node is missing or JSON-null.
+     *
+     * @param <R> declared result type
+     * @param node JSON node from the wire
+     * @param resultType target Java type
+     * @return the decoded value, or {@code null} for missing / JSON-null input
      */
     public static <R> R decodeReturn(JsonNode node, Class<R> resultType) {
         if (node == null || node.isNull()) {
@@ -45,6 +53,12 @@ public final class ComponentCodec {
      * Coerces a raw stored value (Java instance, {@link JsonNode}, or any
      * Jackson-convertible object) into the declared result type. Returns the
      * supplied fallback when the value is null or cannot be converted.
+     *
+     * @param <R> declared result type
+     * @param raw raw value from session state (instance, JsonNode, Map, etc.)
+     * @param resultType target Java type
+     * @param fallback value returned when {@code raw} is null or coercion fails
+     * @return the coerced value, or {@code fallback}
      */
     public static <R> R coerce(Object raw, Class<R> resultType, R fallback) {
         if (raw == null) {

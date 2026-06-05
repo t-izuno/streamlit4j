@@ -15,6 +15,12 @@ public class Streamlit4jHttpSessionListener implements HttpSessionListener {
     private final Streamlit4jHttpSessionRegistry registry;
     private final Streamlit4jApplication application;
 
+    /**
+     * Wires the listener with its dependencies.
+     *
+     * @param registry HTTP ↔ streamlit4j session registry
+     * @param application streamlit4j application whose sessions will be terminated
+     */
     public Streamlit4jHttpSessionListener(Streamlit4jHttpSessionRegistry registry, Streamlit4jApplication application) {
         this.registry = registry;
         this.application = application;

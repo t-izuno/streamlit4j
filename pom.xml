@@ -245,8 +245,9 @@
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>${maven-javadoc-plugin.version}</version>
           <configuration>
-            <doclint>none</doclint>
-            <failOnError>false</failOnError>
+            <doclint>all</doclint>
+            <failOnError>true</failOnError>
+            <failOnWarnings>true</failOnWarnings>
             <quiet>true</quiet>
             <source>${maven.compiler.release}</source>
             <encoding>UTF-8</encoding>

@@ -23,6 +23,9 @@ public class Streamlit4jPrincipalHandshakeInterceptor implements HandshakeInterc
 
     static final String AUTHENTICATION_ATTRIBUTE = "streamlit4j.authentication";
 
+    /** Creates the interceptor. */
+    public Streamlit4jPrincipalHandshakeInterceptor() {}
+
     @Override
     public boolean beforeHandshake(
             ServerHttpRequest request,
@@ -42,6 +45,12 @@ public class Streamlit4jPrincipalHandshakeInterceptor implements HandshakeInterc
         // no-op
     }
 
+    /**
+     * Retrieves the {@link Authentication} captured at handshake time, if any.
+     *
+     * @param session Spring WebSocket session
+     * @return the captured {@link Authentication}, or {@code null} when the request was anonymous
+     */
     public static Authentication currentAuthentication(WebSocketSession session) {
         Object value = session.getAttributes().get(AUTHENTICATION_ATTRIBUTE);
         return value instanceof Authentication auth ? auth : null;

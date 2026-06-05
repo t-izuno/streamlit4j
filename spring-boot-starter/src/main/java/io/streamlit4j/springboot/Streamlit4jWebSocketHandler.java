@@ -28,16 +28,28 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
  */
 public class Streamlit4jWebSocketHandler extends TextWebSocketHandler {
 
+    /** Attribute key used to store the streamlit4j session id on the WebSocket session. */
     public static final String SESSION_ID_ATTRIBUTE = "streamlit4j.sessionId";
 
     private final Streamlit4jApplication application;
     private final Streamlit4jConnectionListener connectionListener;
     private final ConcurrentMap<String, WebSocketSession> activeSessions = new ConcurrentHashMap<>();
 
+    /**
+     * Creates a handler with a no-op connection listener.
+     *
+     * @param application streamlit4j application
+     */
     public Streamlit4jWebSocketHandler(Streamlit4jApplication application) {
         this(application, Streamlit4jConnectionListener.NO_OP);
     }
 
+    /**
+     * Creates a handler with a custom connection listener.
+     *
+     * @param application streamlit4j application
+     * @param listener connection lifecycle hook
+     */
     public Streamlit4jWebSocketHandler(Streamlit4jApplication application, Streamlit4jConnectionListener listener) {
         this.application = application;
         this.connectionListener = listener;
@@ -87,6 +99,11 @@ public class Streamlit4jWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
+    /**
+     * Returns the count of currently active WebSocket sessions.
+     *
+     * @return active connection count
+     */
     public int activeConnections() {
         return activeSessions.size();
     }
@@ -125,5 +142,12 @@ public class Streamlit4jWebSocketHandler extends TextWebSocketHandler {
         return sw.toString();
     }
 
+    /**
+     * Decoded file-upload payload delivered to the script as a widget value.
+     *
+     * @param filename original filename reported by the client
+     * @param mimeType MIME type
+     * @param bytes raw decoded bytes
+     */
     public record UploadedFile(String filename, String mimeType, byte[] bytes) {}
 }

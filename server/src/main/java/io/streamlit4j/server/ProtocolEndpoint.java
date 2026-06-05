@@ -19,6 +19,10 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketOpen;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
+/**
+ * Jetty WebSocket endpoint that bridges client envelopes to the core
+ * {@link StartSession} / {@link ProcessWidgetEvent} use cases.
+ */
 @WebSocket
 public final class ProtocolEndpoint {
 
@@ -28,6 +32,13 @@ public final class ProtocolEndpoint {
     private String sessionId;
     private org.eclipse.jetty.websocket.api.Session wsSession;
 
+    /**
+     * Wires the endpoint with its application dependencies.
+     *
+     * @param startSession start-session use case
+     * @param processWidgetEvent widget-event use case
+     * @param connections shared connection registry
+     */
     public ProtocolEndpoint(
             StartSession startSession, ProcessWidgetEvent processWidgetEvent, ConnectionRegistry connections) {
         this.startSession = startSession;
@@ -35,6 +46,11 @@ public final class ProtocolEndpoint {
         this.connections = connections;
     }
 
+    /**
+     * Jetty callback: WebSocket opened. Starts a fresh session and sends the initial render.
+     *
+     * @param ws Jetty session handle
+     */
     @OnWebSocketOpen
     public void onOpen(org.eclipse.jetty.websocket.api.Session ws) {
         this.wsSession = ws;
@@ -48,6 +64,11 @@ public final class ProtocolEndpoint {
         }
     }
 
+    /**
+     * Jetty callback: text frame received.
+     *
+     * @param text JSON-encoded envelope from the client
+     */
     @OnWebSocketMessage
     public void onMessage(String text) {
         try {
@@ -67,6 +88,12 @@ public final class ProtocolEndpoint {
         }
     }
 
+    /**
+     * Jetty callback: WebSocket closed. Removes this endpoint from the registry.
+     *
+     * @param statusCode close status code
+     * @param reason close reason
+     */
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
         if (sessionId != null) {
@@ -112,5 +139,12 @@ public final class ProtocolEndpoint {
         return sw.toString();
     }
 
+    /**
+     * Decoded file-upload payload delivered to the script as a widget value.
+     *
+     * @param filename original filename reported by the client
+     * @param mimeType MIME type
+     * @param bytes raw decoded bytes
+     */
     public record UploadedFile(String filename, String mimeType, byte[] bytes) {}
 }

@@ -15,6 +15,7 @@ public final class DataDemo {
 
     private DataDemo() {}
 
+    /** Renders the demo. Invoked once per session by the runtime. */
     public static void run() {
         St.title("Data display");
         St.markdown("Tables, charts, and **cached** lookups in one page.");

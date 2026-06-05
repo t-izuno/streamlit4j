@@ -15,11 +15,26 @@ public class Streamlit4jHttpSessionRegistry {
 
     private final ConcurrentMap<String, Set<String>> bindings = new ConcurrentHashMap<>();
 
+    /** Creates an empty registry. */
+    public Streamlit4jHttpSessionRegistry() {}
+
+    /**
+     * Records a binding between an HTTP session and a streamlit4j session.
+     *
+     * @param httpSessionId HTTP session id
+     * @param streamlit4jSessionId streamlit4j session id
+     */
     public void bind(String httpSessionId, String streamlit4jSessionId) {
         bindings.computeIfAbsent(httpSessionId, key -> ConcurrentHashMap.newKeySet())
                 .add(streamlit4jSessionId);
     }
 
+    /**
+     * Removes a single binding.
+     *
+     * @param httpSessionId HTTP session id
+     * @param streamlit4jSessionId streamlit4j session id
+     */
     public void unbind(String httpSessionId, String streamlit4jSessionId) {
         bindings.computeIfPresent(httpSessionId, (key, set) -> {
             set.remove(streamlit4jSessionId);
@@ -27,11 +42,22 @@ public class Streamlit4jHttpSessionRegistry {
         });
     }
 
+    /**
+     * Atomically removes all bindings for the HTTP session and returns the previously bound streamlit4j ids.
+     *
+     * @param httpSessionId HTTP session id
+     * @return snapshot of removed streamlit4j session ids
+     */
     public Set<String> drain(String httpSessionId) {
         Set<String> removed = bindings.remove(httpSessionId);
         return removed == null ? Set.of() : Set.copyOf(removed);
     }
 
+    /**
+     * Returns the number of HTTP sessions with at least one binding.
+     *
+     * @return active HTTP session count
+     */
     public int activeHttpSessions() {
         return bindings.size();
     }

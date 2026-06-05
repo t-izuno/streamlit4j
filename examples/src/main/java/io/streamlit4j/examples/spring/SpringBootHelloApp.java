@@ -16,10 +16,23 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class SpringBootHelloApp {
 
+    /** Creates the application bean. */
+    public SpringBootHelloApp() {}
+
+    /**
+     * Boots the Spring application.
+     *
+     * @param args command-line arguments
+     */
     public static void main(String[] args) {
         SpringApplication.run(SpringBootHelloApp.class, args);
     }
 
+    /**
+     * Supplies the {@link Hello} demo as the streamlit4j entrypoint.
+     *
+     * @return entrypoint source bean
+     */
     @Bean
     public EntrypointSource streamlit4jEntrypointSource() {
         return () -> Hello::run;

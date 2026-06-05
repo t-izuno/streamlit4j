@@ -18,15 +18,30 @@ public interface ComponentRegistry {
     /**
      * Registers a component under its {@link CustomComponent#name() name}. Re-registering
      * the same name overwrites the previous entry.
+     *
+     * @param component component to register
      */
     void register(CustomComponent<?> component);
 
-    /** Returns the registered component for the given name, if any. */
+    /**
+     * Returns the registered component for the given name, if any.
+     *
+     * @param name component name
+     * @return present optional when a component with the given name is registered
+     */
     Optional<CustomComponent<?>> find(String name);
 
-    /** Returns an unmodifiable snapshot of all registered components. */
+    /**
+     * Returns an unmodifiable snapshot of all registered components.
+     *
+     * @return snapshot collection of registered components
+     */
     Collection<CustomComponent<?>> all();
 
-    /** Returns the count of currently registered components. */
+    /**
+     * Returns the count of currently registered components.
+     *
+     * @return number of registered components
+     */
     int size();
 }

@@ -9,9 +9,16 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+/**
+ * In-memory {@link ComponentRegistry} backed by a {@link ConcurrentMap}.
+ * Suitable for single-process deployments.
+ */
 public final class InMemoryComponentRegistry implements ComponentRegistry {
 
     private final ConcurrentMap<String, CustomComponent<?>> components = new ConcurrentHashMap<>();
+
+    /** Creates an empty registry. */
+    public InMemoryComponentRegistry() {}
 
     @Override
     public void register(CustomComponent<?> component) {

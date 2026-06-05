@@ -6,6 +6,10 @@ import io.streamlit4j.core.port.ComponentRegistry;
 import io.streamlit4j.core.port.DownloadStore;
 import io.streamlit4j.core.port.SessionStore;
 
+/**
+ * Fully-wired application instance produced by {@link Bootstrap}. Holds the
+ * use cases and the shared adapters needed to serve a single process.
+ */
 public final class Streamlit4jApplication implements AutoCloseable {
 
     private final StartSession startSession;
@@ -30,26 +34,56 @@ public final class Streamlit4jApplication implements AutoCloseable {
         this.resourceCloser = resourceCloser;
     }
 
+    /**
+     * Returns the start-session use case.
+     *
+     * @return start-session
+     */
     public StartSession startSession() {
         return startSession;
     }
 
+    /**
+     * Returns the widget-event use case.
+     *
+     * @return process-widget-event
+     */
     public ProcessWidgetEvent processWidgetEvent() {
         return processWidgetEvent;
     }
 
+    /**
+     * Returns the active session store.
+     *
+     * @return session store
+     */
     public SessionStore sessions() {
         return sessions;
     }
 
+    /**
+     * Returns the active download store.
+     *
+     * @return download store
+     */
     public DownloadStore downloads() {
         return downloads;
     }
 
+    /**
+     * Returns the active component registry.
+     *
+     * @return component registry
+     */
     public ComponentRegistry components() {
         return components;
     }
 
+    /**
+     * Returns a point-in-time snapshot of runtime metrics.
+     *
+     * @return metrics snapshot
+     */
     public Metrics metrics() {
         return new Metrics(sessions.activeCount());
     }
@@ -59,5 +93,10 @@ public final class Streamlit4jApplication implements AutoCloseable {
         resourceCloser.close();
     }
 
+    /**
+     * Runtime metrics snapshot.
+     *
+     * @param activeSessions current active session count
+     */
     public record Metrics(int activeSessions) {}
 }

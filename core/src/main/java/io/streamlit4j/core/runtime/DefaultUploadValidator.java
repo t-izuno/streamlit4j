@@ -2,7 +2,13 @@ package io.streamlit4j.core.runtime;
 
 import io.streamlit4j.core.port.UploadValidator;
 
+/**
+ * Default {@link UploadValidator} that checks size and MIME-type constraints.
+ */
 public final class DefaultUploadValidator implements UploadValidator {
+
+    /** Creates the validator. */
+    public DefaultUploadValidator() {}
 
     @Override
     public Result validate(String filename, String mimeType, long sizeBytes, Constraints constraints) {

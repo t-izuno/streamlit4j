@@ -37,6 +37,9 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 @EnableConfigurationProperties(Streamlit4jProperties.class)
 public class Streamlit4jAutoConfiguration {
 
+    /** Creates the auto-configuration. */
+    public Streamlit4jAutoConfiguration() {}
+
     /** Normalizes a configured base path into a leading-slash, no-trailing-slash form ({@code ""} for root). */
     static String normalizeBasePath(String basePath) {
         if (basePath == null || basePath.isBlank() || basePath.equals("/")) {
@@ -46,18 +49,37 @@ public class Streamlit4jAutoConfiguration {
         return trimmed.startsWith("/") ? trimmed : "/" + trimmed;
     }
 
+    /**
+     * Default no-op {@link EntrypointSource} for apps that haven't supplied one.
+     *
+     * @return entrypoint source that yields an empty {@link Runnable}
+     */
     @Bean
     @ConditionalOnMissingBean
     public EntrypointSource streamlit4jEntrypointSource() {
         return () -> () -> {};
     }
 
+    /**
+     * Builds the streamlit4j application backed by in-memory adapters.
+     *
+     * @param entrypoints entrypoint source bean
+     * @return application instance
+     */
     @Bean(destroyMethod = "close")
     @ConditionalOnMissingBean
     public Streamlit4jApplication streamlit4jApplication(EntrypointSource entrypoints) {
         return Bootstrap.standalone(entrypoints);
     }
 
+    /**
+     * Composes any user-supplied {@link Streamlit4jConnectionListener} beans into
+     * a single listener attached to the WebSocket handler.
+     *
+     * @param application streamlit4j application
+     * @param listeners optional list of connection listeners discovered in the context
+     * @return WebSocket handler bean
+     */
     @Bean
     @ConditionalOnMissingBean
     public Streamlit4jWebSocketHandler streamlit4jWebSocketHandler(

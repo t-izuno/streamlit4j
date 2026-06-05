@@ -11,6 +11,7 @@ public final class LayoutDemo {
 
     private LayoutDemo() {}
 
+    /** Renders the demo. Invoked once per session by the runtime. */
     public static void run() {
         St.title("Layout primitives");
         St.markdown("Compose pages with **columns**, **tabs**, **expanders**, and **forms**.");

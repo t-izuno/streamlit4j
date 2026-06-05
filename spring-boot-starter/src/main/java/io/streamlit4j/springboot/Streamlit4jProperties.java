@@ -14,10 +14,23 @@ public class Streamlit4jProperties {
 
     private String basePath = "/streamlit";
 
+    /** Creates a properties instance populated with defaults. */
+    public Streamlit4jProperties() {}
+
+    /**
+     * Returns the mount path used for the streamlit4j WebSocket and assets.
+     *
+     * @return base path (defaults to {@code "/streamlit"})
+     */
     public String getBasePath() {
         return basePath;
     }
 
+    /**
+     * Sets the mount path.
+     *
+     * @param basePath new mount path
+     */
     public void setBasePath(String basePath) {
         this.basePath = basePath;
     }

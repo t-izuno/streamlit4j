@@ -19,7 +19,11 @@ public final class Streamlit4j {
 
     private Streamlit4j() {}
 
-    /** Returns the artifact version, e.g. {@code "0.1.0-SNAPSHOT"}. */
+    /**
+     * Returns the artifact version, e.g. {@code "0.1.0-SNAPSHOT"}.
+     *
+     * @return version string read from {@code streamlit4j/version.properties}
+     */
     public static String version() {
         return VERSION;
     }

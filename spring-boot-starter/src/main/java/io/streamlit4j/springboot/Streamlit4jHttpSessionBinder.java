@@ -10,6 +10,11 @@ public class Streamlit4jHttpSessionBinder implements Streamlit4jConnectionListen
 
     private final Streamlit4jHttpSessionRegistry registry;
 
+    /**
+     * Creates a binder writing into the given registry.
+     *
+     * @param registry HTTP ↔ streamlit4j session registry
+     */
     public Streamlit4jHttpSessionBinder(Streamlit4jHttpSessionRegistry registry) {
         this.registry = registry;
     }
