@@ -157,4 +157,4 @@ use `mvn -pl examples spring-boot:run` directly.)
 ## See also
 
 - [Getting Started](./getting-started) — standalone CLI / Maven workflow
-- [Design](../design) — Clean Architecture (lite) module layering
+- [Reference](../reference/overview) — full element catalog

@@ -24,6 +24,4 @@ streamlit4j の公開 API の各要素を、Java 側シグネチャー / WebSock
 
 ## 補助情報
 
-- プロトコルの基本（envelope / render_delta / widget_event）は [`internal/specification.md`](../internal/specification) 2〜3 章を参照
-- アーキテクチャー判断は [`internal/adr/`](../internal/adr/) を参照
 - 完全な Javadoc は `./mvnw -P release package` で各モジュールの `*-javadoc.jar` を生成

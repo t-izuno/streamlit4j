@@ -1,6 +1,6 @@
 # カスタムコンポーネント作成ガイド
 
-streamlit4j に独自の React 部品を追加し、Java スクリプトから `St.component(...)` で呼び出せるようにする手順。in-process 方式のみ提供（iframe 隔離は [ADR-0007](../internal/adr/0007-no-iframe-components) で不採用）。
+streamlit4j に独自の React 部品を追加し、Java スクリプトから `St.component(...)` で呼び出せるようにする手順。提供方式は in-process 方式のみ（iframe 隔離は採用しない）。
 
 ## 前提
 
@@ -17,12 +17,12 @@ streamlit4j に独自の React 部品を追加し、Java スクリプトから `
 ```text
    Java スクリプト                       React フロントエンド
  ─────────────────────                ──────────────────────────────
- ① CustomComponent<R> 宣言        ②  components/<Name>.tsx で
+ ① CustomComponent 宣言            ②  components/StarRating.tsx で
    ↓                                  CustomComponentRenderProps を
  ② St.registerComponent(spec)       受ける React コンポーネント実装
    ↓                                  ↓
  ③ St.component(spec, args, def)  ③ component-builtins.ts で
-                                      registerComponent('<name>', X)
+                                      registerComponent('star-rating', X)
 ```
 
 両者で「name 文字列」が一致していれば、`render.tsx` がレジストリーからレンダラーを引いてマウントする。
@@ -50,13 +50,13 @@ public final class MyApp {
 
 ポイント:
 
-- `CustomComponent<R>` は record。`name` は `[a-z][a-z0-9-]*` 推奨（小文字 + ハイフン）
+- `CustomComponent` は型パラメーター `R` を取る record。`name` は `[a-z][a-z0-9-]*` 推奨（小文字 + ハイフン）
 - `St.registerComponent` の戻り値は spec をそのまま返す。`static final` フィールド化が一般的
 - `St.component(spec, args)` は値を返す 2 引数版 / `St.component(spec, args, default)` の 3 引数版 / 表示専用 `St.component(name, args)` の 3 種
 
 ## ステップ 2: React レンダラーを書く
 
-`frontend/src/components/<Name>.tsx` を新規追加。`CustomComponentRenderProps` を props に取り、`onChange(value)` で値を返す。
+`frontend/src/components/` 配下に新規 `.tsx` ファイル（例: `StarRating.tsx`）を追加。`CustomComponentRenderProps` を props に取り、`onChange(value)` で値を返す。
 
 ```tsx
 // frontend/src/components/StarRating.tsx
@@ -101,7 +101,7 @@ export function StarRating({ args, value, onChange }: CustomComponentRenderProps
 
 ポイント:
 
-- `args` は Java 側で渡した `Map<String, Object>` の JSON シリアライズ結果。型は `Record<string, unknown>` なので runtime guard 推奨
+- `args` は Java 側で渡した `Map` の JSON シリアライズ結果。型は TypeScript 側で `Record` of string key to unknown value となるため runtime guard 推奨
 - `value` は session state に格納されている現在値（初回は `St.component` の `defaultValue`）
 - `onChange(value)` 呼び出しで `widget_event` がサーバーへ送られ、次の rerun で Java 側の `St.component` が新値を返す
 
@@ -145,12 +145,12 @@ cd frontend && npm test
 
 ## SDK の vendor について
 
-将来、外部リポジトリーで開発したコンポーネントを共有する場合は `frontend/src/sdk/` 系の SDK を npm 公開する予定（[ADR-0009](../internal/adr/0009-vite-for-frontend) の Vite ベースで配布）。0.1.0 時点では vendor 運用とし、利用者は本リポジトリーの `frontend/` をフォーク or サブモジュールで取り込んで `component-builtins.ts` に登録する。
+将来、外部リポジトリーで開発したコンポーネントを共有する場合は `frontend/src/sdk/` 系の SDK を npm 公開する予定。0.1.0 時点では vendor 運用とし、利用者は本リポジトリーの `frontend/` をフォーク or サブモジュールで取り込んで `component-builtins.ts` に登録する。
 
 ## チェックリスト
 
 - [ ] Java と TS で同じ `name` 文字列を使ったか
 - [ ] `args` のキー名と型は両側で一致しているか
-- [ ] `onChange` で送る値が `CustomComponent<R>` の `R` にデコード可能か
+- [ ] `onChange` で送る値が `CustomComponent` の型パラメーター `R` にデコード可能か
 - [ ] `frontend/src/component-builtins.ts` への登録忘れはないか
 - [ ] `npm test` で React レンダラーのユニットテストを最低 1 件書いたか

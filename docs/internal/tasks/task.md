@@ -148,11 +148,11 @@
 | TASK-123 | ✅ | GPG 署名と Sonatype アカウント設定を整備する | TASK-122 |
 | TASK-124 | ✅ | Maven 利用者向け導入手順を整備する | TASK-122 |
 | TASK-125 | ✅ | JBang カタログに CLI を登録する | TASK-059 |
-| TASK-126 | ⏳ | playground（ホストされたデモ）を構築する | TASK-119 |
-| TASK-127 | ⏳ | コア・互換要素・統合機能の E2E テストスイートを整備する | TASK-060,TASK-064,TASK-066,TASK-070,TASK-071,TASK-081,TASK-089,TASK-107 |
-| TASK-128 | ⏳ | 0.1.0 リリースタグとリリースノートを作成する | TASK-109,TASK-112,TASK-113,TASK-114,TASK-116,TASK-117,TASK-118,TASK-120,TASK-121,TASK-124,TASK-125,TASK-127 |
-| TASK-129 | ⏳ | Maven Central へ 0.1.0 を公開する | TASK-123,TASK-128 |
-| TASK-130 | ⏳ | playground を 0.1.0 ビルドに更新し公開する | TASK-126,TASK-129 |
+| TASK-126 | 🚫 | playground（ホストされたデモ）を構築する | TASK-119 |
+| TASK-127 | 🚫 | コア・互換要素・統合機能の E2E テストスイートを整備する | TASK-060,TASK-064,TASK-066,TASK-070,TASK-071,TASK-081,TASK-089,TASK-107 |
+| TASK-128 | 🚫 | 0.1.0 リリースタグとリリースノートを作成する | TASK-109,TASK-112,TASK-113,TASK-114,TASK-116,TASK-117,TASK-118,TASK-120,TASK-121,TASK-124,TASK-125,TASK-127 |
+| TASK-129 | 🚫 | Maven Central へ 0.1.0 を公開する | TASK-123,TASK-128 |
+| TASK-130 | 🚫 | playground を 0.1.0 ビルドに更新し公開する | TASK-126,TASK-129 |
 
 ## タスク詳細
 
@@ -583,6 +583,22 @@
 - 補足: 同タイミングで `getting-started.md` の `mvnw 未提供` 記述を解消し、
   `St` import パスを `io.streamlit4j.core.api.St` に更新（A の sub-package
   移動の追従）
+
+### TASK-126 〜 TASK-130（リリース系: 中止）
+
+- 中止理由: 内部で使ってブラッシュアップする期間が必要なため、0.1.0 の対外公開
+  および playground の公開を保留。E2E スイート（TASK-127）もリリース連動の
+  作業として一旦中止。ブラッシュアップ後、公開タイミングが見えた段階で
+  改めて計画する
+- 対象:
+  - TASK-126 playground 構築
+  - TASK-127 E2E テストスイート整備（再開時は widget 操作 + multipage + form
+    の軽量版から始める）
+  - TASK-128 0.1.0 リリースタグとリリースノート
+  - TASK-129 Maven Central 公開
+  - TASK-130 playground を 0.1.0 で更新公開
+- 注意: 内部利用フェーズで判明した問題は新タスク（TASK-131 以降）として登録
+  する。本中止項目は将来再開する際に同番号 / タイトルのまま新設しない
 
 ## Backlog一覧
 

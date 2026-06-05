@@ -169,4 +169,3 @@ java -jar cli/target/streamlit4j-cli-0.1.0-SNAPSHOT.jar 8501 --watch ./src/main/
 - [Reference](../reference/overview) — 全 API 一覧
 - [Custom Components Guide](./custom-components) — 独自 React 部品の追加
 - [Spring Boot Integration](./spring-boot) — auto-config と Session / Security 連携
-- [Design](../design) / [ADRs](../internal/adr/) — 内部アーキテクチャーと設計判断

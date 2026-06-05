@@ -120,5 +120,3 @@ Once 0.1.0 is published, each artifact ships with a detached GPG signature
 ```sh
 gpg --verify streamlit4j-core-0.1.0.jar.asc streamlit4j-core-0.1.0.jar
 ```
-
-See [Publishing to Maven Central](../publishing) for signing key details.

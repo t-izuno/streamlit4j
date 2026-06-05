@@ -1,9 +1,8 @@
-name: Security scan (weekly)
+name: Security scan (manual)
 
+# 定期実行はせず、メンテナーが手動で起動する。
+# 手順: docs/internal/security-scan.md
 on:
-  schedule:
-    # 毎週月曜 00:00 UTC（= 月曜 09:00 JST）
-    - cron: '0 0 * * 1'
   workflow_dispatch:
 
 permissions:

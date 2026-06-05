@@ -38,6 +38,7 @@ export default defineConfig({
           items: [
             { text: "Getting Started", link: "/guide/getting-started" },
             { text: "Installation", link: "/guide/installation" },
+            { text: "Run from source", link: "/guide/run-from-source" },
             { text: "Spring Boot Integration", link: "/guide/spring-boot" },
             { text: "Custom Components", link: "/guide/custom-components" },
           ],
@@ -72,6 +73,7 @@ export default defineConfig({
             { text: "Specification", link: "/internal/specification" },
             { text: "Design", link: "/internal/design" },
             { text: "Publishing", link: "/internal/publishing" },
+            { text: "Security scan (OWASP)", link: "/internal/security-scan" },
           ],
         },
         {

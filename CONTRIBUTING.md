@@ -82,9 +82,14 @@ E2E は Playwright を使用（`npm run e2e`、未統合タスクは TASK-127）
 ```sh
 cd site
 npm install
+# Vite が docs/ 配下の .md からモジュール解決するため symlink を 1 本張る
+ln -sfn ../site/node_modules ../docs/node_modules
 npm run docs:dev        # ローカルプレビュー http://localhost:5173
 npm run docs:build      # site/.vitepress/dist へ静的出力
 ```
+
+`docs/node_modules` は `site/node_modules` への symlink で `.gitignore`
+済み。VitePress の `srcDir: "../docs"` の関係で必要になる。
 
 ## コーディング規約
 

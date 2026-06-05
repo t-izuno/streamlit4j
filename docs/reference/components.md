@@ -1,6 +1,6 @@
 # カスタムコンポーネント
 
-第一者向けインプロセス React 部品を独自に追加するための API。iframe 隔離方式は採用しない（[ADR-0007](../internal/adr/0007-no-iframe-components) 参照）。
+第一者向けインプロセス React 部品を独自に追加するための API。iframe 隔離方式は採用しない。
 
 ## 宣言と登録
 
