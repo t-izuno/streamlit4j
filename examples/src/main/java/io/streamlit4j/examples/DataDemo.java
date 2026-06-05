@@ -1,6 +1,6 @@
 package io.streamlit4j.examples;
 
-import io.streamlit4j.core.St;
+import io.streamlit4j.core.api.St;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

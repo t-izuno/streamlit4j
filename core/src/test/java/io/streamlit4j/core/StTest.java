@@ -2,6 +2,7 @@ package io.streamlit4j.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import io.streamlit4j.core.api.St;
 import io.streamlit4j.core.domain.Session;
 import io.streamlit4j.core.protocol.RenderNode;
 import io.streamlit4j.core.runtime.ScriptRunner;

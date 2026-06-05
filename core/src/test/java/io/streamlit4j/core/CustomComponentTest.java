@@ -3,6 +3,7 @@ package io.streamlit4j.core;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import io.streamlit4j.core.api.St;
 import io.streamlit4j.core.domain.CustomComponent;
 import io.streamlit4j.core.domain.Session;
 import io.streamlit4j.core.protocol.ComponentCodec;

@@ -3,7 +3,7 @@ package io.streamlit4j.server;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.node.IntNode;
-import io.streamlit4j.core.St;
+import io.streamlit4j.core.api.St;
 import io.streamlit4j.core.protocol.Codec;
 import io.streamlit4j.core.protocol.Envelope;
 import io.streamlit4j.core.protocol.RenderDelta;
