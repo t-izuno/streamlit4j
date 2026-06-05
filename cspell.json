@@ -48,7 +48,8 @@
     "antrun",
     "erroronmissingdir",
     "depcruise",
-    "permessage"
+    "permessage",
+    "Craco"
   ],
   "ignorePaths": [
     "node_modules",

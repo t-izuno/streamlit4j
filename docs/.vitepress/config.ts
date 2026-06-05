@@ -69,6 +69,8 @@ export default defineConfig({
             },
             { text: "ADR-0006 MIT license", link: "/adr/0006-mit-license" },
             { text: "ADR-0007 No iframe components", link: "/adr/0007-no-iframe-components" },
+            { text: "ADR-0008 VitePress for docs", link: "/adr/0008-vitepress-for-docs" },
+            { text: "ADR-0009 Vite for frontend", link: "/adr/0009-vite-for-frontend" },
           ],
         },
       ],

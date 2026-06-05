@@ -216,8 +216,14 @@
 
 ADR で扱うほどではないが API シグネチャーとして固定する選択。
 
-- **終端 API**: `St.title("...")` の静的メソッドを呼んだ時点で `RenderContext` へ即時 emit する。ビルダー方式（`.show()` / `.render()` / `.use()`）は採用しない。Streamlit Python の DX を踏襲し、中間オブジェクト生成を避ける
-- **キャッシュ指定**: `St.cacheData(key, ttl, Supplier<T>)` / `St.cacheResource(key, Supplier<T>)` のラッパー関数で提供する。アノテーション（`@StCache` 等）は採用しない。AOP / バイトコード変換に依存せず、`core` モジュールを IoC コンテナーから独立させる目的（[ADR-0004](./adr/0004-graalvm-deferred.md) の GraalVM 整合性とも親和）
+- **終端 API**: `St.title("...")` の静的メソッドを呼んだ時点で `RenderContext`
+  へ即時 emit する。ビルダー方式（`.show()` / `.render()` / `.use()`）は
+  採用しない。Streamlit Python の DX を踏襲し、中間オブジェクト生成を避ける
+- **キャッシュ指定**: `St.cacheData(key, ttl, Supplier<T>)` /
+  `St.cacheResource(key, Supplier<T>)` のラッパー関数で提供する。
+  アノテーション（`@StCache` 等）は採用しない。AOP / バイトコード変換に
+  依存せず、`core` モジュールを IoC コンテナーから独立させる目的。
+  [ADR-0004](./adr/0004-graalvm-deferred.md) の GraalVM 整合性とも親和する
 
 ## 11. 視覚アイデンティティー
 
@@ -244,4 +250,11 @@ ADR で扱うほどではないが API シグネチャーとして固定する�
 - 上下に細い短バー、中央に太い長バー（中央寄せ）を白で描画
 - ライト用は teal `#0d9488` 背景、ダーク用は `#2dd4bf` 背景に `#0f1a1f` のバー
 
-ファイル: `docs/public/streamlit4j-logo.svg`、`docs/public/streamlit4j-logo-dark.svg`、`docs/public/favicon.svg`、`frontend/public/` にも同ファイルを配置。SVG は本リポジトリの MIT ライセンス下で配布する（商用利用可）。
+ファイル一覧:
+
+- `docs/public/streamlit4j-logo.svg`（ライト用）
+- `docs/public/streamlit4j-logo-dark.svg`（ダーク用）
+- `docs/public/favicon.svg`
+- `frontend/public/` にも同ファイルを配置
+
+SVG は本リポジトリの MIT ライセンス下で配布する（商用利用可）。
