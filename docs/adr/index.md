@@ -13,9 +13,13 @@ ADR にはアーキテクチャー境界・非機能特性・外部依存・セ�
 | [ADR-0005](./0005-explicit-page-registration.md) | Accepted | マルチページは規約ベースではなく明示登録を既定とする |
 | [ADR-0006](./0006-mit-license.md) | Accepted | ライセンスは MIT とする |
 | [ADR-0007](./0007-no-iframe-components.md) | Accepted | カスタムコンポーネントは iframe 隔離を採らず in-process のみとする |
-| [ADR-0008](./0008-vitepress-for-docs.md) | Accepted | ドキュメントサイトに VitePress を採用する |
+| [ADR-0008](./0008-react-frontend.md) | Accepted | フロント UI フレームワークに React 18 を採用する |
 | [ADR-0009](./0009-vite-for-frontend.md) | Accepted | フロントエンドビルドツールに Vite を採用する |
+| [ADR-0010](./0010-vitepress-for-docs.md) | Accepted | ドキュメントサイトに VitePress を採用する |
+| [ADR-0011](./0011-jetty-embedded-server.md) | Accepted | 組み込みサーバーに Jetty 12 を採用する |
 
 VitePress を含むサイドバーへの追加と、ブランドカラー反映は TASK-114 で同時に行った。
+
+Java / Maven は streamlit4j の前提（言語と OSS 公開先）であり、選択肢を比較する性質の判断ではないため ADR の対象外。
 
 ADR-0001 / ADR-0003 は実装レベル（API 命名・API スタイル）の選択と整理し、ADR から除外して `design.md` に併記する形へ移行した。

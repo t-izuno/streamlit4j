@@ -548,10 +548,10 @@
   - `frontend/index.html`: `link rel="icon"` で favicon を読み込み
   - `docs/.vitepress/config.ts`: `logo` / `head` favicon を設定、
     `docs/.vitepress/theme/{index.ts,brand.css}` で `--vp-c-brand-*` を上書き
-- 補足: VitePress 採用の根拠を [ADR-0008](../adr/0008-vitepress-for-docs.md) として
+- 補足: VitePress 採用の根拠を [ADR-0010](../adr/0010-vitepress-for-docs.md) として
   併せて記録（フロント Vite/TS スタックとの一致 / Markdown ファースト /
   `--vp-c-brand-*` 経由のテーマ刷新容易性が決定理由）
-- 補足: ADR-0008 が前提とする「SPA が Vite ベース」自体が遡及的に未記録だった
+- 補足: ADR-0010 が前提とする「SPA が Vite ベース」自体が遡及的に未記録だった
   ため、[ADR-0009](../adr/0009-vite-for-frontend.md) として Vite（フロント
   ビルドツール）の採用根拠も併記。webpack / Rollup / Parcel / esbuild との
   比較と、HMR 速度 / Vitest 統一 / VitePress 親和性が決定理由

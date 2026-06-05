@@ -50,7 +50,7 @@ streamlit4j の SPA（`frontend/`）をビルドするツールチェーンの�
 - **テスト基盤の統一**: Vitest が Vite の設定をそのまま流用でき、テスト用に
   別 transpiler / module 解決を維持しなくてよい
 - **VitePress との親和性**: ドキュメントサイト
-  [ADR-0008](./0008-vitepress-for-docs.md) が同じ Vite ベースのため、
+  [ADR-0010](./0010-vitepress-for-docs.md) が同じ Vite ベースのため、
   ビルド・依存・型定義の知識を共有できる
 
 ## Consequences
