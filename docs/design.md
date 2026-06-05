@@ -198,17 +198,23 @@
 - 第三者コンポーネントを取り込む必要が出た場合は npm 依存と同じ扱いとし、
   ソースを vendor したうえで in-process として配布する運用を想定する
 
-## 10. 未決事項（要決定）
+## 10. 決定済み事項
 
-以下は ADR として確定し、`tasks/task.md` の TASK-109 で扱う。
+### 10-1. アーキテクチャー判断（ADR）
 
-1. **終端 API の命名**: ビルダーの終端を `show()` / `render()` / `use()` の
-   どれに統一するか
-2. **通信プロトコル**: v1 から MessagePack を採用するか、JSON 先行で後から
-   差し替えるか
-3. **キャッシュ指定方式**: アノテーション主体かラッパー関数主体か
-4. **GraalVM 対応の時期**: v1 に含めるか v1.x に回すか（reflection 設定の負荷）
-5. **ライセンス**: 確定済み（TASK-110）。**MIT** を採用。利用者側の義務を最小化し、
-   サブライセンスや他ライセンスとの組み合わせを容易にすることを優先。Apache-2.0 は
-   特許明示権で勝るが、本プロジェクトでは特許防衛優先度が低いため不採用
-6. **マルチページの既定方式**: 規約ベースと明示登録のどちらを既定とするか
+アーキテクチャー境界・非機能特性・外部依存・セキュリティーモデルに影響する判断は `docs/adr/` 配下に ADR として記録する。
+
+| ID | タイトル |
+| --- | --- |
+| [ADR-0002](./adr/0002-json-over-messagepack.md) | プロトコルは JSON（Jackson）を採用する |
+| [ADR-0004](./adr/0004-graalvm-deferred.md) | GraalVM ネイティブ対応は v1.x 以降へ繰り延べる |
+| [ADR-0005](./adr/0005-explicit-page-registration.md) | マルチページは規約ベースではなく明示登録を既定とする |
+| [ADR-0006](./adr/0006-mit-license.md) | ライセンスは MIT とする |
+| [ADR-0007](./adr/0007-no-iframe-components.md) | カスタムコンポーネントは iframe 隔離を採らず in-process のみとする |
+
+### 10-2. API 設計指針（実装レベル）
+
+ADR で扱うほどではないが API シグネチャーとして固定する選択。
+
+- **終端 API**: `St.title("...")` の静的メソッドを呼んだ時点で `RenderContext` へ即時 emit する。ビルダー方式（`.show()` / `.render()` / `.use()`）は採用しない。Streamlit Python の DX を踏襲し、中間オブジェクト生成を避ける
+- **キャッシュ指定**: `St.cacheData(key, ttl, Supplier<T>)` / `St.cacheResource(key, Supplier<T>)` のラッパー関数で提供する。アノテーション（`@StCache` 等）は採用しない。AOP / バイトコード変換に依存せず、`core` モジュールを IoC コンテナーから独立させる目的（[ADR-0004](./adr/0004-graalvm-deferred.md) の GraalVM 整合性とも親和）

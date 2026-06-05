@@ -48,6 +48,21 @@ export default defineConfig({
             { text: "Design", link: "/design" },
           ],
         },
+        {
+          text: "Architecture Decisions",
+          collapsed: true,
+          items: [
+            { text: "Index", link: "/adr/" },
+            { text: "ADR-0002 JSON protocol", link: "/adr/0002-json-over-messagepack" },
+            { text: "ADR-0004 GraalVM deferred", link: "/adr/0004-graalvm-deferred" },
+            {
+              text: "ADR-0005 Explicit page registration",
+              link: "/adr/0005-explicit-page-registration",
+            },
+            { text: "ADR-0006 MIT license", link: "/adr/0006-mit-license" },
+            { text: "ADR-0007 No iframe components", link: "/adr/0007-no-iframe-components" },
+          ],
+        },
       ],
     },
     socialLinks: [

@@ -131,7 +131,7 @@
 | TASK-106 | 🚫 | streamlit4j component create 雛形生成コマンドを実装する | TASK-104 |
 | TASK-107 | ✅ | Spring Boot 埋め込みサンプルアプリを作成する | TASK-094,TASK-095,TASK-096 |
 | TASK-108 | ✅ | カスタムコンポーネントサンプル（インプロセス）を作成する | TASK-100 |
-| TASK-109 | ⏳ | 未決事項（終端 API 名/プロトコル等）を ADR で最終決定する | - |
+| TASK-109 | ✅ | 未決事項（終端 API 名/プロトコル等）を ADR で最終決定する | - |
 | TASK-110 | ✅ | MIT ライセンスを全モジュールに適用する | - |
 | TASK-111 | 🚫 | NOTICE と third-party ライセンス一覧を整備する | TASK-110 |
 | TASK-112 | ✅ | 独立 OSS 旨の disclaimer を README 冒頭に明記する | - |
@@ -521,9 +521,18 @@
 
 ### TASK-109
 
-- 補足: 終端メソッド名・プロトコル選定・キャッシュ指定方式・GraalVM 時期・マルチページ既定方式を確定する
-- 補足: ライセンスは TASK-110 で MIT 確定済み（design.md §9-5 の代替候補を MIT 側で採用）
-- 注意: 決定理由と却下案を ADR として残す
+- 補足: `docs/adr/` を新設し、アーキテクチャー判断を 5 件の ADR として確定:
+  - ADR-0002 プロトコルは JSON（Jackson）。MessagePack は不採用
+  - ADR-0004 GraalVM ネイティブ対応は v1.x 以降へ繰り延べ
+  - ADR-0005 マルチページは `St.pages(List<Page>)` の明示登録を既定
+  - ADR-0006 ライセンスは MIT（TASK-110 にて確定済みを ADR として追記）
+  - ADR-0007 カスタムコンポーネントは iframe 隔離を採らず in-process のみ
+- 補足: 終端 API 命名（`St.*` 直接呼び出し）とキャッシュ API スタイル（`St.cacheData` /
+  `St.cacheResource` ラッパー関数）は実装レベルの選択と整理し、ADR ではなく
+  `design.md` §10-2「API 設計指針」に併記する形へ移行
+- 補足: `design.md` §10 を「未決事項」から「決定済み事項」に書き換え、§10-1 に
+  ADR 一覧表、§10-2 に実装指針の併記を追加
+- 補足: `.vitepress/config.ts` の sidebar に ADR セクションを追加（ドキュメントサイトに反映）
 
 ### TASK-114
 

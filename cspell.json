@@ -47,7 +47,8 @@
     "jbangdev",
     "antrun",
     "erroronmissingdir",
-    "depcruise"
+    "depcruise",
+    "permessage"
   ],
   "ignorePaths": [
     "node_modules",
