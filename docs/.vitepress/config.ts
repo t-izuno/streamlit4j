@@ -44,7 +44,22 @@ export default defineConfig({
       "/reference/": [
         {
           text: "Reference",
-          items: [{ text: "Overview", link: "/reference/overview" }],
+          items: [
+            { text: "Overview", link: "/reference/overview" },
+            { text: "Text & document flow", link: "/reference/text" },
+            { text: "Status & notifications", link: "/reference/status" },
+            { text: "Tabular data", link: "/reference/data" },
+            { text: "Media", link: "/reference/media" },
+            { text: "Charts", link: "/reference/charts" },
+            { text: "Input widgets", link: "/reference/inputs" },
+            { text: "Files", link: "/reference/files" },
+            { text: "Layout", link: "/reference/layout" },
+            { text: "Forms", link: "/reference/forms" },
+            { text: "Cache", link: "/reference/cache" },
+            { text: "Multi-page", link: "/reference/pages" },
+            { text: "Custom components", link: "/reference/components" },
+            { text: "Control flow", link: "/reference/control" },
+          ],
         },
       ],
       "/": [

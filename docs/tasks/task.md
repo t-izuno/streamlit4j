@@ -139,7 +139,7 @@
 | TASK-114 | ✅ | 独自ロゴと独自カラーパレットを策定しテーマに反映する | TASK-077 |
 | TASK-115 | ✅ | 公式ドキュメントサイトの基盤を構築する | - |
 | TASK-116 | ✅ | Getting Started チュートリアルを執筆する | TASK-115 |
-| TASK-117 | ⏳ | 機能リファレンスをドキュメントに整備する | TASK-115,TASK-089 |
+| TASK-117 | ✅ | 機能リファレンスをドキュメントに整備する | TASK-115,TASK-089 |
 | TASK-118 | ✅ | Javadoc 公開ビルドを整備する | TASK-001 |
 | TASK-119 | ✅ | examples モジュールに代表サンプル群を整備する | TASK-060,TASK-107 |
 | TASK-120 | ✅ | Spring Boot 統合手順をドキュメント化する | TASK-107,TASK-115 |
@@ -557,6 +557,18 @@
   比較と、HMR 速度 / Vitest 統一 / VitePress 親和性が決定理由
 - 注意: ロゴ SVG は本リポジトリの MIT ライセンス下で配布（商用利用可）。
   ロゴアセットを更新するときは 4 ファイル（2 ディレクトリー）すべて同期させる
+
+### TASK-117
+
+- 補足: `docs/reference/` を `St` のカテゴリー分割（`core/api/*Widgets.java` 群）に
+  合わせて 13 ページ構成に整備（overview / text / status / data / media /
+  charts / inputs / files / layout / forms / cache / pages / components /
+  control）。各要素について Java API シグネチャー / プロトコル `kind` と props
+  / フロント描画の 3 点をテーブルで網羅
+- 補足: `docs/.vitepress/config.ts` の `/reference/` サイドバーを 13 リンクに拡張
+- 補足: `overview.md` から ADR / specification への横断リンクを整備
+- 注意: chart 系は v1 ではプレースホルダー描画。実描画ライブラリー対応は backlog
+- 注意: `dataEditor` の編集 → サーバー反映は v1 未実装。ノード描画のみ
 
 ## Backlog一覧
 
