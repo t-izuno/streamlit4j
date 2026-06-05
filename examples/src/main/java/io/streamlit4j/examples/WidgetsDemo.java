@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Demonstrates the input widget surface: text / number / select / radio /
  * checkbox / button / slider / date / time / color picker. Pair with a
- * {@link io.streamlit4j.server.Streamlit4jServer} instance, e.g.
+ * {@code io.streamlit4j.server.Streamlit4jServer} instance, e.g.
  *
  * <pre>{@code
  * try (var server = new Streamlit4jServer(8501, () -> WidgetsDemo::run)) {

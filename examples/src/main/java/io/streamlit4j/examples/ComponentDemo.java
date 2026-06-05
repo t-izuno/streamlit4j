@@ -9,7 +9,7 @@ import java.util.Map;
  * with the SPA and registered through {@code component-builtins.ts}, paired
  * with a {@link CustomComponent} declaration on the Java side.
  *
- * <p>Pair with a {@link io.streamlit4j.server.Streamlit4jServer} instance, e.g.
+ * <p>Pair with a {@code io.streamlit4j.server.Streamlit4jServer} instance, e.g.
  *
  * <pre>{@code
  * try (var server = new Streamlit4jServer(8501, () -> ComponentDemo::run)) {

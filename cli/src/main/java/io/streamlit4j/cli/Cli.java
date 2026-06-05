@@ -7,12 +7,22 @@ import io.streamlit4j.server.Streamlit4jServer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * Standalone CLI entry point that boots an embedded Jetty server with the
+ * {@code Hello} demo. Distributed via JBang for one-line installs.
+ */
 public final class Cli {
 
     private static final int DEFAULT_PORT = 8501;
 
     private Cli() {}
 
+    /**
+     * CLI entry point.
+     *
+     * @param args supports {@code --port <n>}, {@code --watch <dir>}, or a bare port number
+     * @throws Exception when the server fails to start or the watcher fails
+     */
     public static void main(String[] args) throws Exception {
         int port = DEFAULT_PORT;
         Path watchDir = null;
