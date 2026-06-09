@@ -51,7 +51,6 @@
     <module>core</module>
     <module>server</module>
     <module>frontend-assets</module>
-    <module>cli</module>
     <module>spring-boot-starter</module>
     <module>examples</module>
   </modules>
@@ -187,17 +186,17 @@
       </dependency>
       <dependency>
         <groupId>io.streamlit4j</groupId>
-        <artifactId>streamlit4j-cli</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.streamlit4j</groupId>
         <artifactId>streamlit4j-spring-boot-starter</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>io.streamlit4j</groupId>
-        <artifactId>streamlit4j-examples</artifactId>
+        <artifactId>streamlit4j-examples-embedded</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.streamlit4j</groupId>
+        <artifactId>streamlit4j-examples-spring-boot</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>

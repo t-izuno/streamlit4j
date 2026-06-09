@@ -11,50 +11,18 @@
   </parent>
 
   <artifactId>streamlit4j-examples</artifactId>
-  <name>streamlit4j examples</name>
-  <description>Example applications demonstrating streamlit4j features.</description>
+  <packaging>pom</packaging>
+  <name>streamlit4j examples (aggregator)</name>
+  <description>Aggregator for the streamlit4j example projects (Library form and Spring Boot form).</description>
 
   <properties>
-    <!-- examples module is not published to Maven Central -->
+    <!-- examples aggregator is not published to Maven Central -->
     <maven.deploy.skip>true</maven.deploy.skip>
     <central-publishing.skip>true</central-publishing.skip>
   </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>io.streamlit4j</groupId>
-      <artifactId>streamlit4j-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.streamlit4j</groupId>
-      <artifactId>streamlit4j-spring-boot-starter</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-websocket</artifactId>
-      <optional>true</optional>
-    </dependency>
-
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
+  <modules>
+    <module>embedded</module>
+    <module>spring-boot</module>
+  </modules>
 </project>

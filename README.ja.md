@@ -39,26 +39,21 @@ public final class SalesDashboard {
 | レイアウト | columns / container / expander / tabs / sidebar / empty |
 | その他 | form / cache / pages / カスタムコンポーネント / rerun / state |
 
-## 導入方法（3 つの選択肢）
+## 導入方法（2 つの選択肢）
 
-利用シナリオに応じて 3 つの形態から選べる。
+streamlit4j はライブラリーであり、ユーザーが書いた Java コードからフレームワークが UI を駆動する。利用シナリオに応じて次の 2 形態から選べる。
 
 | 形態 | 用途 | 起点 |
 | --- | --- | --- |
-| **A. JBang ワンライナー** | 手元で素早く動かす | `jbang app install streamlit4j@t-izuno/streamlit4j` |
-| **B. ライブラリー（core + server）** | 既存 Java プロジェクトに組み込む / 独自 `main` で起動 | `streamlit4j-core` + `streamlit4j-server` を依存に追加 |
-| **C. Spring Boot Starter** | Spring Boot アプリの一機能としてマウント | `streamlit4j-spring-boot-starter` を依存に追加 |
+| **A. ライブラリー（core + server）** | 既存 Java プロジェクトに組み込む / 独自 `main` で起動 | `streamlit4j-core` + `streamlit4j-server` を依存に追加 |
+| **B. Spring Boot Starter** | Spring Boot アプリの一機能としてマウント | `streamlit4j-spring-boot-starter` を依存に追加 |
 
-### A. JBang ワンライナー（評価向け）
+> 動作イメージを先に見たい場合は、リポジトリーをクローンして対応するサブプロジェクトから
+> 起動する。[`examples/embedded`](examples/embedded) にスタンドアロン `main`（A 候補）、
+> [`examples/spring-boot`](examples/spring-boot) に `SpringBoot<Name>App`（B 候補）が
+> 同じ 6 デモぶん同梱されている。詳細は [Run from source](docs/public/guide/run-from-source.md)。
 
-```sh
-jbang app install streamlit4j@t-izuno/streamlit4j
-streamlit4j 8501          # → http://localhost:8501
-```
-
-`examples/Hello.java` の最小デモが起動する。
-
-### B. ライブラリー導入（独自スクリプト用）
+### A. ライブラリー導入（独自スクリプト用）
 
 `pom.xml`:
 
@@ -95,7 +90,7 @@ public final class App {
 }
 ```
 
-### C. Spring Boot Starter（既存 Web アプリへの組み込み）
+### B. Spring Boot Starter（既存 Web アプリへの組み込み）
 
 ```xml
 <dependency>
@@ -121,9 +116,9 @@ streamlit4j:
 | `io.streamlit4j:streamlit4j-core` | フレームワーク非依存の実行エンジン |
 | `io.streamlit4j:streamlit4j-server` | 組み込み Jetty + WebSocket |
 | `io.streamlit4j:streamlit4j-frontend-assets` | 事前ビルド済みフロントを classpath に同梱 |
-| `io.streamlit4j:streamlit4j-cli` | JBang 配布される CLI |
 | `io.streamlit4j:streamlit4j-spring-boot-starter` | Spring Boot 自動構成 |
-| `io.streamlit4j:streamlit4j-examples` | サンプルアプリ群（Hello / Widgets / Data / Layout / Component） |
+| `io.streamlit4j:streamlit4j-examples-embedded` | 自前 `main` + 組み込み `Streamlit4jServer` で起動するスタンドアロンデモ群 |
+| `io.streamlit4j:streamlit4j-examples-spring-boot` | embedded デモを Spring Boot からマウントするランチャー群 |
 
 ## 制約事項
 
@@ -139,7 +134,8 @@ streamlit4j:
 
 ## ドキュメント
 
-- [Getting Started](docs/public/guide/getting-started.md) — JBang / ライブラリー / Spring Boot での評価手順
+- [Getting Started](docs/public/guide/getting-started.md) — ライブラリー / Spring Boot での導入手順
+- [Run from source](docs/public/guide/run-from-source.md) — リポジトリーをクローンして同梱 ShowcaseDemo を起動
 - [Reference](docs/public/reference/overview.md) — `St.*` 全要素の Java シグネチャー / プロトコル / フロント描画
 - [Custom Components Guide](docs/public/guide/custom-components.md) — 独自 React レンダラーの追加
 - [Spring Boot Integration](docs/public/guide/spring-boot.md) — auto-config と Security / Session 連携

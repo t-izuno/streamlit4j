@@ -1,9 +1,10 @@
 # ソースからクローンして動かす
 
-JBang を入れずに、リポジトリーをクローンしてバンドル済みデモを起動するまでの最短手順。所要時間 5〜10 分。
+リポジトリーをクローンして同梱の examples を実起動するまでの最短手順。
+所要時間 5〜10 分。
 
-> **このコースの想定**: 評価・動作確認・コントリビュート目的でローカル動作させたい方向け。
-> JBang での one-liner 起動は [Installation](./installation#jbang) を参照してください。
+> **このコースの想定**: 評価・動作確認・コントリビュート目的で
+> ローカル動作させたい方向け。
 
 ## 前提
 
@@ -42,18 +43,33 @@ cd streamlit4j
 | オプション | 効果 |
 | --- | --- |
 | `-DskipTests` | 起動だけが目的なら単体テストを省略して時短（フル `mvn verify` は数分） |
-| `install` | ローカル `~/.m2/repository` に各モジュール jar を配置し、`cli` モジュールから依存解決可能にする |
+| `install` | ローカル `~/.m2/repository` に各モジュール jar を配置し、examples モジュールから依存解決可能にする |
 
 初回はフロントエンドビルド（React + Vite）と Maven 依存ダウンロードを含むため 2〜5 分。2 回目以降はインクリメンタルで数十秒。
 
-## ステップ 3: デモ起動
+## ステップ 3: examples を起動
+
+examples には A 候補（Library / 自前 `main`）と B 候補（Spring Boot Starter）の両方の起動例が同梱されています。どちらの形式でも同じ画面が確認できます。
+
+### A 候補（Library / 自前 `main`）で起動
 
 ```sh
 # 8501 はリッスンポート（任意の空きポートに変更可）
-java -jar cli/target/streamlit4j-cli-0.1.0-SNAPSHOT.jar 8501
+./mvnw -pl examples/embedded -q exec:java \
+    -Dexec.mainClass=io.streamlit4j.examples.Hello \
+    -Dexec.args=8501
 ```
 
-`cli` モジュールは `maven-shade-plugin` で全依存を同梱した実行可能 jar（fat jar）として package されるため、追加の classpath 指定なしで起動できます。
+他の同梱デモも同じパターンで起動できます：
+
+| メインクラス | 主な確認要素 |
+| --- | --- |
+| `io.streamlit4j.examples.Hello` | title / markdown / slider / metric / button |
+| `io.streamlit4j.examples.WidgetsDemo` | text / number / select / radio / checkbox / date / time / colorPicker |
+| `io.streamlit4j.examples.LayoutDemo` | columns / container / expander / tabs / sidebar / form |
+| `io.streamlit4j.examples.DataDemo` | dataframe / line / bar / area / scatter / metric / cache |
+| `io.streamlit4j.examples.ComponentDemo` | カスタムコンポーネント（star-rating） |
+| `io.streamlit4j.examples.ShowcaseDemo` | 上記全カテゴリーを 1 画面で網羅したショーケース |
 
 起動すると以下が表示されます：
 
@@ -61,37 +77,41 @@ java -jar cli/target/streamlit4j-cli-0.1.0-SNAPSHOT.jar 8501
 streamlit4j listening on ws://localhost:8501/ws
 ```
 
+### B 候補（Spring Boot Starter）で起動
+
+各デモには対応する `SpringBoot<Name>App` クラスが同梱されています。
+
+```sh
+./mvnw -pl examples/spring-boot -q exec:java \
+    -Dexec.mainClass=io.streamlit4j.examples.spring.hello.SpringBootHelloApp
+```
+
+各デモはサブパッケージに分かれて配置されています
+（`io.streamlit4j.examples.spring.{hello,widgets,layout,data,component,showcase}`）。
+クラス名と組み合わせて他のデモを起動してください。デフォルトでは
+`${streamlit4j.base-path}`（既定 `/streamlit`）配下にマウントされるため、
+`http://localhost:8080/streamlit` を開きます。
+
 ## ステップ 4: ブラウザーで確認
 
-<http://localhost:8501> を開くと、`examples/Hello.java` の内容（タイトル / マークダウン / スライダー / メトリック / ボタン）が表示されます。
+A 候補の場合は <http://localhost:8501> 、B 候補の場合は <http://localhost:8080/streamlit> を開きます。
 
-動作確認ポイント：
+動作確認ポイント（`Hello` の場合）：
 
 - スライダーを動かすとメトリックがリアルタイム追従するか
 - 「Greet」ボタンを押すとトースト通知が出るか
-- ブラウザー DevTools の **Network** タブで `ws://localhost:8501/ws` を流れる JSON envelope を観察できるか
+- ブラウザー DevTools の **Network** タブで `ws://...` を流れる JSON envelope を観察できるか
 
 停止は起動シェルで `Ctrl+C`。
-
-## 編集サイクル（任意）
-
-スクリプトを書き換えてフロントへ自動リロード通知を送りたい場合は `--watch` を付けます：
-
-```sh
-java -jar cli/target/streamlit4j-cli-0.1.0-SNAPSHOT.jar 8501 --watch examples/src/main/java
-```
-
-`examples/src/main/java` 配下のファイル変更を検知すると、接続中の全クライアントに `source_change:<path>` 通知が飛び、フロントがリロードします（クラスの再コンパイルは別途必要）。
 
 ## トラブルシューティング
 
 | 症状 | 原因 / 対処 |
 | --- | --- |
 | `enforcer requires JDK 21 LTS` で fail | JDK 25 など範囲外。`sdk use java 21.0.9-librca` で切替え |
-| `Address already in use` | 別プロセスが 8501 を使用中。`-Dexec.args=8502` などに変更 |
-| `no main manifest attribute` / `ClassNotFoundException` | ステップ 2 の `install` を未実行で fat jar 化前。`./mvnw -DskipTests install` を先に走らせる |
+| `Address already in use` | 別プロセスが 8501 / 8080 を使用中。`-Dexec.args=8502` などに変更 |
+| `ClassNotFoundException: io.streamlit4j...` | ステップ 2 の `install` を未実行で依存が未配置。`./mvnw -DskipTests install` を先に走らせる |
 | 起動はするが画面が真っ白 | フロントエンドが組み込まれていない可能性。`./mvnw -pl frontend-assets clean install` で再ビルド |
-| 編集→反映のたびに再起動が必要 | `--watch` が指定されていない、または対象ディレクトリーが違う |
 
 ## 次の一歩
 

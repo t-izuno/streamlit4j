@@ -2,7 +2,9 @@
 
 streamlit4j は **Maven Central** から `io.streamlit4j` グループ ID で配布されます。実行モードに合わせて依存を選択してください。
 
-> **ステータス（0.1.0-SNAPSHOT）**: まだ Maven Central には公開されていません。当面はリポジトリーをクローンして `mvn -DskipTests install` でローカルビルドしてください。0.1.0 が公開されれば、以下の座標で直接解決できるようになります。
+> **ステータス（0.1.0-SNAPSHOT）**: まだ Maven Central には公開されていません。
+> 当面はリポジトリーをクローンして `./mvnw -DskipTests install` でローカルビルドしてください。
+> 0.1.0 が公開されれば、以下の座標で直接解決できるようになります。
 
 ## Maven 座標
 
@@ -12,7 +14,6 @@ streamlit4j は **Maven Central** から `io.streamlit4j` グループ ID で配
 | `streamlit4j-server` | `io.streamlit4j:streamlit4j-server` | スタンドアロン（組み込み HTTP/WS サーバー） |
 | `streamlit4j-frontend-assets` | `io.streamlit4j:streamlit4j-frontend-assets` | 常に必要 — SPA jar を同梱 |
 | `streamlit4j-spring-boot-starter` | `io.streamlit4j:streamlit4j-spring-boot-starter` | Spring Boot ホスト |
-| `streamlit4j-cli` | `io.streamlit4j:streamlit4j-cli` | CLI / JBang 経由でスクリプトを実行 |
 
 すべてのアーティファクトはバージョンを共有するため、BOM スタイルのプロパティで一度だけ定義するか、親の `dependencyManagement` をインポートしてください。
 
@@ -70,17 +71,6 @@ dependencies {
   // implementation("io.streamlit4j:streamlit4j-spring-boot-starter:0.1.0")
 }
 ```
-
-## JBang
-
-完全な Maven プロジェクトを用意せずに 1 ファイルで試したい場合は、0.1.0 公開後に JBang 経由で CLI をインストールできます。
-
-```sh
-jbang app install streamlit4j@t-izuno/streamlit4j
-streamlit4j 8501
-```
-
-カタログ定義はリポジトリールートの `jbang-catalog.json` にあります。
 
 ## JDK 要件
 

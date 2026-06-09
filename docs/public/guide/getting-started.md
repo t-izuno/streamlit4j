@@ -10,37 +10,20 @@ streamlit4j を実際に動かして評価するための導入手順。所要�
 | Maven Wrapper | リポジトリー同梱の `./mvnw` | `JAVA_HOME` が JDK 21 を指していれば追加インストール不要 |
 | Node.js | 22+ | フロントを改造したい場合のみ |
 
-> 0.1.0 はまだ Maven Central に公開されていません。当面はソースから `./mvnw install` でローカルリポジトリーへ配置するか、JBang 経由で CLI を取得してください。
+> 0.1.0 はまだ Maven Central に公開されていません。当面はソースから
+> `./mvnw -DskipTests install` でローカルリポジトリーへ配置してください。
+> リポジトリーをクローンして同梱 examples をそのまま起動したい場合は
+> [Run from source](./run-from-source) を参照。
 
 ## 評価コースの選択
 
 | コース | 所要 | 何が確認できるか |
 | --- | --- | --- |
-| **A**: バンドル済み Hello を CLI で動かす | 約 3 分 | 起動 / WebSocket 接続 / 基本ウィジェット |
-| **B**: ライブラリーとして取り込み独自スクリプト | 約 10 分 | API 感触 / 自分のロジックとの統合容易性 |
-| **C**: Spring Boot Starter で既存アプリへマウント | 約 15 分 | Spring Security / Session 連携 |
-| **D**: 機能カタログを一通り眺める | 約 5 分 | 提供ウィジェットの網羅性 |
+| **A**: ライブラリーとして取り込み独自スクリプト | 約 10 分 | API 感触 / 自分のロジックとの統合容易性 |
+| **B**: Spring Boot Starter で既存アプリへマウント | 約 15 分 | Spring Security / Session 連携 |
+| **C**: 機能カタログを一通り眺める | 約 5 分 | 提供ウィジェットの網羅性 |
 
-## A. バンドル済み Hello デモを動かす
-
-```sh
-git clone https://github.com/t-izuno/streamlit4j.git
-cd streamlit4j
-./mvnw -DskipTests install
-
-# 8501 はリッスンポート
-java -jar cli/target/streamlit4j-cli-0.1.0-SNAPSHOT.jar 8501
-```
-
-ブラウザーで <http://localhost:8501> を開くと、`examples/Hello.java` の内容（タイトル / マークダウン / スライダー / メトリック / ボタン）が表示される。
-
-確認ポイント:
-
-- スライダーを動かすと右側のメトリックが追従するか
-- 「Greet」ボタンを押すとトースト通知が出るか
-- ブラウザー DevTools の Network タブで `ws://localhost:8501/ws` を流れる JSON envelope を観察
-
-## B. ライブラリーとして取り込む
+## A. ライブラリーとして取り込む
 
 `pom.xml`:
 
@@ -100,7 +83,7 @@ public final class MyApp {
 - `render()` を編集 → 再起動だけで UI が変わるか
 - セッションを別タブで開くと独立した state を持つか（同一スライダー位置にならないか）
 
-## C. Spring Boot Starter を試す
+## B. Spring Boot Starter を試す
 
 詳細手順は [Spring Boot Integration](./spring-boot) を参照。要点だけ:
 
@@ -124,23 +107,23 @@ streamlit4j:
 - 既存 Spring Security の `SecurityFilterChain` でアクセス制御が効くか
 - Spring Session（Redis 等）と組み合わせて HTTP セッション破棄 → streamlit4j セッション連動消滅するか
 
-## D. 機能カタログを眺める
+## C. 機能カタログを眺める
 
-`examples/` に主要機能のサンプルが揃っている。
+`examples/` に主要機能のサンプルが揃っている。各デモは A 候補
+（`io.streamlit4j.examples.<Name>`、`examples/embedded` 配下）と
+B 候補（`io.streamlit4j.examples.spring.<name>.SpringBoot<Name>App`、
+`examples/spring-boot` 配下）の両方で起動可能。
 
 | デモ | 確認できる要素 |
 | --- | --- |
 | `Hello` | title / markdown / slider / metric / button / toast |
 | `WidgetsDemo` | text / number / select / radio / checkbox / button / slider / date / time / colorPicker |
-| `DataDemo` | dataframe / table / line / bar / area / scatter / metric / cache |
-| `LayoutDemo` | columns / container / expander / tabs / sidebar |
+| `LayoutDemo` | columns / container / expander / tabs / sidebar / form |
+| `DataDemo` | dataframe / line / bar / area / scatter / metric / cache |
 | `ComponentDemo` | カスタムコンポーネント（star-rating） |
+| `ShowcaseDemo` | 上記全カテゴリーを 1 画面で網羅したショーケース |
 
-`cli` の `--watch` フラグでスクリプト変更時にフロントへリロード通知も送れる:
-
-```sh
-java -jar cli/target/streamlit4j-cli-0.1.0-SNAPSHOT.jar 8501 --watch ./src/main/java
-```
+クローンから手早く起動する手順は [Run from source](./run-from-source) を参照。
 
 ## 再実行モデルの理解
 

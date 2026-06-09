@@ -2,7 +2,8 @@
 
 > 日本語: [README.ja.md](./README.ja.md)
 
-An interactive data-app and dashboard framework for Java. streamlit4j brings the same "script re-run + automatic re-render" model that Streamlit Python is known for to the JVM.
+An interactive data-app and dashboard framework for Java. streamlit4j brings the same
+"script re-run + automatic re-render" model that Streamlit Python is known for to the JVM.
 
 > **Independent community open-source software.** streamlit4j is not affiliated with,
 > endorsed by, or sponsored by Snowflake, Inc. or the Streamlit project. The name
@@ -39,26 +40,22 @@ Categories provided (full list: [Reference overview](docs/public/reference/overv
 | Layout | columns / container / expander / tabs / sidebar / empty |
 | Other | form / cache / pages / custom components / rerun / state |
 
-## How to adopt (three options)
+## How to adopt (two options)
 
-Pick the form that fits your scenario.
+streamlit4j is a library — you write your own Java code and the framework drives the UI. Pick the form that fits your scenario.
 
 | Form | Use case | Entry point |
 | --- | --- | --- |
-| **A. JBang one-liner** | Run it on your machine quickly | `jbang app install streamlit4j@t-izuno/streamlit4j` |
-| **B. Library (core + server)** | Embed in an existing Java project / launch from your own `main` | Add `streamlit4j-core` + `streamlit4j-server` as dependencies |
-| **C. Spring Boot Starter** | Mount as one feature of a Spring Boot app | Add `streamlit4j-spring-boot-starter` as a dependency |
+| **A. Library (core + server)** | Embed in an existing Java project / launch from your own `main` | Add `streamlit4j-core` + `streamlit4j-server` as dependencies |
+| **B. Spring Boot Starter** | Mount as one feature of a Spring Boot app | Add `streamlit4j-spring-boot-starter` as a dependency |
 
-### A. JBang one-liner (for evaluation)
+> Want to see it running first? Clone the repo and pick an example —
+> [`examples/embedded`](examples/embedded) ships standalone `main` launchers (Library form)
+> and [`examples/spring-boot`](examples/spring-boot) ships matching `SpringBoot<Name>App`
+> launchers (Spring Boot form) for the same six demos. See
+> [Run from source](docs/public/guide/run-from-source.md).
 
-```sh
-jbang app install streamlit4j@t-izuno/streamlit4j
-streamlit4j 8501          # → http://localhost:8501
-```
-
-Runs the minimal demo in `examples/Hello.java`.
-
-### B. Library (for your own script)
+### A. Library (for your own script)
 
 `pom.xml`:
 
@@ -95,7 +92,7 @@ public final class App {
 }
 ```
 
-### C. Spring Boot Starter (mount inside an existing web app)
+### B. Spring Boot Starter (mount inside an existing web app)
 
 ```xml
 <dependency>
@@ -112,7 +109,8 @@ streamlit4j:
   base-path: /streamlit       # default /streamlit
 ```
 
-Declare one `@Bean EntrypointSource` and your script is mounted with full Spring Security / Spring Session integration. See [Spring Boot Integration](docs/public/guide/spring-boot.md) for details.
+Declare one `@Bean EntrypointSource` and your script is mounted with full Spring Security /
+Spring Session integration. See [Spring Boot Integration](docs/public/guide/spring-boot.md) for details.
 
 ## Modules
 
@@ -121,9 +119,9 @@ Declare one `@Bean EntrypointSource` and your script is mounted with full Spring
 | `io.streamlit4j:streamlit4j-core` | Framework-agnostic execution engine |
 | `io.streamlit4j:streamlit4j-server` | Embedded Jetty + WebSocket |
 | `io.streamlit4j:streamlit4j-frontend-assets` | Pre-built frontend bundled in classpath |
-| `io.streamlit4j:streamlit4j-cli` | CLI distributed via JBang |
 | `io.streamlit4j:streamlit4j-spring-boot-starter` | Spring Boot auto-configuration |
-| `io.streamlit4j:streamlit4j-examples` | Sample apps (Hello / Widgets / Data / Layout / Component) |
+| `io.streamlit4j:streamlit4j-examples-embedded` | Standalone demos launched via own `main` + embedded `Streamlit4jServer` |
+| `io.streamlit4j:streamlit4j-examples-spring-boot` | Spring Boot launchers that mount the embedded demos |
 
 ## Constraints
 
@@ -139,8 +137,10 @@ Things you should know before adopting.
 
 ## Documentation
 
-- [Getting Started](docs/public/guide/getting-started.md) — evaluation paths for JBang / library / Spring Boot
-- [Reference](docs/public/reference/overview.md) — Java signature, protocol envelope, and frontend rendering for every `St.*` element
+- [Getting Started](docs/public/guide/getting-started.md) — library and Spring Boot adoption paths
+- [Run from source](docs/public/guide/run-from-source.md) — clone the repo and launch the bundled showcase demo
+- [Reference](docs/public/reference/overview.md) — Java signature, protocol envelope,
+  and frontend rendering for every `St.*` element
 - [Custom Components Guide](docs/public/guide/custom-components.md) — adding your own React renderers
 - [Spring Boot Integration](docs/public/guide/spring-boot.md) — auto-config, Security, and Session interop
 

@@ -2,6 +2,7 @@ package io.streamlit4j.examples;
 
 import io.streamlit4j.core.api.St;
 import io.streamlit4j.core.domain.SessionState;
+import io.streamlit4j.server.Streamlit4jServer;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,12 +13,15 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Comprehensive streamlit4j showcase used as the default CLI demo. Features a
- * left sidebar with navigation among multiple feature pages (Home / To-do /
- * Widgets / Layout / Data / About). Each page exercises a different facet of
- * the public {@code St.*} API.
+ * Comprehensive streamlit4j showcase featuring a left sidebar with navigation
+ * among multiple feature pages (Home / To-do / Widgets / Layout / Data /
+ * About). Each page exercises a different facet of the public {@code St.*}
+ * API. Runnable as
+ * {@code java -cp <classpath> io.streamlit4j.examples.ShowcaseDemo [port]}.
  */
 public final class ShowcaseDemo {
+
+    private static final int DEFAULT_PORT = 8501;
 
     private static final String NAV_HOME = "Home";
     private static final String NAV_TODO = "To-do list";
@@ -29,6 +33,20 @@ public final class ShowcaseDemo {
     private static final List<String> PAGES = List.of(NAV_HOME, NAV_TODO, NAV_WIDGETS, NAV_LAYOUT, NAV_DATA, NAV_ABOUT);
 
     private ShowcaseDemo() {}
+
+    /**
+     * Boots an embedded server that serves this demo on the given port.
+     *
+     * @param args optional single positional argument: the listen port (default {@value #DEFAULT_PORT})
+     * @throws Exception when the server fails to start
+     */
+    public static void main(String[] args) throws Exception {
+        int port = args.length > 0 ? Integer.parseInt(args[0]) : DEFAULT_PORT;
+        try (Streamlit4jServer server = new Streamlit4jServer(port, () -> ShowcaseDemo::run)) {
+            server.start();
+            Thread.currentThread().join();
+        }
+    }
 
     /** Renders the demo. Invoked once per session by the runtime. */
     public static void run() {

@@ -1,11 +1,10 @@
 # Run from source
 
-The quickest path to clone the repository and launch the bundled demo without
-installing JBang. Time required: 5–10 minutes.
+The quickest path to clone the repository and launch one of the bundled
+examples. Time required: 5–10 minutes.
 
 > **Who this is for**: developers who want to run streamlit4j locally for
 > evaluation, sanity checks, or to contribute.
-> For one-liner startup via JBang, see [Installation](./installation#jbang).
 
 ## Prerequisites
 
@@ -47,22 +46,36 @@ cd streamlit4j
 | Option | Effect |
 | --- | --- |
 | `-DskipTests` | Skip unit tests for faster turnaround when you only need to launch the app (a full `mvn verify` takes several minutes) |
-| `install` | Places each module jar into the local `~/.m2/repository` so the `cli` module can resolve its dependencies |
+| `install` | Places each module jar into the local `~/.m2/repository` so the examples module can resolve its dependencies |
 
 The first run includes the frontend build (React + Vite) and the Maven
 dependency download, taking 2–5 minutes. Subsequent runs are incremental and
 finish in tens of seconds.
 
-## Step 3: Launch the demo
+## Step 3: Launch an example
+
+The examples module ships both Library-form (own `main`) and Spring Boot Starter-form
+launchers for every demo. Both forms render the same UI.
+
+### Path A (Library / own `main`)
 
 ```sh
-# 8501 is the listen port (change to any free port you like)
-java -jar cli/target/streamlit4j-cli-0.1.0-SNAPSHOT.jar 8501
+# 8501 is the listen port (change to any free port)
+./mvnw -pl examples/embedded -q exec:java \
+    -Dexec.mainClass=io.streamlit4j.examples.Hello \
+    -Dexec.args=8501
 ```
 
-The `cli` module is packaged as an executable jar (fat jar) with all
-dependencies bundled via `maven-shade-plugin`, so no additional classpath
-configuration is needed.
+The other bundled demos use the same pattern:
+
+| Main class | Elements covered |
+| --- | --- |
+| `io.streamlit4j.examples.Hello` | title / markdown / slider / metric / button |
+| `io.streamlit4j.examples.WidgetsDemo` | text / number / select / radio / checkbox / date / time / colorPicker |
+| `io.streamlit4j.examples.LayoutDemo` | columns / container / expander / tabs / sidebar / form |
+| `io.streamlit4j.examples.DataDemo` | dataframe / line / bar / area / scatter / metric / cache |
+| `io.streamlit4j.examples.ComponentDemo` | Custom components (star-rating) |
+| `io.streamlit4j.examples.ShowcaseDemo` | All categories in one sidebar-driven showcase |
 
 On startup you will see:
 
@@ -70,42 +83,42 @@ On startup you will see:
 streamlit4j listening on ws://localhost:8501/ws
 ```
 
+### Path B (Spring Boot Starter)
+
+Each demo ships a matching `SpringBoot<Name>App` launcher.
+
+```sh
+./mvnw -pl examples/spring-boot -q exec:java \
+    -Dexec.mainClass=io.streamlit4j.examples.spring.hello.SpringBootHelloApp
+```
+
+Each demo lives in its own sub-package
+(`io.streamlit4j.examples.spring.{hello,widgets,layout,data,component,showcase}`).
+Combine the package with the matching class name to launch the other demos. By
+default the app mounts under `${streamlit4j.base-path}` (default `/streamlit`), so
+open `http://localhost:8080/streamlit`.
+
 ## Step 4: Open in a browser
 
-Open <http://localhost:8501> to see the contents of `examples/Hello.java`
-(title / markdown / slider / metric / button).
+For Path A open <http://localhost:8501>; for Path B open <http://localhost:8080/streamlit>.
 
-Sanity checks:
+Sanity checks (for `Hello`):
 
 - Moving the slider updates the metric in real time
 - Pressing the **Greet** button triggers a toast notification
 - The browser DevTools **Network** tab shows the JSON envelopes flowing
-  through `ws://localhost:8501/ws`
+  through `ws://...`
 
 Stop the server with `Ctrl+C` in the launching shell.
-
-## Edit cycle (optional)
-
-To push auto-reload notifications to the frontend when you edit a script,
-add `--watch`:
-
-```sh
-java -jar cli/target/streamlit4j-cli-0.1.0-SNAPSHOT.jar 8501 --watch examples/src/main/java
-```
-
-When a file under `examples/src/main/java` changes, a `source_change:<path>`
-notification is broadcast to every connected client and the frontend
-reloads. (Class recompilation still has to happen separately.)
 
 ## Troubleshooting
 
 | Symptom | Cause / Fix |
 | --- | --- |
 | Fails with `enforcer requires JDK 21 LTS` | JDK is out of range (e.g. 25). Switch with `sdk use java 21.0.9-librca` |
-| `Address already in use` | Another process is holding 8501. Change to e.g. `-Dexec.args=8502` |
-| `no main manifest attribute` / `ClassNotFoundException` | Step 2's `install` was skipped, so the fat jar has not been produced. Run `./mvnw -DskipTests install` first |
+| `Address already in use` | Another process is holding 8501 / 8080. Switch with e.g. `-Dexec.args=8502` |
+| `ClassNotFoundException: io.streamlit4j...` | Step 2's `install` was skipped, so dependencies are not in place. Run `./mvnw -DskipTests install` first |
 | Server starts but the page is blank | The frontend may not be bundled. Rebuild with `./mvnw -pl frontend-assets clean install` |
-| Restart needed on every edit | `--watch` is not set, or the watched directory is wrong |
 
 ## Next steps
 

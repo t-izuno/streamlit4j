@@ -1,13 +1,17 @@
 package io.streamlit4j.examples;
 
 import io.streamlit4j.core.api.St;
+import io.streamlit4j.server.Streamlit4jServer;
 import java.util.List;
 
 /**
  * Demonstrates the layout primitives: columns / container / expander / tabs /
- * sidebar / form. Each section explains when to reach for which container.
+ * sidebar / form. Runnable as
+ * {@code java -cp <classpath> io.streamlit4j.examples.LayoutDemo [port]}.
  */
 public final class LayoutDemo {
+
+    private static final int DEFAULT_PORT = 8501;
 
     private LayoutDemo() {}
 
@@ -51,5 +55,19 @@ public final class LayoutDemo {
                 St.write("password length: " + password.length());
             }
         });
+    }
+
+    /**
+     * Boots an embedded server that serves this demo on the given port.
+     *
+     * @param args optional single positional argument: the listen port (default {@value #DEFAULT_PORT})
+     * @throws Exception when the server fails to start
+     */
+    public static void main(String[] args) throws Exception {
+        int port = args.length > 0 ? Integer.parseInt(args[0]) : DEFAULT_PORT;
+        try (Streamlit4jServer server = new Streamlit4jServer(port, () -> LayoutDemo::run)) {
+            server.start();
+            Thread.currentThread().join();
+        }
     }
 }

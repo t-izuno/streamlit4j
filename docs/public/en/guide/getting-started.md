@@ -10,37 +10,19 @@ A walkthrough for running streamlit4j and evaluating it firsthand. Time required
 | Maven Wrapper | `./mvnw` bundled with the repository | No additional install needed as long as `JAVA_HOME` points at JDK 21 |
 | Node.js | 22+ | Only when you want to modify the frontend |
 
-> 0.1.0 has not yet been published to Maven Central. For now, either place it in your local repository from source via `./mvnw install`, or obtain the CLI through JBang.
+> 0.1.0 has not yet been published to Maven Central. For now, place it in your local
+> repository from source via `./mvnw -DskipTests install`. If you just want to launch
+> the bundled examples from a clone, see [Run from source](./run-from-source).
 
 ## Choosing an evaluation track
 
 | Track | Time required | What you can verify |
 | --- | --- | --- |
-| **A**: Run the bundled Hello demo via the CLI | About 3 min | Launch / WebSocket connection / basic widgets |
-| **B**: Pull it in as a library and write your own script | About 10 min | Feel of the API / ease of integration with your own logic |
-| **C**: Mount on an existing app via the Spring Boot Starter | About 15 min | Spring Security / Session integration |
-| **D**: Skim the feature catalog | About 5 min | Coverage of the provided widgets |
+| **A**: Pull it in as a library and write your own script | About 10 min | Feel of the API / ease of integration with your own logic |
+| **B**: Mount on an existing app via the Spring Boot Starter | About 15 min | Spring Security / Session integration |
+| **C**: Skim the feature catalog | About 5 min | Coverage of the provided widgets |
 
-## A. Run the bundled Hello demo
-
-```sh
-git clone https://github.com/t-izuno/streamlit4j.git
-cd streamlit4j
-./mvnw -DskipTests install
-
-# 8501 is the listen port
-java -jar cli/target/streamlit4j-cli-0.1.0-SNAPSHOT.jar 8501
-```
-
-Open <http://localhost:8501> in a browser to see the contents of `examples/Hello.java` (title / markdown / slider / metric / button).
-
-Verification points:
-
-- Does moving the slider make the metric on the right follow along?
-- Does pressing the "Greet" button trigger a toast notification?
-- Observe the JSON envelopes flowing over `ws://localhost:8501/ws` in your browser's DevTools Network tab.
-
-## B. Pull it in as a library
+## A. Pull it in as a library
 
 `pom.xml`:
 
@@ -100,7 +82,7 @@ Verification points:
 - After editing `render()`, does the UI change with just a restart?
 - When you open a separate tab, does the session carry independent state (i.e. the sliders are not locked to the same position)?
 
-## C. Try the Spring Boot Starter
+## B. Try the Spring Boot Starter
 
 See [Spring Boot Integration](./spring-boot) for details. The essentials:
 
@@ -122,25 +104,27 @@ Declaring a single `@Bean EntrypointSource` is enough to run it under `${streaml
 Verification points:
 
 - Does access control via your existing Spring Security `SecurityFilterChain` take effect?
-- When combined with Spring Session (Redis, etc.), does destroying the HTTP session cascade into the streamlit4j session disappearing as well?
+- When combined with Spring Session (Redis, etc.), does destroying the HTTP session
+  cascade into the streamlit4j session disappearing as well?
 
-## D. Skim the feature catalog
+## C. Skim the feature catalog
 
-The `examples/` directory contains samples for the major features.
+The `examples/` directory contains samples for the major features. Each demo can be
+launched in either Path A form (`io.streamlit4j.examples.<Name>` under
+`examples/embedded`) or Path B form
+(`io.streamlit4j.examples.spring.<name>.SpringBoot<Name>App` under
+`examples/spring-boot`).
 
 | Demo | Elements you can verify |
 | --- | --- |
 | `Hello` | title / markdown / slider / metric / button / toast |
 | `WidgetsDemo` | text / number / select / radio / checkbox / button / slider / date / time / colorPicker |
-| `DataDemo` | dataframe / table / line / bar / area / scatter / metric / cache |
-| `LayoutDemo` | columns / container / expander / tabs / sidebar |
+| `LayoutDemo` | columns / container / expander / tabs / sidebar / form |
+| `DataDemo` | dataframe / line / bar / area / scatter / metric / cache |
 | `ComponentDemo` | Custom components (star-rating) |
+| `ShowcaseDemo` | All categories in one sidebar-driven showcase |
 
-The `cli`'s `--watch` flag also pushes reload notifications to the frontend on script changes:
-
-```sh
-java -jar cli/target/streamlit4j-cli-0.1.0-SNAPSHOT.jar 8501 --watch ./src/main/java
-```
+For a clone-and-launch walkthrough, see [Run from source](./run-from-source).
 
 ## Understanding the rerun model
 
@@ -160,7 +144,8 @@ Points to consider when deciding on adoption.
 - [ ] Are the widgets you need available? (See [Reference](../reference/overview) for coverage)
 - [ ] Are the charts sufficient for your use case? (v1 only ships placeholder rendering)
 - [ ] Does performance meet your requirements? (assumes virtual threads; one thread per session)
-- [ ] Is the security model consistent with your internal policies? (Spring Security integration supported; custom components are in-house only)
+- [ ] Is the security model consistent with your internal policies?
+      (Spring Security integration supported; custom components are in-house only)
 - [ ] Is the license (MIT) acceptable under your internal standards?
 - [ ] Are the constraints (README §"Constraints") within an acceptable range?
 

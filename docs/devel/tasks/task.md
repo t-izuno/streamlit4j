@@ -155,7 +155,7 @@
 | TASK-130 | 🚫 | playground を 0.1.0 ビルドに更新し公開する | TASK-126,TASK-129 |
 | TASK-131 | ⏳ | VitePress docs サイトの build を CI に組み込む | - |
 | TASK-132 | ⏳ | OSV-Scanner 検出時の対応フローを security-scan.md に追記する | - |
-| TASK-133 | ⏳ | cli の maven-shade-plugin で発生する同名ファイル警告を整理する | - |
+| TASK-133 | ⛔ | cli の maven-shade-plugin で発生する同名ファイル警告を整理する（cli モジュール撤廃により無効化） | - |
 | TASK-134 | ✅ | SpotBugs を Java 静的解析層として導入する | - |
 | TASK-135 | ✅ | PMD + CPD を導入し重複コード検出を含む追加静的解析を実施する | - |
 | TASK-136 | ✅ | Streamlit4jServer に静的アセット配信ハンドラーを追加（GET / で 404 になるバグ修正） | - |

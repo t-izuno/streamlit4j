@@ -15,7 +15,6 @@ group ID. Pick the dependencies that match your run mode.
 | `streamlit4j-server` | `io.streamlit4j:streamlit4j-server` | Standalone (embedded HTTP/WS server) |
 | `streamlit4j-frontend-assets` | `io.streamlit4j:streamlit4j-frontend-assets` | Always — bundles the SPA jar |
 | `streamlit4j-spring-boot-starter` | `io.streamlit4j:streamlit4j-spring-boot-starter` | Spring Boot host |
-| `streamlit4j-cli` | `io.streamlit4j:streamlit4j-cli` | Running scripts via CLI / JBang |
 
 All artifacts share the same version, so define it once via a BOM-style
 property or import the parent `dependencyManagement`.
@@ -77,18 +76,6 @@ dependencies {
   // implementation("io.streamlit4j:streamlit4j-spring-boot-starter:0.1.0")
 }
 ```
-
-## JBang
-
-For one-file experimentation without a full Maven project, install the CLI via
-JBang once 0.1.0 lands:
-
-```sh
-jbang app install streamlit4j@t-izuno/streamlit4j
-streamlit4j 8501
-```
-
-The catalog definition lives at the repository root (`jbang-catalog.json`).
 
 ## JDK requirements
 
