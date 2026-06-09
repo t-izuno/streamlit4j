@@ -35,17 +35,6 @@ public final class ChatDemo {
         }
         final List<Message> messages = stored;
 
-        if (messages.isEmpty()) {
-            St.markdown("_The conversation is empty. Say hello below._");
-        } else {
-            for (Message m : messages) {
-                String speaker = "user".equals(m.role()) ? "**You**" : "**Bot**";
-                St.markdown(speaker + " — " + m.text());
-            }
-        }
-
-        St.divider();
-
         St.form("chat_input", () -> {
             String text = St.textInput("Your message", "");
             boolean sent = St.formSubmitButton("Send");
@@ -56,8 +45,20 @@ public final class ChatDemo {
             }
         });
 
+        St.divider();
+
+        if (messages.isEmpty()) {
+            St.markdown("_No messages yet. Send something above._");
+        } else {
+            for (Message m : messages) {
+                String speaker = "user".equals(m.role()) ? "**You**" : "**Bot**";
+                St.markdown(speaker + " — " + m.text());
+            }
+        }
+
         if (!messages.isEmpty() && St.button("Clear conversation")) {
             messages.clear();
+            St.rerun();
         }
     }
 

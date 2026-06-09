@@ -1,8 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { ErrorBanner, type AppError } from './components/ErrorBanner';
 import type { Envelope, RenderNode } from './protocol';
 import { applyPatches, RenderTree } from './render';
 import { applyTheme, readStoredTheme, type Theme } from './theme';
 import { StreamlitClient } from './ws';
+
+let errorIdCounter = 0;
+function nextErrorId(): string {
+  errorIdCounter += 1;
+  return `err_${errorIdCounter}`;
+}
 
 interface AppProps {
   websocketUrl?: string;
@@ -13,7 +20,10 @@ export function App({ websocketUrl, client: injectedClient }: AppProps = {}) {
   const [root, setRoot] = useState<RenderNode | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [theme, setTheme] = useState<Theme>(readStoredTheme());
+  const [errors, setErrors] = useState<AppError[]>([]);
   const clientRef = useRef<StreamlitClient | null>(null);
+  const closingByUnmountRef = useRef(false);
+  const everOpenedRef = useRef(false);
 
   useEffect(() => {
     applyTheme(theme);
@@ -28,8 +38,51 @@ export function App({ websocketUrl, client: injectedClient }: AppProps = {}) {
         setSessionId(envelope.sessionId);
       } else if (envelope.type === 'render_delta') {
         setRoot((prev) => applyPatches(prev, envelope.patches));
+      } else if (envelope.type === 'error') {
+        setErrors((prev) => [
+          ...prev,
+          {
+            id: nextErrorId(),
+            kind: 'script',
+            title: 'Script error',
+            message: envelope.message || 'Unknown error',
+            stackTrace: envelope.stackTrace || undefined,
+          },
+        ]);
       } else if (envelope.type === 'reload' && typeof window !== 'undefined') {
         window.location.reload();
+      }
+    });
+    client.onConnectionStateChange((state, info) => {
+      if (state === 'open') {
+        everOpenedRef.current = true;
+        return;
+      }
+      if (state === 'error') {
+        setErrors((prev) => [
+          ...prev,
+          {
+            id: nextErrorId(),
+            kind: 'connection',
+            title: 'Connection error',
+            message: info.reason || 'WebSocket error',
+          },
+        ]);
+        return;
+      }
+      if (state === 'closed') {
+        if (closingByUnmountRef.current) return;
+        const codeLabel = info.code !== undefined ? `code ${info.code}` : 'closed';
+        const message = info.reason || `WebSocket ${codeLabel}`;
+        setErrors((prev) => [
+          ...prev,
+          {
+            id: nextErrorId(),
+            kind: 'connection',
+            title: everOpenedRef.current ? 'Connection lost' : 'Failed to connect',
+            message,
+          },
+        ]);
       }
     });
     if (!injectedClient) {
@@ -38,10 +91,15 @@ export function App({ websocketUrl, client: injectedClient }: AppProps = {}) {
     }
     return () => {
       if (!injectedClient) {
+        closingByUnmountRef.current = true;
         client.close();
       }
     };
   }, [injectedClient, websocketUrl]);
+
+  const dismissError = useCallback((id: string) => {
+    setErrors((prev) => prev.filter((e) => e.id !== id));
+  }, []);
 
   useEffect(() => {
     if (!sessionId || !clientRef.current) return;
@@ -74,7 +132,12 @@ export function App({ websocketUrl, client: injectedClient }: AppProps = {}) {
   );
 
   if (!root) {
-    return <p role="status">Connecting…</p>;
+    return (
+      <div className="streamlit4j-shell streamlit4j-shell--loading">
+        <ErrorBanner errors={errors} onDismiss={dismissError} />
+        <p role="status">Connecting…</p>
+      </div>
+    );
   }
   return (
     <div className="streamlit4j-shell">
@@ -128,6 +191,7 @@ export function App({ websocketUrl, client: injectedClient }: AppProps = {}) {
           </button>
         </div>
       </div>
+      <ErrorBanner errors={errors} onDismiss={dismissError} />
       <main className="streamlit4j-shell__main">
         <RenderTree root={root} onWidgetChange={handleWidgetChange} />
       </main>
