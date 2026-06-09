@@ -27,17 +27,27 @@ public final class RenderTreeDiff {
         List<RenderNode> oldChildren = oldRoot.children();
         List<RenderNode> newChildren = newRoot.children();
         List<Patch> patches = new ArrayList<>();
-        int max = Math.max(oldChildren.size(), newChildren.size());
-        for (int i = 0; i < max; i++) {
-            String path = "main/" + i;
-            if (i >= newChildren.size()) {
-                patches.add(Patch.remove(path));
-            } else if (i >= oldChildren.size()) {
-                patches.add(Patch.insert(path, newChildren.get(i)));
-            } else if (!oldChildren.get(i).equals(newChildren.get(i))) {
-                patches.add(Patch.replace(path, newChildren.get(i)));
+        int common = Math.min(oldChildren.size(), newChildren.size());
+
+        // 1. Replace overlapping indices that changed.
+        for (int i = 0; i < common; i++) {
+            if (!oldChildren.get(i).equals(newChildren.get(i))) {
+                patches.add(Patch.replace("main/" + i, newChildren.get(i)));
             }
         }
+
+        // 2. Remove trailing old children. Always remove at the same fixed
+        //    index (newChildren.size()) because each remove shifts later
+        //    elements down on the client side.
+        for (int i = oldChildren.size(); i > newChildren.size(); i--) {
+            patches.add(Patch.remove("main/" + newChildren.size()));
+        }
+
+        // 3. Append new trailing children.
+        for (int i = oldChildren.size(); i < newChildren.size(); i++) {
+            patches.add(Patch.insert("main/" + i, newChildren.get(i)));
+        }
+
         return patches;
     }
 }
