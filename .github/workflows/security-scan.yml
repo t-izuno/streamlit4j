@@ -1,7 +1,7 @@
 name: Security scan (manual)
 
 # 定期実行はせず、メンテナーが手動で起動する。
-# 手順: docs/internal/security-scan.md
+# 手順: docs/devel/security-scan.md
 on:
   workflow_dispatch:
 

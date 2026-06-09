@@ -1,0 +1,171 @@
+# Getting Started
+
+A walkthrough for running streamlit4j and evaluating it firsthand. Time required: 10–20 minutes.
+
+## Prerequisites
+
+| Tool | Version | Purpose |
+| --- | --- | --- |
+| JDK | 21 LTS (24 or below also works) | Required at runtime. JDK 25 is unsupported due to formatter internal API incompatibility |
+| Maven Wrapper | `./mvnw` bundled with the repository | No additional install needed as long as `JAVA_HOME` points at JDK 21 |
+| Node.js | 22+ | Only when you want to modify the frontend |
+
+> 0.1.0 has not yet been published to Maven Central. For now, either place it in your local repository from source via `./mvnw install`, or obtain the CLI through JBang.
+
+## Choosing an evaluation track
+
+| Track | Time required | What you can verify |
+| --- | --- | --- |
+| **A**: Run the bundled Hello demo via the CLI | About 3 min | Launch / WebSocket connection / basic widgets |
+| **B**: Pull it in as a library and write your own script | About 10 min | Feel of the API / ease of integration with your own logic |
+| **C**: Mount on an existing app via the Spring Boot Starter | About 15 min | Spring Security / Session integration |
+| **D**: Skim the feature catalog | About 5 min | Coverage of the provided widgets |
+
+## A. Run the bundled Hello demo
+
+```sh
+git clone https://github.com/t-izuno/streamlit4j.git
+cd streamlit4j
+./mvnw -DskipTests install
+
+# 8501 is the listen port
+java -jar cli/target/streamlit4j-cli-0.1.0-SNAPSHOT.jar 8501
+```
+
+Open <http://localhost:8501> in a browser to see the contents of `examples/Hello.java` (title / markdown / slider / metric / button).
+
+Verification points:
+
+- Does moving the slider make the metric on the right follow along?
+- Does pressing the "Greet" button trigger a toast notification?
+- Observe the JSON envelopes flowing over `ws://localhost:8501/ws` in your browser's DevTools Network tab.
+
+## B. Pull it in as a library
+
+`pom.xml`:
+
+```xml
+<dependencies>
+  <dependency>
+    <groupId>io.streamlit4j</groupId>
+    <artifactId>streamlit4j-core</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+  </dependency>
+  <dependency>
+    <groupId>io.streamlit4j</groupId>
+    <artifactId>streamlit4j-server</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+  </dependency>
+</dependencies>
+```
+
+`src/main/java/com/example/MyApp.java`:
+
+```java
+package com.example;
+
+import io.streamlit4j.core.api.St;
+import io.streamlit4j.server.Streamlit4jServer;
+
+public final class MyApp {
+
+  public static void main(String[] args) throws Exception {
+    try (var server = new Streamlit4jServer(8501, () -> MyApp::render)) {
+      server.start();
+      System.out.println("Open http://localhost:" + server.port());
+      Thread.currentThread().join();
+    }
+  }
+
+  static void render() {
+    St.title("Sales dashboard");
+    St.markdown("Pick a target month:");
+    int month = St.slider("Month", 1, 12, 6);
+    St.metric("Selected month", month);
+    if (St.button("Submit")) {
+      St.toast("Submitted month " + month);
+    }
+  }
+}
+```
+
+Run it:
+
+```sh
+./mvnw -q exec:java -Dexec.mainClass=com.example.MyApp
+```
+
+Verification points:
+
+- After editing `render()`, does the UI change with just a restart?
+- When you open a separate tab, does the session carry independent state (i.e. the sliders are not locked to the same position)?
+
+## C. Try the Spring Boot Starter
+
+See [Spring Boot Integration](./spring-boot) for details. The essentials:
+
+```xml
+<dependency>
+  <groupId>io.streamlit4j</groupId>
+  <artifactId>streamlit4j-spring-boot-starter</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+</dependency>
+```
+
+```yaml
+streamlit4j:
+  base-path: /streamlit
+```
+
+Declaring a single `@Bean EntrypointSource` is enough to run it under `${streamlit4j.base-path}`.
+
+Verification points:
+
+- Does access control via your existing Spring Security `SecurityFilterChain` take effect?
+- When combined with Spring Session (Redis, etc.), does destroying the HTTP session cascade into the streamlit4j session disappearing as well?
+
+## D. Skim the feature catalog
+
+The `examples/` directory contains samples for the major features.
+
+| Demo | Elements you can verify |
+| --- | --- |
+| `Hello` | title / markdown / slider / metric / button / toast |
+| `WidgetsDemo` | text / number / select / radio / checkbox / button / slider / date / time / colorPicker |
+| `DataDemo` | dataframe / table / line / bar / area / scatter / metric / cache |
+| `LayoutDemo` | columns / container / expander / tabs / sidebar |
+| `ComponentDemo` | Custom components (star-rating) |
+
+The `cli`'s `--watch` flag also pushes reload notifications to the frontend on script changes:
+
+```sh
+java -jar cli/target/streamlit4j-cli-0.1.0-SNAPSHOT.jar 8501 --watch ./src/main/java
+```
+
+## Understanding the rerun model
+
+For each WebSocket session, `render()` runs on a **virtual thread**. When a widget changes:
+
+1. Update the session state with the new value
+2. Rerun `render()` (serialized within the same session)
+3. Diff against the previous render tree (keyed) and send a `render_delta`
+4. The frontend applies the patch
+
+This is the same model as Streamlit, where rewriting the script alone is enough to handle state management.
+
+## Evaluation checklist
+
+Points to consider when deciding on adoption.
+
+- [ ] Are the widgets you need available? (See [Reference](../reference/overview) for coverage)
+- [ ] Are the charts sufficient for your use case? (v1 only ships placeholder rendering)
+- [ ] Does performance meet your requirements? (assumes virtual threads; one thread per session)
+- [ ] Is the security model consistent with your internal policies? (Spring Security integration supported; custom components are in-house only)
+- [ ] Is the license (MIT) acceptable under your internal standards?
+- [ ] Are the constraints (README §"Constraints") within an acceptable range?
+
+## Next steps
+
+- [Reference](../reference/overview) — Full API listing
+- [Custom Components Guide](./custom-components) — Adding your own React parts
+- [Spring Boot Integration](./spring-boot) — auto-config and Session / Security integration

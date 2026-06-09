@@ -156,5 +156,5 @@ use `mvn -pl examples spring-boot:run` directly.)
 
 ## See also
 
-- [Getting Started](./getting-started) — standalone CLI / Maven workflow
-- [Reference](../reference/overview) — full element catalog
+- [Getting Started](/guide/getting-started) (Japanese) — standalone CLI / Maven workflow
+- [Reference](/reference/overview) (Japanese) — full element catalog

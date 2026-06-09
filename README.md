@@ -27,7 +27,7 @@ public final class SalesDashboard {
 }
 ```
 
-Categories provided (full list: [Reference overview](docs/reference/overview.md)):
+Categories provided (full list: [Reference overview](docs/public/reference/overview.md)):
 
 | Category | Main elements |
 | --- | --- |
@@ -112,7 +112,7 @@ streamlit4j:
   base-path: /streamlit       # default /streamlit
 ```
 
-Declare one `@Bean EntrypointSource` and your script is mounted with full Spring Security / Spring Session integration. See [Spring Boot Integration](docs/guide/spring-boot.md) for details.
+Declare one `@Bean EntrypointSource` and your script is mounted with full Spring Security / Spring Session integration. See [Spring Boot Integration](docs/public/guide/spring-boot.md) for details.
 
 ## Modules
 
@@ -139,10 +139,10 @@ Things you should know before adopting.
 
 ## Documentation
 
-- [Getting Started](docs/guide/getting-started.md) — evaluation paths for JBang / library / Spring Boot
-- [Reference](docs/reference/overview.md) — Java signature, protocol envelope, and frontend rendering for every `St.*` element
-- [Custom Components Guide](docs/guide/custom-components.md) — adding your own React renderers
-- [Spring Boot Integration](docs/guide/spring-boot.md) — auto-config, Security, and Session interop
+- [Getting Started](docs/public/guide/getting-started.md) — evaluation paths for JBang / library / Spring Boot
+- [Reference](docs/public/reference/overview.md) — Java signature, protocol envelope, and frontend rendering for every `St.*` element
+- [Custom Components Guide](docs/public/guide/custom-components.md) — adding your own React renderers
+- [Spring Boot Integration](docs/public/guide/spring-boot.md) — auto-config, Security, and Session interop
 
 ## Contributing
 
@@ -150,4 +150,4 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for build, test, and pull-request guideli
 
 ## License
 
-[MIT License](LICENSE).
+[MIT License](LICENSE)

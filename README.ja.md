@@ -27,7 +27,7 @@ public final class SalesDashboard {
 }
 ```
 
-提供されるカテゴリーは次のとおり（[reference 一覧](docs/reference/overview.md)）。
+提供されるカテゴリーは次のとおり（[reference 一覧](docs/public/reference/overview.md)）。
 
 | カテゴリー | 主な要素 |
 | --- | --- |
@@ -112,7 +112,7 @@ streamlit4j:
   base-path: /streamlit       # 既定 /streamlit
 ```
 
-`@Bean EntrypointSource` を 1 つ宣言するだけで、Spring Security / Spring Session と連携した状態でマウントされる。詳細は [Spring Boot Integration](docs/guide/spring-boot.md)。
+`@Bean EntrypointSource` を 1 つ宣言するだけで、Spring Security / Spring Session と連携した状態でマウントされる。詳細は [Spring Boot Integration](docs/public/guide/spring-boot.md)。
 
 ## モジュール一覧
 
@@ -139,10 +139,10 @@ streamlit4j:
 
 ## ドキュメント
 
-- [Getting Started](docs/guide/getting-started.md) — JBang / ライブラリー / Spring Boot での評価手順
-- [Reference](docs/reference/overview.md) — `St.*` 全要素の Java シグネチャー / プロトコル / フロント描画
-- [Custom Components Guide](docs/guide/custom-components.md) — 独自 React レンダラーの追加
-- [Spring Boot Integration](docs/guide/spring-boot.md) — auto-config と Security / Session 連携
+- [Getting Started](docs/public/guide/getting-started.md) — JBang / ライブラリー / Spring Boot での評価手順
+- [Reference](docs/public/reference/overview.md) — `St.*` 全要素の Java シグネチャー / プロトコル / フロント描画
+- [Custom Components Guide](docs/public/guide/custom-components.md) — 独自 React レンダラーの追加
+- [Spring Boot Integration](docs/public/guide/spring-boot.md) — auto-config と Security / Session 連携
 
 ## Contributing
 
@@ -150,4 +150,4 @@ streamlit4j:
 
 ## ライセンス
 
-[MIT License](LICENSE)。
+[MIT License](LICENSE)

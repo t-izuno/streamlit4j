@@ -1,7 +1,7 @@
 # TASKS
 
 マイルストーン: M1
-ゴール: docs/requirements.md の v1 スコープ全体（実行エンジン・コア・互換拡充・統合・公開）を満たし streamlit4j 0.1.0 を Maven Central に公開する
+ゴール: docs/devel/requirements.md の v1 スコープ全体（実行エンジン・コア・互換拡充・統合・公開）を満たし streamlit4j 0.1.0 を Maven Central に公開する
 
 ## ワークフロールール
 
@@ -158,6 +158,7 @@
 | TASK-133 | ⏳ | cli の maven-shade-plugin で発生する同名ファイル警告を整理する | - |
 | TASK-134 | ✅ | SpotBugs を Java 静的解析層として導入する | - |
 | TASK-135 | ✅ | PMD + CPD を導入し重複コード検出を含む追加静的解析を実施する | - |
+| TASK-136 | ✅ | Streamlit4jServer に静的アセット配信ハンドラーを追加（GET / で 404 になるバグ修正） | - |
 
 ## タスク詳細
 
@@ -339,32 +340,32 @@
 
 ### TASK-115
 
-- 補足: VitePress 1.6.4 を採用。`docs/.vitepress/config.ts` でナビ / サイドバー / 検索 /
-  footer disclaimer を設定。`docs/package.json` に `docs:dev` / `docs:build` / `docs:preview`
+- 補足: VitePress 1.6.4 を採用。`docs/public/.vitepress/config.ts` でナビ / サイドバー / 検索 /
+  footer disclaimer を設定。`docs/public/package.json` に `docs:dev` / `docs:build` / `docs:preview`
   スクリプトを定義
-- 補足: ランディング `docs/index.md` (hero + features) と、`docs/guide/getting-started.md`、
-  `docs/guide/spring-boot.md`、`docs/reference/overview.md` のスケルトンを配置
-- 補足: 既存 `docs/requirements.md` / `docs/specification.md` / `docs/design.md` をサイトから
-  参照。`docs/tasks/**` はサイト対象外
+- 補足: ランディング `docs/public/index.md` (hero + features) と、`docs/public/guide/getting-started.md`、
+  `docs/public/guide/spring-boot.md`、`docs/public/reference/overview.md` のスケルトンを配置
+- 補足: 既存 `docs/devel/requirements.md` / `docs/devel/specification.md` / `docs/devel/design.md` をサイトから
+  参照。`docs/devel/tasks/**` はサイト対象外
 - 注意: 詳細コンテンツは TASK-116 / 117 / 120 / 121 で肉付け。デプロイ自動化は未定義。
   GitHub Pages 想定だが本タスクのスコープ外
 
 ### TASK-113
 
-- 補足: ランディング (`docs/index.md`) hero 直下に強調表示の disclaimer を配置。
+- 補足: ランディング (`docs/public/index.md`) hero 直下に強調表示の disclaimer を配置。
   `themeConfig.footer.message` でサイト全ページのフッターにも常時掲出
 - 注意: 各ガイドページにも個別 disclaimer を出すかは TASK-116 以降の編集方針に委ねる
 
 ### TASK-116
 
-- 補足: `docs/guide/getting-started.md` を完成版に差し替え。Prerequisites / CLI 起動 /
+- 補足: `docs/public/guide/getting-started.md` を完成版に差し替え。Prerequisites / CLI 起動 /
   Maven 経由でのアプリ作成 / 再実行モデル解説 / `--watch` フラグ案内まで網羅
 - 補足: コード例は `examples/Hello.java` と整合。Maven Central パブリッシュ前提のため
   バージョンは `0.1.0-SNAPSHOT` 表記
 
 ### TASK-120
 
-- 補足: `docs/guide/spring-boot.md` を完成版に差し替え。starter 依存・EntrypointSource /
+- 補足: `docs/public/guide/spring-boot.md` を完成版に差し替え。starter 依存・EntrypointSource /
   base-path 設定・Spring Security 委譲・Spring Session 自動連動・auto-config 配線一覧を網羅
 - 補足: `examples/spring/SpringBootHelloApp` を参照する end-to-end 例を含む
 - 注意: `spring-boot-maven-plugin` 統合は TASK-122（Maven Central パブリッシュ準備）に持ち越し
@@ -388,13 +389,13 @@
 - 補足: `gpg.skip=true` をデフォルトにし、リリース時のみ `-Dgpg.skip=false` で
   明示的に署名発火する運用。普段の `mvn -P release package` は失敗しない
 - 補足: Sonatype Central Portal アカウント情報は pom にハードコードせず、
-  `~/.m2/settings.xml` の `<server id="central">` で扱う運用。手順は `docs/publishing.md`
+  `~/.m2/settings.xml` の `<server id="central">` で扱う運用。手順は `docs/devel/publishing.md`
 - 注意: 実際の鍵生成・鍵公開・Portal アカウント作成は配布者責任。CI でのシークレット注入は
   TASK-128 のリリース工程で扱う想定
 
 ### TASK-124
 
-- 補足: `docs/guide/installation.md` を新設。Maven 座標一覧 / 標準 / Spring Boot /
+- 補足: `docs/public/guide/installation.md` を新設。Maven 座標一覧 / 標準 / Spring Boot /
   Gradle / JBang / Snapshot / GPG 検証手順を網羅
 - 補足: VitePress サイドバーに Installation ページを追加
 - 注意: 0.1.0 が Maven Central に上がるまでは Snapshot 取得手順がメインパス
@@ -526,7 +527,7 @@
 
 ### TASK-109
 
-- 補足: `docs/adr/` を新設し、アーキテクチャー判断を 5 件の ADR として確定:
+- 補足: `docs/devel/adr/` を新設し、アーキテクチャー判断を 5 件の ADR として確定:
   - ADR-0002 プロトコルは JSON（Jackson）。MessagePack は不採用
   - ADR-0004 GraalVM ネイティブ対応は v1.x 以降へ繰り延べ
   - ADR-0005 マルチページは `St.pages(List<Page>)` の明示登録を既定
@@ -551,8 +552,8 @@
 - 補足: 反映先 3 箇所:
   - `frontend/src/styles.css`: CSS 変数を teal パレットに刷新
   - `frontend/index.html`: `link rel="icon"` で favicon を読み込み
-  - `docs/.vitepress/config.ts`: `logo` / `head` favicon を設定、
-    `docs/.vitepress/theme/{index.ts,brand.css}` で `--vp-c-brand-*` を上書き
+  - `docs/public/.vitepress/config.ts`: `logo` / `head` favicon を設定、
+    `docs/public/.vitepress/theme/{index.ts,brand.css}` で `--vp-c-brand-*` を上書き
 - 補足: VitePress 採用の根拠を [ADR-0010](../adr/0010-vitepress-for-docs.md) として
   併せて記録（フロント Vite/TS スタックとの一致 / Markdown ファースト /
   `--vp-c-brand-*` 経由のテーマ刷新容易性が決定理由）
@@ -565,25 +566,25 @@
 
 ### TASK-117
 
-- 補足: `docs/reference/` を `St` のカテゴリー分割（`core/api/*Widgets.java` 群）に
+- 補足: `docs/public/reference/` を `St` のカテゴリー分割（`core/api/*Widgets.java` 群）に
   合わせて 13 ページ構成に整備（overview / text / status / data / media /
   charts / inputs / files / layout / forms / cache / pages / components /
   control）。各要素について Java API シグネチャー / プロトコル `kind` と props
   / フロント描画の 3 点をテーブルで網羅
-- 補足: `docs/.vitepress/config.ts` の `/reference/` サイドバーを 13 リンクに拡張
+- 補足: `docs/public/.vitepress/config.ts` の `/reference/` サイドバーを 13 リンクに拡張
 - 補足: `overview.md` から ADR / specification への横断リンクを整備
 - 注意: chart 系は v1 ではプレースホルダー描画。実描画ライブラリー対応は backlog
 - 注意: `dataEditor` の編集 → サーバー反映は v1 未実装。ノード描画のみ
 
 ### TASK-121
 
-- 補足: `docs/guide/custom-components.md` を新設。in-process 方式の手順を
+- 補足: `docs/public/guide/custom-components.md` を新設。in-process 方式の手順を
   Java（CustomComponent 宣言 → registerComponent → St.component）/
   React（CustomComponentRenderProps を受けるレンダラー → component-builtins
   への登録）の 2 系統で示し、star-rating を実装例として全文掲載
 - 補足: 戻り値型変換テーブル（`ComponentCodec.coerce` の 4 段階）と
   チェックリストを併記
-- 補足: `docs/.vitepress/config.ts` の `/guide/` サイドバーに Custom Components
+- 補足: `docs/public/.vitepress/config.ts` の `/guide/` サイドバーに Custom Components
   リンクを追加
 - 補足: 同タイミングで `getting-started.md` の `mvnw 未提供` 記述を解消し、
   `St` import パスを `io.streamlit4j.core.api.St` に更新（A の sub-package
@@ -607,17 +608,18 @@
 
 ### TASK-131
 
-- 補足: 現状 `site/` の VitePress build は `docs/guide/custom-components.md` で
-  `vue/server-renderer` の解決失敗により失敗する。CI フロントジョブが
-  `frontend/` しか触っていないため、docs サイト破損が PR を通過してしまう
+- 補足: 旧構成（`site/` + `srcDir: "../docs"`）では VitePress build が
+  `docs/public/guide/custom-components.md` で `vue/server-renderer` の解決失敗により
+  失敗していた。CI フロントジョブが `frontend/` しか触っていないため、
+  docs サイト破損が PR を通過してしまう
 - 補足: `.github/workflows/ci.yml` に docs build ステップを追加し、
-  `cd site && npm ci && npm run docs:build` を走らせる
+  `cd docs/public && npm ci && npm run docs:build` を走らせる
 - 注意: 現在の build 失敗自体の原因究明も本タスクの範囲（VitePress と Vue の
   peer dep バージョン整合 / コードブロック内の Vue テンプレート誤評価が候補）
 
 ### TASK-132
 
-- 補足: `docs/internal/security-scan.md` は OWASP の手動実行手順と suppression
+- 補足: `docs/devel/security-scan.md` は OWASP の手動実行手順と suppression
   運用を扱うが、`ci.yml` の OSV-Scanner で検出された脆弱性への対応フローは
   別途必要。OSV は OWASP と suppression の仕組みが異なる（`osv-scanner.toml`）
 - 補足: 検出 → 真陽性なら依存更新 / 偽陽性なら `osv-scanner.toml` で
@@ -728,6 +730,15 @@
   許諾系。ホワイトリスト機械検査を入れずとも、依存追加時の目視確認で十分カバー可能
 - 再開条件: 依存ツリーが大幅に拡大する、または GPL / AGPL 等のコピーレフト系を
   含む可能性があるエコシステムの依存を追加する場合
+
+### TASK-136
+
+- 補足: バグ — `Streamlit4jServer` は `DownloadHandler` + `WebSocketUpgradeHandler` のみ登録しており、`META-INF/resources/streamlit4j/` の SPA を配信する handler が無かった。README で謳う「`jbang app install streamlit4j@... && streamlit4j 8501`」直後にブラウザーで `http://localhost:8501/` を開くと 404 になっていた
+- 補足: 修正内容 — `ResourceHandler` を追加し、`META-INF/resources/streamlit4j/` を base resource として mount。base URI は `index.html` の URL から親を導出（JAR 内 directory の classloader 解決が不安定なため）
+- 補足: Jetty 12 の `ResourceHandler` welcome-file dispatch が JAR 内リソースで安定して発火しないため、`/` ルート専用の `FrontendRootHandler`（`Handler.Abstract` 継承）を前段に追加。pathInContext が `/` または空のとき `index.html` の bytes を直接 `response.write` で返す
+- 補足: テスト追加: GET `/` で 200 + `text/html` + `<!doctype html>` + `<div id="root">` を確認、GET `/index.html` 直アクセスも 200 を確認
+- 補足: ローカル検証で `cd cli` → JBang/手動 java 起動 → `curl http://localhost:8501/` が STATUS=200 / CT=text/html を返すことを実機確認
+- 注意: Spring Boot Starter 側（`Streamlit4jAutoConfiguration.ResourceRegistration`）は base-path が空（root）のとき意図的に handler 登録をスキップしている。host アプリケーション側に独自 home page を持たせる前提のため別バグ判定はしない
 
 ### BACKLOG-011（中止 → 部分的に再評価）
 

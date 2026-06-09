@@ -8,7 +8,7 @@ streamlit4j の開発・ビルド・テスト手順。利用者向けの導入�
 | --- | --- | --- |
 | JDK | 21 LTS | コンパイル / 実行 |
 | Maven Wrapper | 同梱の `./mvnw` | Maven 3.9.4 を自動取得 |
-| Node.js | 22+ | `frontend/` および `docs/` のビルド・テスト |
+| Node.js | 22+ | `frontend/` および `docs/public/` のビルド・テスト |
 
 別途 Maven をインストールする必要はない。`JAVA_HOME` が JDK 21 を指していれば `./mvnw` で完結する。
 
@@ -30,7 +30,9 @@ frontend-assets/          ← フロント dist を classpath 同梱（antrun �
 cli/                      ← JBang 配布される CLI
 examples/                 ← Hello / WidgetsDemo / DataDemo / LayoutDemo / ComponentDemo
 frontend/                 ← React 18 + Vite + TypeScript の SPA
-docs/                     ← VitePress ドキュメントサイト
+docs/                     ← ドキュメント全般
+  ├ public/               ← VitePress 公開ドキュメントサイト
+  └ devel/                ← 設計文書（設計 / 仕様 / ADR / タスク / 運用手順）
 ```
 
 依存方向は core 内で `domain → protocol → port → application → runtime → bootstrap` の inward 方向に限定（ArchUnit で強制）。
@@ -76,20 +78,29 @@ E2E は Playwright を使用（`npm run e2e`、未統合タスクは TASK-127）
 
 ### ドキュメントサイト
 
-ドキュメントのコンテンツは `docs/` 配下、VitePress サイト基盤は `site/`
-配下に分離されている。サイトを起動するには `site/` で操作する。
+公開向け（`docs/public/`）と設計文書（`docs/devel/`）に **別々の VitePress インスタンス** を用意している。それぞれ独立に起動・ビルドする。
+
+#### 公開サイト（日本語 / 英語の二言語）
 
 ```sh
-cd site
+cd docs/public
 npm install
-# Vite が docs/ 配下の .md からモジュール解決するため symlink を 1 本張る
-ln -sfn ../site/node_modules ../docs/node_modules
-npm run docs:dev        # ローカルプレビュー http://localhost:5173
-npm run docs:build      # site/.vitepress/dist へ静的出力
+npm run docs:dev        # ローカルプレビュー http://localhost:5173/
+npm run docs:build      # docs/public/.vitepress/dist へ静的出力
 ```
 
-`docs/node_modules` は `site/node_modules` への symlink で `.gitignore`
-済み。VitePress の `srcDir: "../docs"` の関係で必要になる。
+URL: `/` = 日本語デフォルト、`/en/` = 英語。MiniSearch の CJK トークン化を有効にしているため日本語クエリで検索可能。
+
+#### 設計文書サイト（一般公開対象外）
+
+```sh
+cd docs/devel
+npm install
+npm run docs:dev        # http://localhost:5174/
+npm run docs:build      # docs/devel/.vitepress/dist へ静的出力
+```
+
+設計 / 要件 / 仕様 / ADR / タスクなど設計文書を VitePress 形式で閲覧できる。**利用者向けの一般公開対象ではない**（GitHub Pages 等へはデプロイしない / `dist/` は `.gitignore` 済み）。
 
 ## コーディング規約
 
@@ -99,18 +110,18 @@ npm run docs:build      # site/.vitepress/dist へ静的出力
 | Java 静的解析 | Checkstyle / ArchUnit |
 | TypeScript フォーマット | Prettier |
 | TypeScript 静的解析 | ESLint + dependency-cruiser |
-| Markdown | markdownlint + テキスト校正くん（jtf-style + prh）。日本語スタイル詳細は [Markdown スキル](https://github.com/izuno4t/...) または `docs/adr/` の慣例に従う |
+| Markdown | markdownlint + テキスト校正くん（jtf-style + prh）。日本語スタイル詳細は [Markdown スキル](https://github.com/izuno4t/...) または `docs/devel/adr/` の慣例に従う |
 | 公開 API | Javadoc 必須（`<doclint>all</doclint>` で warning ゼロが必須） |
 
 ## アーキテクチャー判断
 
-設計上の重要決定はすべて [`docs/adr/`](docs/adr/index.md) に ADR として記録する。新規 ADR を起こす場合は次の連番（現状 ADR-0011 まで存在）で追加。
+設計上の重要決定はすべて [`docs/devel/adr/`](docs/devel/adr/index.md) に ADR として記録する。新規 ADR を起こす場合は次の連番（現状 ADR-0011 まで存在）で追加。
 
-実装レベル（API 命名や DX スタイルの選択）は ADR ではなく [`docs/design.md`](docs/design.md) §10-2「API 設計指針」に併記する。
+実装レベル（API 命名や DX スタイルの選択）は ADR ではなく [`docs/devel/design.md`](docs/devel/design.md) §10-2「API 設計指針」に併記する。
 
 ## タスク管理
 
-進行中のタスクは [`docs/tasks/task.md`](docs/tasks/task.md) を参照。0.1.0 リリースまでに着手予定のものから完了済みまで含まれる。
+進行中のタスクは [`docs/devel/tasks/task.md`](docs/devel/tasks/task.md) を参照。0.1.0 リリースまでに着手予定のものから完了済みまで含まれる。
 
 ## プルリクエスト
 

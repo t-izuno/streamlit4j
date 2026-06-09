@@ -19,7 +19,7 @@ import java.util.Map;
  * }</pre>
  *
  * <p>iframe-isolated components are not supported (see
- * {@code docs/internal/design.md} §9 for the rationale).
+ * {@code docs/devel/design.md} §9 for the rationale).
  */
 public final class ComponentDemo {
 

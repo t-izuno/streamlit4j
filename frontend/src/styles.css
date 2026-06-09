@@ -38,7 +38,45 @@ body {
 }
 
 .streamlit4j-shell__main {
-  padding: 1rem;
+  padding: 0;
+}
+
+.streamlit4j-layout {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  align-items: stretch;
+  min-height: calc(100vh - 3rem);
+}
+
+.streamlit4j-layout:not(:has(.sidebar)) {
+  grid-template-columns: 1fr;
+}
+
+.streamlit4j-layout__main {
+  padding: 1.5rem 2rem;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 16rem;
+  padding: 1.5rem 1rem;
+  border-right: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-bg) 92%, var(--color-fg) 4%);
+  align-self: stretch;
+  position: sticky;
+  top: 0;
+  max-height: 100vh;
+  overflow-y: auto;
+}
+
+.sidebar h1,
+.sidebar h2,
+.sidebar h3 {
+  margin: 0;
 }
 
 button,

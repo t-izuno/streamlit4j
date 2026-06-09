@@ -43,7 +43,16 @@ export function RenderTree({
   root: RenderNode;
   onWidgetChange: WidgetChangeHandler;
 }) {
-  return <>{root.children.map((node) => renderNode(node, onWidgetChange))}</>;
+  const sidebars = root.children.filter((c) => c.kind === 'sidebar');
+  const mainChildren = root.children.filter((c) => c.kind !== 'sidebar');
+  return (
+    <div className="streamlit4j-layout">
+      {sidebars.map((node) => renderNode(node, onWidgetChange))}
+      <div className="streamlit4j-layout__main">
+        {mainChildren.map((node) => renderNode(node, onWidgetChange))}
+      </div>
+    </div>
+  );
 }
 
 function renderNode(node: RenderNode, onChange: WidgetChangeHandler): JSX.Element {

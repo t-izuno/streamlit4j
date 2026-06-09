@@ -1,0 +1,15 @@
+{
+  "name": "streamlit4j-devel-docs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Design documentation site for streamlit4j (design / specs / ADRs / tasks). Not deployed publicly.",
+  "scripts": {
+    "docs:dev": "vitepress dev --port 5174",
+    "docs:build": "vitepress build",
+    "docs:preview": "vitepress preview --port 4174"
+  },
+  "devDependencies": {
+    "vitepress": "^1.5.0"
+  }
+}

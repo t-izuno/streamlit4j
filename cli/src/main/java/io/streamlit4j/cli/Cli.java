@@ -2,7 +2,7 @@ package io.streamlit4j.cli;
 
 import io.streamlit4j.core.port.EntrypointSource;
 import io.streamlit4j.core.runtime.SourceWatcher;
-import io.streamlit4j.examples.Hello;
+import io.streamlit4j.examples.ShowcaseDemo;
 import io.streamlit4j.server.Streamlit4jServer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,7 +11,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Standalone CLI entry point that boots an embedded Jetty server with the
- * {@code Hello} demo. Distributed via JBang for one-line installs.
+ * {@link ShowcaseDemo} (left sidebar + multi-section demo). Distributed via
+ * JBang for one-line installs.
  */
 public final class Cli {
 
@@ -46,7 +47,7 @@ public final class Cli {
             }
         }
 
-        EntrypointSource entrypoints = () -> Hello::run;
+        EntrypointSource entrypoints = () -> ShowcaseDemo::run;
         try (Streamlit4jServer server = new Streamlit4jServer(port, entrypoints)) {
             server.start();
             LOG.info("streamlit4j listening on ws://localhost:{}/ws", server.port());

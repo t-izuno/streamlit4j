@@ -2,7 +2,7 @@
 
 - 状態: Accepted
 - 日付: 2026-06-05
-- 関連: `docs/internal/design.md` §9、`docs/internal/tasks/task.md` TASK-101〜106 / TASK-108
+- 関連: `docs/devel/design.md` §9、`docs/devel/tasks/task.md` TASK-101〜106 / TASK-108
 
 ## Context
 

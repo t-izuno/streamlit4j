@@ -10,6 +10,9 @@ import io.streamlit4j.core.protocol.RenderDelta;
 import io.streamlit4j.core.protocol.SessionInit;
 import io.streamlit4j.core.protocol.WidgetEvent;
 import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +31,38 @@ class Streamlit4jServerTest {
         try (Streamlit4jServer server = new Streamlit4jServer(0, () -> () -> {})) {
             server.start();
             assertThat(server.port()).isGreaterThan(0);
+        }
+    }
+
+    @Test
+    void servesBundledFrontendIndexHtmlAtRoot() throws Exception {
+        try (Streamlit4jServer server = new Streamlit4jServer(0, () -> () -> {})) {
+            server.start();
+            HttpResponse<String> response = HttpClient.newHttpClient()
+                    .send(
+                            HttpRequest.newBuilder(URI.create("http://localhost:" + server.port() + "/"))
+                                    .GET()
+                                    .build(),
+                            HttpResponse.BodyHandlers.ofString());
+            assertThat(response.statusCode()).isEqualTo(200);
+            assertThat(response.headers().firstValue("content-type"))
+                    .hasValueSatisfying(ct -> assertThat(ct).startsWith("text/html"));
+            assertThat(response.body()).contains("<!doctype html").contains("<div id=\"root\">");
+        }
+    }
+
+    @Test
+    void servesBundledFrontendAssetByExactPath() throws Exception {
+        try (Streamlit4jServer server = new Streamlit4jServer(0, () -> () -> {})) {
+            server.start();
+            HttpResponse<String> indexResp = HttpClient.newHttpClient()
+                    .send(
+                            HttpRequest.newBuilder(URI.create("http://localhost:" + server.port() + "/index.html"))
+                                    .GET()
+                                    .build(),
+                            HttpResponse.BodyHandlers.ofString());
+            assertThat(indexResp.statusCode()).isEqualTo(200);
+            assertThat(indexResp.body()).contains("<!doctype html");
         }
     }
 

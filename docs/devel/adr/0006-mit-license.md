@@ -2,7 +2,7 @@
 
 - 状態: Accepted
 - 日付: 2026-06-05
-- 関連: `LICENSE`、`docs/internal/tasks/task.md` TASK-110
+- 関連: `LICENSE`、`docs/devel/tasks/task.md` TASK-110
 
 ## Context
 

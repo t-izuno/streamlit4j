@@ -3,10 +3,23 @@ package io.streamlit4j.server;
 import io.streamlit4j.core.bootstrap.Bootstrap;
 import io.streamlit4j.core.bootstrap.Streamlit4jApplication;
 import io.streamlit4j.core.port.EntrypointSource;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.List;
+import org.eclipse.jetty.http.HttpHeader;
+import org.eclipse.jetty.http.MimeTypes;
 import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Request;
+import org.eclipse.jetty.server.Response;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.util.Callback;
+import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.resource.ResourceFactory;
 import org.eclipse.jetty.websocket.server.WebSocketUpgradeHandler;
 
 /**
@@ -44,9 +57,79 @@ public final class Streamlit4jServer implements AutoCloseable {
                             new ProtocolEndpoint(app.startSession(), app.processWidgetEvent(), connections));
         });
         DownloadHandler downloadHandler = new DownloadHandler(app.downloads());
-        Handler.Sequence sequence = new Handler.Sequence(downloadHandler, wsHandler);
+        ResourceHandler frontend = frontendHandler();
+        Handler.Sequence sequence = new Handler.Sequence(
+                wsHandler, downloadHandler, new FrontendRootHandler(frontend.getBaseResource()), frontend);
         context.setHandler(sequence);
         jetty.setHandler(context);
+    }
+
+    /**
+     * Serves the SPA {@code index.html} at the root path {@code /}. Necessary
+     * because Jetty 12's {@link ResourceHandler} welcome-file dispatch does not
+     * reliably fire when the base resource lives inside a JAR.
+     */
+    private static final class FrontendRootHandler extends Handler.Abstract {
+        private final Resource indexResource;
+
+        FrontendRootHandler(Resource base) {
+            Resource resolved = base.resolve("index.html");
+            if (resolved == null || !resolved.exists()) {
+                throw new IllegalStateException("frontend index.html missing under " + base.getURI());
+            }
+            this.indexResource = resolved;
+        }
+
+        @Override
+        public boolean handle(Request request, Response response, Callback callback) throws Exception {
+            String pathInContext = Request.getPathInContext(request);
+            if (!"/".equals(pathInContext) && !pathInContext.isEmpty()) {
+                return false;
+            }
+            response.getHeaders().put(HttpHeader.CONTENT_TYPE, MimeTypes.Type.TEXT_HTML_UTF_8.asString());
+            try (var in = indexResource.newInputStream()) {
+                byte[] bytes = in.readAllBytes();
+                response.write(true, java.nio.ByteBuffer.wrap(bytes), callback);
+            } catch (IOException e) {
+                callback.failed(e);
+            }
+            return true;
+        }
+    }
+
+    private static final String FRONTEND_INDEX_RESOURCE = "META-INF/resources/streamlit4j/index.html";
+
+    /**
+     * Builds a {@link ResourceHandler} that serves the bundled streamlit4j SPA
+     * from the classpath. Assets live in {@code META-INF/resources/streamlit4j/}
+     * (contributed by the {@code streamlit4j-frontend-assets} jar). {@code /}
+     * dispatches to {@code index.html} via the welcome-file mechanism.
+     *
+     * <p>The base resource is derived from the URL of {@code index.html} instead of
+     * resolving the directory directly, since classloader-based directory lookups
+     * inside JAR files are unreliable.
+     */
+    private ResourceHandler frontendHandler() {
+        ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        URL indexUrl = loader.getResource(FRONTEND_INDEX_RESOURCE);
+        if (indexUrl == null) {
+            throw new IllegalStateException(
+                    "streamlit4j frontend bundle not found on classpath (missing streamlit4j-frontend-assets jar?)");
+        }
+        String url = indexUrl.toString();
+        String baseUrl = url.substring(0, url.length() - "index.html".length());
+        URI baseUri;
+        try {
+            baseUri = new URI(baseUrl);
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException("invalid frontend base URI: " + baseUrl, e);
+        }
+        ResourceHandler handler = new ResourceHandler();
+        Resource base = ResourceFactory.of(jetty).newResource(baseUri);
+        handler.setBaseResource(base);
+        handler.setDirAllowed(false);
+        handler.setWelcomeFiles(List.of("index.html"));
+        return handler;
     }
 
     /**
