@@ -97,7 +97,7 @@ public final class MyApp {
 
 ```yaml
 streamlit4j:
-  base-path: /streamlit
+  base-path: /streamlit4j
 ```
 
 `@Bean EntrypointSource` を 1 つ宣言すれば `${streamlit4j.base-path}` 配下で動く。

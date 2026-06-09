@@ -61,6 +61,18 @@ public class Streamlit4jAutoConfiguration {
     }
 
     /**
+     * Prints the streamlit4j startup banner on {@code ApplicationReadyEvent}.
+     *
+     * @param properties streamlit4j configuration bean
+     * @return startup banner listener
+     */
+    @Bean
+    @ConditionalOnMissingBean
+    public Streamlit4jStartupBanner streamlit4jStartupBanner(Streamlit4jProperties properties) {
+        return new Streamlit4jStartupBanner(properties);
+    }
+
+    /**
      * Builds the streamlit4j application backed by in-memory adapters.
      *
      * @param entrypoints entrypoint source bean

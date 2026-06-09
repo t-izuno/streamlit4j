@@ -24,7 +24,8 @@ import org.eclipse.jetty.websocket.server.WebSocketUpgradeHandler;
 
 /**
  * Embedded Jetty 12 server that hosts the streamlit4j WebSocket protocol
- * endpoint and the download handler. Suitable for CLI / JBang standalone use.
+ * endpoint, the download handler, and the bundled SPA. Intended for standalone
+ * use from a plain {@code main} when streamlit4j is adopted as a library.
  */
 public final class Streamlit4jServer implements AutoCloseable {
 
@@ -151,12 +152,27 @@ public final class Streamlit4jServer implements AutoCloseable {
     }
 
     /**
-     * Starts the embedded Jetty server.
+     * Starts the embedded Jetty server and prints a startup banner with the
+     * local URL to {@code System.out}.
      *
      * @throws Exception when Jetty fails to start
      */
     public void start() throws Exception {
         jetty.start();
+        printStartupBanner();
+    }
+
+    @SuppressWarnings("PMD.SystemPrintln")
+    private void printStartupBanner() {
+        String url = "http://localhost:" + port();
+        System.out.println();
+        System.out.println("  streamlit4j is ready.");
+        System.out.println();
+        System.out.println("  Local URL: " + url);
+        System.out.println("  WebSocket: " + url.replaceFirst("http", "ws") + "/ws");
+        System.out.println();
+        System.out.println("  Press Ctrl+C to stop.");
+        System.out.println();
     }
 
     /**

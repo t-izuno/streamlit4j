@@ -106,7 +106,7 @@ public final class App {
 
 ```yaml
 streamlit4j:
-  base-path: /streamlit       # default /streamlit
+  base-path: /streamlit4j       # default /streamlit4j
 ```
 
 Declare one `@Bean EntrypointSource` and your script is mounted with full Spring Security /

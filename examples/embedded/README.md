@@ -7,14 +7,18 @@ README.
 
 ## What is in here
 
+Each row links the launcher class to its source and the demonstrated `St.*` elements to
+the matching [Reference](../../docs/public/reference/overview.md) page.
+
 | Class | Demonstrates |
 | --- | --- |
-| `io.streamlit4j.examples.Hello` | title / markdown / slider / metric / button / toast |
-| `io.streamlit4j.examples.WidgetsDemo` | text / number / select / radio / checkbox / button / slider / date / time / colorPicker |
-| `io.streamlit4j.examples.LayoutDemo` | columns / container / expander / tabs / sidebar / form |
-| `io.streamlit4j.examples.DataDemo` | dataframe / line / bar / area / scatter / metric / cache |
-| `io.streamlit4j.examples.ComponentDemo` | Custom components (star-rating) |
-| `io.streamlit4j.examples.ShowcaseDemo` | All categories in one sidebar-driven showcase |
+| [`Hello`](src/main/java/io/streamlit4j/examples/Hello.java) | [text](../../docs/public/reference/text.md) (title, markdown), [inputs](../../docs/public/reference/inputs.md) (slider, button), [status](../../docs/public/reference/status.md) (metric, toast) |
+| [`WidgetsDemo`](src/main/java/io/streamlit4j/examples/WidgetsDemo.java) | [inputs](../../docs/public/reference/inputs.md) — text / number / select / radio / checkbox / slider / date / time / colorPicker / button |
+| [`LayoutDemo`](src/main/java/io/streamlit4j/examples/LayoutDemo.java) | [layout](../../docs/public/reference/layout.md) (columns / container / expander / tabs / sidebar), [forms](../../docs/public/reference/forms.md) |
+| [`DataDemo`](src/main/java/io/streamlit4j/examples/DataDemo.java) | [data](../../docs/public/reference/data.md) (dataframe), [charts](../../docs/public/reference/charts.md) (line / bar / area / scatter), [status](../../docs/public/reference/status.md) (metric), [cache](../../docs/public/reference/cache.md) |
+| [`ChatDemo`](src/main/java/io/streamlit4j/examples/ChatDemo.java) | [text](../../docs/public/reference/text.md) (markdown), [inputs](../../docs/public/reference/inputs.md) (textInput, button), [forms](../../docs/public/reference/forms.md), [control](../../docs/public/reference/control.md) (state) |
+| [`ComponentDemo`](src/main/java/io/streamlit4j/examples/ComponentDemo.java) | [components](../../docs/public/reference/components.md) — custom in-process React renderer (star-rating) |
+| [`ShowcaseDemo`](src/main/java/io/streamlit4j/examples/ShowcaseDemo.java) | All of the above behind a sidebar selector. Recommended quick-look entry point. |
 
 ## Run
 
@@ -23,13 +27,16 @@ From the repository root, after `./mvnw -DskipTests install`:
 ```sh
 # 8501 is the listen port (optional positional argument, default 8501)
 ./mvnw -pl examples/embedded -q exec:java \
-    -Dexec.mainClass=io.streamlit4j.examples.Hello \
+    -Dexec.mainClass=io.streamlit4j.examples.ShowcaseDemo \
     -Dexec.args=8501
 ```
 
-Then open <http://localhost:8501>.
+Then open <http://localhost:8501>. The startup banner printed by
+[`Streamlit4jServer.start()`](../../server/src/main/java/io/streamlit4j/server/Streamlit4jServer.java)
+also prints the URL.
 
-Swap `Hello` for any of the other classes in the table to launch the corresponding demo.
+Swap `ShowcaseDemo` for any other class in the table to launch that single demo
+directly without the navigation sidebar.
 
 ## Launcher shape
 

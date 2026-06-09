@@ -58,7 +58,7 @@ streamlit4j.base-path=/apps/dashboard
 | `${streamlit4j.base-path}/ws` | WebSocket エンドポイント |
 | `${streamlit4j.base-path}/**` | 同梱 SPA の静的アセット |
 
-既定のベースパスは `/streamlit` です。`/` または空文字に設定すると、Spring の既定ハンドラーを上書きしないよう、静的ハンドラーの登録をスキップします。
+既定のベースパスは `/streamlit4j` です。`/` または空文字に設定すると、Spring の既定ハンドラーを上書きしないよう、静的ハンドラーの登録をスキップします。
 
 ## 4. Spring Security による認証
 

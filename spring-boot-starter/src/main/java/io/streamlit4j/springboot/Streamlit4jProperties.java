@@ -12,7 +12,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "streamlit4j")
 public class Streamlit4jProperties {
 
-    private String basePath = "/streamlit";
+    private String basePath = "/streamlit4j";
 
     /** Creates a properties instance populated with defaults. */
     public Streamlit4jProperties() {}
@@ -20,7 +20,7 @@ public class Streamlit4jProperties {
     /**
      * Returns the mount path used for the streamlit4j WebSocket and assets.
      *
-     * @return base path (defaults to {@code "/streamlit"})
+     * @return base path (defaults to {@code "/streamlit4j"})
      */
     public String getBasePath() {
         return basePath;

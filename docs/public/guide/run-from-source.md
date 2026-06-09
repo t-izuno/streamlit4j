@@ -89,12 +89,12 @@ streamlit4j listening on ws://localhost:8501/ws
 各デモはサブパッケージに分かれて配置されています
 （`io.streamlit4j.examples.spring.{hello,widgets,layout,data,component,showcase}`）。
 クラス名と組み合わせて他のデモを起動してください。デフォルトでは
-`${streamlit4j.base-path}`（既定 `/streamlit`）配下にマウントされるため、
-`http://localhost:8080/streamlit` を開きます。
+`${streamlit4j.base-path}`（既定 `/streamlit4j`）配下にマウントされるため、
+`http://localhost:8080/streamlit4j` を開きます。
 
 ## ステップ 4: ブラウザーで確認
 
-A 候補の場合は <http://localhost:8501> 、B 候補の場合は <http://localhost:8080/streamlit> を開きます。
+A 候補の場合は <http://localhost:8501> 、B 候補の場合は <http://localhost:8080/streamlit4j> を開きます。
 
 動作確認ポイント（`Hello` の場合）：
 

@@ -104,7 +104,7 @@ public final class App {
 
 ```yaml
 streamlit4j:
-  base-path: /streamlit       # 既定 /streamlit
+  base-path: /streamlit4j       # 既定 /streamlit4j
 ```
 
 `@Bean EntrypointSource` を 1 つ宣言するだけで、Spring Security / Spring Session と連携した状態でマウントされる。詳細は [Spring Boot Integration](docs/public/guide/spring-boot.md)。

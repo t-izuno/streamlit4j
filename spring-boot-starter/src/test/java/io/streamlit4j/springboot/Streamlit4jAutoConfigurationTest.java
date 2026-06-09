@@ -45,10 +45,10 @@ class Streamlit4jAutoConfigurationTest {
     }
 
     @Test
-    void defaultBasePathIsStreamlit() {
+    void defaultBasePathIsStreamlit4j() {
         webContextRunner.run(context -> {
             Streamlit4jProperties props = context.getBean(Streamlit4jProperties.class);
-            assertThat(props.getBasePath()).isEqualTo("/streamlit");
+            assertThat(props.getBasePath()).isEqualTo("/streamlit4j");
         });
     }
 

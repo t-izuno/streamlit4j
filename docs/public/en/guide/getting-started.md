@@ -96,7 +96,7 @@ See [Spring Boot Integration](./spring-boot) for details. The essentials:
 
 ```yaml
 streamlit4j:
-  base-path: /streamlit
+  base-path: /streamlit4j
 ```
 
 Declaring a single `@Bean EntrypointSource` is enough to run it under `${streamlit4j.base-path}`.

@@ -95,12 +95,12 @@ Each demo ships a matching `SpringBoot<Name>App` launcher.
 Each demo lives in its own sub-package
 (`io.streamlit4j.examples.spring.{hello,widgets,layout,data,component,showcase}`).
 Combine the package with the matching class name to launch the other demos. By
-default the app mounts under `${streamlit4j.base-path}` (default `/streamlit`), so
-open `http://localhost:8080/streamlit`.
+default the app mounts under `${streamlit4j.base-path}` (default `/streamlit4j`), so
+open `http://localhost:8080/streamlit4j`.
 
 ## Step 4: Open in a browser
 
-For Path A open <http://localhost:8501>; for Path B open <http://localhost:8080/streamlit>.
+For Path A open <http://localhost:8501>; for Path B open <http://localhost:8080/streamlit4j>.
 
 Sanity checks (for `Hello`):
 

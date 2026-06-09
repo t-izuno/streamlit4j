@@ -13,7 +13,7 @@ class Streamlit4jResourceRegistrationTest {
 
     @Test
     void registersAtDefaultBasePath() {
-        assertThat(handlersFor("/streamlit")).containsExactly("/streamlit/**");
+        assertThat(handlersFor("/streamlit4j")).containsExactly("/streamlit4j/**");
     }
 
     @Test

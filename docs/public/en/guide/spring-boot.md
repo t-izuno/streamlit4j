@@ -64,7 +64,7 @@ streamlit4j.base-path=/apps/dashboard
 | `${streamlit4j.base-path}/ws` | WebSocket endpoint |
 | `${streamlit4j.base-path}/**` | Bundled SPA static assets |
 
-Default base path is `/streamlit`. Setting it to `/` or empty skips the static
+Default base path is `/streamlit4j`. Setting it to `/` or empty skips the static
 handler registration to avoid clobbering Spring's default handlers.
 
 ## 4. Authentication via Spring Security
