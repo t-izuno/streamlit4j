@@ -31,17 +31,25 @@ demonstrated `St.*` element.
 From the repository root, after `./mvnw -DskipTests install`:
 
 ```sh
-./mvnw -pl examples/spring-boot -q exec:java \
-    -Dexec.mainClass=io.streamlit4j.examples.spring.showcase.SpringBootShowcaseApp
+# Defaults to SpringBootShowcaseApp (sidebar-driven hub) on Tomcat port 8080.
+./mvnw -pl examples/spring-boot -q exec:java
 ```
 
-Then open <http://localhost:8080/streamlit4j>. The streamlit4j-specific startup banner
-printed by
+The default `mainClass` is configured in `examples/spring-boot/pom.xml` so you do not
+need `-Dexec.mainClass` for the recommended path. Open
+<http://localhost:8080/streamlit4j> and pick a demo from the left sidebar. The
+streamlit4j-specific startup banner printed by
 [`Streamlit4jStartupBanner`](../../spring-boot-starter/src/main/java/io/streamlit4j/springboot/Streamlit4jStartupBanner.java)
 also prints the URL after Spring Boot is ready.
 
-Swap `SpringBootShowcaseApp` for any other class in the table to launch that single
-demo directly without the navigation sidebar.
+To launch a single demo directly (no navigation sidebar), pass `-Dexec.mainClass`:
+
+```sh
+./mvnw -pl examples/spring-boot -q exec:java \
+    -Dexec.mainClass=io.streamlit4j.examples.spring.hello.SpringBootHelloApp
+```
+
+Swap `SpringBootHelloApp` for any other class in the table above.
 
 ## Launcher shape
 

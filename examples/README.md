@@ -28,13 +28,11 @@ as the source of truth for the launcher shapes shown in the project README.
 # from the repository root
 ./mvnw -DskipTests install
 
-# Path A (embedded server) — ShowcaseDemo lets you switch among demos via a sidebar
-./mvnw -pl examples/embedded -q exec:java \
-    -Dexec.mainClass=io.streamlit4j.examples.ShowcaseDemo
+# Path A (embedded server) — defaults to ShowcaseDemo (sidebar-driven hub)
+./mvnw -pl examples/embedded -q exec:java
 
-# Path B (Spring Boot) — same sidebar hub, mounted at /streamlit4j
-./mvnw -pl examples/spring-boot -q exec:java \
-    -Dexec.mainClass=io.streamlit4j.examples.spring.showcase.SpringBootShowcaseApp
+# Path B (Spring Boot) — defaults to SpringBootShowcaseApp, mounted at /streamlit4j
+./mvnw -pl examples/spring-boot -q exec:java
 ```
 
 Full prerequisites and troubleshooting:

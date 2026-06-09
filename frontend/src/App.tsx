@@ -79,13 +79,54 @@ export function App({ websocketUrl, client: injectedClient }: AppProps = {}) {
   return (
     <div className="streamlit4j-shell">
       <div className="streamlit4j-shell__toolbar">
-        <button
-          type="button"
-          aria-label="Toggle theme"
-          onClick={() => setTheme((t) => (t === 'light' ? 'dark' : 'light'))}
-        >
-          {theme === 'light' ? '🌙' : '☀️'}
-        </button>
+        <div className="theme-switcher" role="radiogroup" aria-label="Theme">
+          <button
+            type="button"
+            role="radio"
+            aria-checked={theme === 'light'}
+            aria-label="Light mode"
+            className="theme-switcher__btn"
+            data-active={theme === 'light'}
+            onClick={() => setTheme('light')}
+          >
+            <svg
+              className="theme-switcher__icon"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <circle cx="12" cy="12" r="4" />
+              <g strokeLinecap="round">
+                <line x1="12" y1="2.5" x2="12" y2="5.5" />
+                <line x1="12" y1="18.5" x2="12" y2="21.5" />
+                <line x1="2.5" y1="12" x2="5.5" y2="12" />
+                <line x1="18.5" y1="12" x2="21.5" y2="12" />
+                <line x1="5.1" y1="5.1" x2="7.2" y2="7.2" />
+                <line x1="16.8" y1="16.8" x2="18.9" y2="18.9" />
+                <line x1="5.1" y1="18.9" x2="7.2" y2="16.8" />
+                <line x1="16.8" y1="7.2" x2="18.9" y2="5.1" />
+              </g>
+            </svg>
+          </button>
+          <button
+            type="button"
+            role="radio"
+            aria-checked={theme === 'dark'}
+            aria-label="Dark mode"
+            className="theme-switcher__btn"
+            data-active={theme === 'dark'}
+            onClick={() => setTheme('dark')}
+          >
+            <svg
+              className="theme-switcher__icon theme-switcher__icon--filled"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+              focusable="false"
+            >
+              <path d="M19.5 14.5A8 8 0 0 1 9.5 4.5a8 8 0 1 0 10 10z" />
+            </svg>
+          </button>
+        </div>
       </div>
       <main className="streamlit4j-shell__main">
         <RenderTree root={root} onWidgetChange={handleWidgetChange} />

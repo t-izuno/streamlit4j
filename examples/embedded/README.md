@@ -14,7 +14,7 @@ the matching [Reference](../../docs/public/reference/overview.md) page.
 | --- | --- |
 | [`Hello`](src/main/java/io/streamlit4j/examples/Hello.java) | [text](../../docs/public/reference/text.md) (title, markdown), [inputs](../../docs/public/reference/inputs.md) (slider, button), [status](../../docs/public/reference/status.md) (metric, toast) |
 | [`WidgetsDemo`](src/main/java/io/streamlit4j/examples/WidgetsDemo.java) | [inputs](../../docs/public/reference/inputs.md) — text / number / select / radio / checkbox / slider / date / time / colorPicker / button |
-| [`LayoutDemo`](src/main/java/io/streamlit4j/examples/LayoutDemo.java) | [layout](../../docs/public/reference/layout.md) (columns / container / expander / tabs / sidebar), [forms](../../docs/public/reference/forms.md) |
+| [`LayoutDemo`](src/main/java/io/streamlit4j/examples/LayoutDemo.java) | [layout](../../docs/public/reference/layout.md) (columns / container / expander / tabs), [forms](../../docs/public/reference/forms.md). `sidebar` is showcased by `ShowcaseDemo`'s own navigation. |
 | [`DataDemo`](src/main/java/io/streamlit4j/examples/DataDemo.java) | [data](../../docs/public/reference/data.md) (dataframe), [charts](../../docs/public/reference/charts.md) (line / bar / area / scatter), [status](../../docs/public/reference/status.md) (metric), [cache](../../docs/public/reference/cache.md) |
 | [`ChatDemo`](src/main/java/io/streamlit4j/examples/ChatDemo.java) | [text](../../docs/public/reference/text.md) (markdown), [inputs](../../docs/public/reference/inputs.md) (textInput, button), [forms](../../docs/public/reference/forms.md), [control](../../docs/public/reference/control.md) (state) |
 | [`ComponentDemo`](src/main/java/io/streamlit4j/examples/ComponentDemo.java) | [components](../../docs/public/reference/components.md) — custom in-process React renderer (star-rating) |
@@ -25,18 +25,26 @@ the matching [Reference](../../docs/public/reference/overview.md) page.
 From the repository root, after `./mvnw -DskipTests install`:
 
 ```sh
-# 8501 is the listen port (optional positional argument, default 8501)
-./mvnw -pl examples/embedded -q exec:java \
-    -Dexec.mainClass=io.streamlit4j.examples.ShowcaseDemo \
-    -Dexec.args=8501
+# Defaults to ShowcaseDemo (sidebar-driven hub) on port 8501.
+./mvnw -pl examples/embedded -q exec:java
 ```
 
-Then open <http://localhost:8501>. The startup banner printed by
+The default `mainClass` is configured in `examples/embedded/pom.xml` so you do not need
+`-Dexec.mainClass` for the recommended path. Open <http://localhost:8501> and pick a
+demo from the left sidebar. The startup banner printed by
 [`Streamlit4jServer.start()`](../../server/src/main/java/io/streamlit4j/server/Streamlit4jServer.java)
 also prints the URL.
 
-Swap `ShowcaseDemo` for any other class in the table to launch that single demo
-directly without the navigation sidebar.
+To launch a single demo directly (no navigation sidebar), pass `-Dexec.mainClass` and
+optionally `-Dexec.args=<port>`:
+
+```sh
+./mvnw -pl examples/embedded -q exec:java \
+    -Dexec.mainClass=io.streamlit4j.examples.Hello \
+    -Dexec.args=8501
+```
+
+Swap `Hello` for any other class in the table above.
 
 ## Launcher shape
 

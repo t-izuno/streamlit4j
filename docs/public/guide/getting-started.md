@@ -118,7 +118,7 @@ B 候補（`io.streamlit4j.examples.spring.<name>.SpringBoot<Name>App`、
 | --- | --- |
 | `Hello` | title / markdown / slider / metric / button / toast |
 | `WidgetsDemo` | text / number / select / radio / checkbox / button / slider / date / time / colorPicker |
-| `LayoutDemo` | columns / container / expander / tabs / sidebar / form |
+| `LayoutDemo` | columns / container / expander / tabs / form（sidebar は ShowcaseDemo のナビが兼ねる） |
 | `DataDemo` | dataframe / line / bar / area / scatter / metric / cache |
 | `ComponentDemo` | カスタムコンポーネント（star-rating） |
 | `ShowcaseDemo` | 上記全カテゴリーを 1 画面で網羅したショーケース |
@@ -141,7 +141,6 @@ B 候補（`io.streamlit4j.examples.spring.<name>.SpringBoot<Name>App`、
 採用判断に向けた観点。
 
 - [ ] 必要なウィジェットが揃っているか（[Reference](../reference/overview) で網羅）
-- [ ] チャートが用途に足りるか（v1 はプレースホルダー描画のみ）
 - [ ] パフォーマンスが要件を満たすか（仮想スレッド前提・1 セッション 1 スレッド）
 - [ ] セキュリティーモデルが社内ポリシーと整合するか（Spring Security 連携可 / カスタムコンポーネントは内製のみ）
 - [ ] ライセンス（MIT）が社内基準で許容されるか

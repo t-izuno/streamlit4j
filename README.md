@@ -129,7 +129,6 @@ Things you should know before adopting.
 
 - **Java 21 LTS or newer is required.** Virtual threads are mandatory; JDK 17 and below are not supported.
 - **Protocol is fixed to JSON.** MessagePack and similar are not supported (a v1.x consideration).
-- **Charts render placeholders in v1.** A real charting library is on the backlog.
 - **`dataEditor` is one-way.** Edited values are not propagated back to the server yet.
 - **Multi-page is explicit registration only.** No `pages/` directory convention.
 - **Custom components are in-process only.** Iframe isolation is not supported.

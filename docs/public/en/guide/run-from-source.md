@@ -59,23 +59,33 @@ launchers for every demo. Both forms render the same UI.
 
 ### Path A (Library / own `main`)
 
+By default `ShowcaseDemo` (a sidebar-driven hub linking to every other demo) starts on
+port 8501:
+
 ```sh
-# 8501 is the listen port (change to any free port)
+./mvnw -pl examples/embedded -q exec:java
+```
+
+To launch a single demo directly, pass `-Dexec.mainClass` and optionally
+`-Dexec.args=<port>`:
+
+```sh
 ./mvnw -pl examples/embedded -q exec:java \
     -Dexec.mainClass=io.streamlit4j.examples.Hello \
     -Dexec.args=8501
 ```
 
-The other bundled demos use the same pattern:
+Available `mainClass` values:
 
 | Main class | Elements covered |
 | --- | --- |
 | `io.streamlit4j.examples.Hello` | title / markdown / slider / metric / button |
 | `io.streamlit4j.examples.WidgetsDemo` | text / number / select / radio / checkbox / date / time / colorPicker |
-| `io.streamlit4j.examples.LayoutDemo` | columns / container / expander / tabs / sidebar / form |
+| `io.streamlit4j.examples.LayoutDemo` | columns / container / expander / tabs / form (sidebar is showcased by ShowcaseDemo's own navigation) |
 | `io.streamlit4j.examples.DataDemo` | dataframe / line / bar / area / scatter / metric / cache |
+| `io.streamlit4j.examples.ChatDemo` | textInput / form / state for an echo bot |
 | `io.streamlit4j.examples.ComponentDemo` | Custom components (star-rating) |
-| `io.streamlit4j.examples.ShowcaseDemo` | All categories in one sidebar-driven showcase |
+| `io.streamlit4j.examples.ShowcaseDemo` | Sidebar hub linking to every other demo (the default) |
 
 On startup you will see:
 
@@ -85,18 +95,24 @@ streamlit4j listening on ws://localhost:8501/ws
 
 ### Path B (Spring Boot Starter)
 
-Each demo ships a matching `SpringBoot<Name>App` launcher.
+By default `SpringBootShowcaseApp` (the Spring Boot variant of the sidebar hub)
+starts:
+
+```sh
+./mvnw -pl examples/spring-boot -q exec:java
+```
+
+Each demo lives in its own sub-package
+(`io.streamlit4j.examples.spring.{hello,widgets,layout,data,chat,component,showcase}`).
+To launch a single demo directly, pass `-Dexec.mainClass`:
 
 ```sh
 ./mvnw -pl examples/spring-boot -q exec:java \
     -Dexec.mainClass=io.streamlit4j.examples.spring.hello.SpringBootHelloApp
 ```
 
-Each demo lives in its own sub-package
-(`io.streamlit4j.examples.spring.{hello,widgets,layout,data,component,showcase}`).
-Combine the package with the matching class name to launch the other demos. By
-default the app mounts under `${streamlit4j.base-path}` (default `/streamlit4j`), so
-open `http://localhost:8080/streamlit4j`.
+The app mounts under `${streamlit4j.base-path}` (default `/streamlit4j`), so open
+`http://localhost:8080/streamlit4j`.
 
 ## Step 4: Open in a browser
 

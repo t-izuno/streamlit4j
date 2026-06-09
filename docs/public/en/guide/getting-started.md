@@ -119,7 +119,7 @@ launched in either Path A form (`io.streamlit4j.examples.<Name>` under
 | --- | --- |
 | `Hello` | title / markdown / slider / metric / button / toast |
 | `WidgetsDemo` | text / number / select / radio / checkbox / button / slider / date / time / colorPicker |
-| `LayoutDemo` | columns / container / expander / tabs / sidebar / form |
+| `LayoutDemo` | columns / container / expander / tabs / form (sidebar is showcased by ShowcaseDemo's own navigation) |
 | `DataDemo` | dataframe / line / bar / area / scatter / metric / cache |
 | `ComponentDemo` | Custom components (star-rating) |
 | `ShowcaseDemo` | All categories in one sidebar-driven showcase |
@@ -142,7 +142,6 @@ This is the same model as Streamlit, where rewriting the script alone is enough 
 Points to consider when deciding on adoption.
 
 - [ ] Are the widgets you need available? (See [Reference](../reference/overview) for coverage)
-- [ ] Are the charts sufficient for your use case? (v1 only ships placeholder rendering)
 - [ ] Does performance meet your requirements? (assumes virtual threads; one thread per session)
 - [ ] Is the security model consistent with your internal policies?
       (Spring Security integration supported; custom components are in-house only)

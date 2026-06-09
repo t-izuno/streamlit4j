@@ -1,8 +1,8 @@
 package io.streamlit4j.examples;
 
 import io.streamlit4j.core.api.St;
+import io.streamlit4j.core.domain.SessionState;
 import io.streamlit4j.server.Streamlit4jServer;
-import java.util.List;
 
 /**
  * Sidebar-driven hub that lets the visitor pick any of the bundled demos and
@@ -14,63 +14,66 @@ import java.util.List;
 public final class ShowcaseDemo {
 
     private static final int DEFAULT_PORT = 8501;
+    private static final String STATE_KEY = "showcase_nav";
 
-    private static final String NAV_HOME = "Home";
-    private static final String NAV_HELLO = "Hello";
-    private static final String NAV_WIDGETS = "Widgets";
-    private static final String NAV_LAYOUT = "Layout";
-    private static final String NAV_DATA = "Data";
-    private static final String NAV_CHAT = "Chat (echo bot)";
-    private static final String NAV_COMPONENT = "Custom component";
-    private static final String NAV_ABOUT = "About";
-
-    private static final List<String> PAGES =
-            List.of(NAV_HOME, NAV_HELLO, NAV_WIDGETS, NAV_LAYOUT, NAV_DATA, NAV_CHAT, NAV_COMPONENT, NAV_ABOUT);
+    private static final String NAV_HELLO = "hello";
+    private static final String NAV_CHAT = "chat";
+    private static final String NAV_WIDGETS = "widgets";
+    private static final String NAV_LAYOUT = "layout";
+    private static final String NAV_DATA = "data";
+    private static final String NAV_COMPONENT = "component";
+    private static final String NAV_ABOUT = "about";
 
     private ShowcaseDemo() {}
 
     /** Renders the demo. Invoked once per session by the runtime. */
     public static void run() {
-        String[] selected = {PAGES.get(0)};
+        SessionState state = St.state();
+
         St.sidebar(() -> {
-            St.title("streamlit4j");
-            St.markdown("**An interactive data-app framework for the JVM.**");
+            St.header("streamlit4j");
+            St.markdown("Interactive data apps, written in idiomatic Java.");
             St.divider();
-            selected[0] = St.radio("Demo", PAGES);
+
+            St.markdown("##### Get started");
+            if (St.button("Hello — slider + button + toast")) {
+                state.put(STATE_KEY, NAV_HELLO);
+            }
+            if (St.button("Chat (echo bot)")) {
+                state.put(STATE_KEY, NAV_CHAT);
+            }
+
+            St.markdown("##### Element catalog");
+            if (St.button("Input widgets")) {
+                state.put(STATE_KEY, NAV_WIDGETS);
+            }
+            if (St.button("Layout primitives")) {
+                state.put(STATE_KEY, NAV_LAYOUT);
+            }
+            if (St.button("Data & charts")) {
+                state.put(STATE_KEY, NAV_DATA);
+            }
+            if (St.button("Custom component")) {
+                state.put(STATE_KEY, NAV_COMPONENT);
+            }
+
             St.divider();
+            if (St.button("About")) {
+                state.put(STATE_KEY, NAV_ABOUT);
+            }
             St.markdown("[GitHub](https://github.com/t-izuno/streamlit4j)");
         });
 
-        switch (selected[0]) {
-            case NAV_HELLO -> Hello.run();
+        String selected = state.get(STATE_KEY, String.class).orElse(NAV_HELLO);
+        switch (selected) {
+            case NAV_CHAT -> ChatDemo.run();
             case NAV_WIDGETS -> WidgetsDemo.run();
             case NAV_LAYOUT -> LayoutDemo.run();
             case NAV_DATA -> DataDemo.run();
-            case NAV_CHAT -> ChatDemo.run();
             case NAV_COMPONENT -> ComponentDemo.run();
             case NAV_ABOUT -> renderAbout();
-            default -> renderHome();
+            default -> Hello.run();
         }
-    }
-
-    private static void renderHome() {
-        St.title("streamlit4j showcase");
-        St.markdown(
-                """
-                Pick a demo from the sidebar to see it rendered in place. Each entry
-                in the sidebar delegates to the same Java class you can run by itself
-                from the command line:
-
-                - **Hello** — `io.streamlit4j.examples.Hello`
-                - **Widgets** — `io.streamlit4j.examples.WidgetsDemo`
-                - **Layout** — `io.streamlit4j.examples.LayoutDemo`
-                - **Data** — `io.streamlit4j.examples.DataDemo`
-                - **Chat (echo bot)** — `io.streamlit4j.examples.ChatDemo`
-                - **Custom component** — `io.streamlit4j.examples.ComponentDemo`
-
-                Open `examples/embedded/` or `examples/spring-boot/` in the repository
-                to see how each demo is launched.
-                """);
     }
 
     private static void renderAbout() {

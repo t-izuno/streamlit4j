@@ -56,4 +56,18 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <configuration>
+          <!-- Default to the sidebar-driven hub so `mvn exec:java` without
+               -Dexec.mainClass lands on the navigable showcase. -->
+          <mainClass>io.streamlit4j.examples.spring.showcase.SpringBootShowcaseApp</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

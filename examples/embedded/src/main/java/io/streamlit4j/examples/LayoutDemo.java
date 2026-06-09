@@ -6,7 +6,9 @@ import java.util.List;
 
 /**
  * Demonstrates the layout primitives: columns / container / expander / tabs /
- * sidebar / form. Runnable as
+ * form. The {@code sidebar} primitive is exercised by {@code ShowcaseDemo}'s
+ * own navigation rather than re-rendered here, so embedding this demo inside
+ * the showcase does not produce a stacked second sidebar. Runnable as
  * {@code java -cp <classpath> io.streamlit4j.examples.LayoutDemo [port]}.
  */
 public final class LayoutDemo {
@@ -19,12 +21,6 @@ public final class LayoutDemo {
     public static void run() {
         St.title("Layout primitives");
         St.markdown("Compose pages with **columns**, **tabs**, **expanders**, and **forms**.");
-
-        St.sidebar(() -> {
-            St.subheader("Sidebar");
-            St.markdown("Settings or navigation typically live here.");
-            St.checkbox("Show advanced", false);
-        });
 
         St.header("Columns");
         St.columns(3, index -> {

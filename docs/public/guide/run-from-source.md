@@ -53,23 +53,31 @@ examples には A 候補（Library / 自前 `main`）と B 候補（Spring Boot 
 
 ### A 候補（Library / 自前 `main`）で起動
 
+既定では `ShowcaseDemo`（左サイドバーで各デモを切替えられるハブ）が 8501 で起動します。
+
 ```sh
-# 8501 はリッスンポート（任意の空きポートに変更可）
+./mvnw -pl examples/embedded -q exec:java
+```
+
+単体デモを直接見たいときは `-Dexec.mainClass` と `-Dexec.args=<port>` を指定します：
+
+```sh
 ./mvnw -pl examples/embedded -q exec:java \
     -Dexec.mainClass=io.streamlit4j.examples.Hello \
     -Dexec.args=8501
 ```
 
-他の同梱デモも同じパターンで起動できます：
+`mainClass` に指定できる同梱デモ：
 
 | メインクラス | 主な確認要素 |
 | --- | --- |
 | `io.streamlit4j.examples.Hello` | title / markdown / slider / metric / button |
 | `io.streamlit4j.examples.WidgetsDemo` | text / number / select / radio / checkbox / date / time / colorPicker |
-| `io.streamlit4j.examples.LayoutDemo` | columns / container / expander / tabs / sidebar / form |
+| `io.streamlit4j.examples.LayoutDemo` | columns / container / expander / tabs / form（sidebar は ShowcaseDemo のナビが兼ねる） |
 | `io.streamlit4j.examples.DataDemo` | dataframe / line / bar / area / scatter / metric / cache |
+| `io.streamlit4j.examples.ChatDemo` | textInput / form / state を使った echo bot |
 | `io.streamlit4j.examples.ComponentDemo` | カスタムコンポーネント（star-rating） |
-| `io.streamlit4j.examples.ShowcaseDemo` | 上記全カテゴリーを 1 画面で網羅したショーケース |
+| `io.streamlit4j.examples.ShowcaseDemo` | サイドバーから上記全デモへ遷移できるハブ（既定） |
 
 起動すると以下が表示されます：
 
@@ -79,17 +87,22 @@ streamlit4j listening on ws://localhost:8501/ws
 
 ### B 候補（Spring Boot Starter）で起動
 
-各デモには対応する `SpringBoot<Name>App` クラスが同梱されています。
+既定では `SpringBootShowcaseApp`（A 候補と同じサイドバーハブを Spring Boot で提供）が起動します。
+
+```sh
+./mvnw -pl examples/spring-boot -q exec:java
+```
+
+各デモはサブパッケージに分かれて配置されています
+（`io.streamlit4j.examples.spring.{hello,widgets,layout,data,chat,component,showcase}`）。
+単体デモを起動したいときはクラスを明示します：
 
 ```sh
 ./mvnw -pl examples/spring-boot -q exec:java \
     -Dexec.mainClass=io.streamlit4j.examples.spring.hello.SpringBootHelloApp
 ```
 
-各デモはサブパッケージに分かれて配置されています
-（`io.streamlit4j.examples.spring.{hello,widgets,layout,data,component,showcase}`）。
-クラス名と組み合わせて他のデモを起動してください。デフォルトでは
-`${streamlit4j.base-path}`（既定 `/streamlit4j`）配下にマウントされるため、
+既定では `${streamlit4j.base-path}`（既定 `/streamlit4j`）配下にマウントされるため、
 `http://localhost:8080/streamlit4j` を開きます。
 
 ## ステップ 4: ブラウザーで確認

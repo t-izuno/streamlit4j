@@ -1,8 +1,11 @@
 import DOMPurify from 'dompurify';
 import type { JSX } from 'react';
 import { findComponent } from './component-registry';
+import { Chart } from './components/Chart';
 import { Markdown } from './components/Markdown';
 import { Slider } from './components/Slider';
+import { Tabs } from './components/Tabs';
+import { Select, TextArea, TextField } from './components/TextField';
 import { Title } from './components/Title';
 import { Write } from './components/Write';
 import type { Patch, RenderNode } from './protocol';
@@ -149,48 +152,43 @@ function renderNode(node: RenderNode, onChange: WidgetChangeHandler): JSX.Elemen
         />
       );
     case 'text_input':
-      return labeled(
-        node,
-        props.label,
-        <input
+      return (
+        <TextField
+          key={node.id}
           type="text"
+          label={String(props.label ?? '')}
           value={String(props.value ?? '')}
-          onChange={(e) => onChange(node.id, e.target.value)}
-        />,
+          onChange={(v) => onChange(node.id, v)}
+        />
       );
     case 'number_input':
-      return labeled(
-        node,
-        props.label,
-        <input
+      return (
+        <TextField
+          key={node.id}
           type="number"
-          value={Number(props.value ?? 0)}
-          onChange={(e) => onChange(node.id, parseFloat(e.target.value))}
-        />,
+          label={String(props.label ?? '')}
+          value={String(props.value ?? 0)}
+          onChange={(v) => onChange(node.id, parseFloat(v))}
+        />
       );
     case 'text_area':
-      return labeled(
-        node,
-        props.label,
-        <textarea
+      return (
+        <TextArea
+          key={node.id}
+          label={String(props.label ?? '')}
           value={String(props.value ?? '')}
-          onChange={(e) => onChange(node.id, e.target.value)}
-        />,
+          onChange={(v) => onChange(node.id, v)}
+        />
       );
     case 'selectbox':
-      return labeled(
-        node,
-        props.label,
-        <select
+      return (
+        <Select
+          key={node.id}
+          label={String(props.label ?? '')}
           value={String(props.value ?? '')}
-          onChange={(e) => onChange(node.id, e.target.value)}
-        >
-          {((props.options as string[] | undefined) ?? []).map((o) => (
-            <option key={o} value={o}>
-              {o}
-            </option>
-          ))}
-        </select>,
+          options={(props.options as string[] | undefined) ?? []}
+          onChange={(v) => onChange(node.id, v)}
+        />
       );
     case 'multiselect': {
       const selected = (props.value as string[] | undefined) ?? [];
@@ -253,49 +251,44 @@ function renderNode(node: RenderNode, onChange: WidgetChangeHandler): JSX.Elemen
         </button>
       );
     case 'date_input':
-      return labeled(
-        node,
-        props.label,
-        <input
+      return (
+        <TextField
+          key={node.id}
           type="date"
+          label={String(props.label ?? '')}
           value={String(props.value ?? '')}
-          onChange={(e) => onChange(node.id, e.target.value)}
-        />,
+          onChange={(v) => onChange(node.id, v)}
+        />
       );
     case 'time_input':
-      return labeled(
-        node,
-        props.label,
-        <input
+      return (
+        <TextField
+          key={node.id}
           type="time"
+          label={String(props.label ?? '')}
           value={String(props.value ?? '')}
-          onChange={(e) => onChange(node.id, e.target.value)}
-        />,
+          onChange={(v) => onChange(node.id, v)}
+        />
       );
     case 'color_picker':
-      return labeled(
-        node,
-        props.label,
-        <input
+      return (
+        <TextField
+          key={node.id}
           type="color"
+          label={String(props.label ?? '')}
           value={String(props.value ?? '#000000')}
-          onChange={(e) => onChange(node.id, e.target.value)}
-        />,
+          onChange={(v) => onChange(node.id, v)}
+        />
       );
     case 'select_slider':
-      return labeled(
-        node,
-        props.label,
-        <select
+      return (
+        <Select
+          key={node.id}
+          label={String(props.label ?? '')}
           value={String(props.value ?? '')}
-          onChange={(e) => onChange(node.id, e.target.value)}
-        >
-          {((props.options as string[] | undefined) ?? []).map((o) => (
-            <option key={o} value={o}>
-              {o}
-            </option>
-          ))}
-        </select>,
+          options={(props.options as string[] | undefined) ?? []}
+          onChange={(v) => onChange(node.id, v)}
+        />
       );
     case 'file_uploader':
       return labeled(
@@ -341,15 +334,11 @@ function renderNode(node: RenderNode, onChange: WidgetChangeHandler): JSX.Elemen
         </details>
       );
     case 'tabs':
-      return (
-        <div key={node.id} className="tabs" role="tablist">
-          {node.children.map((c) => renderNode(c, onChange))}
-        </div>
-      );
+      return <Tabs key={node.id} node={node} renderChild={(c) => renderNode(c, onChange)} />;
     case 'tab':
+      // Rendered by <Tabs> only — orphan tab nodes (defensive) collapse here.
       return (
         <div key={node.id} className="tab" role="tabpanel">
-          <div className="tab__label">{String(props.label ?? '')}</div>
           {node.children.map((c) => renderNode(c, onChange))}
         </div>
       );
@@ -467,12 +456,14 @@ function renderTable(node: RenderNode): JSX.Element {
 
 function renderChart(node: RenderNode): JSX.Element {
   const data = (node.props.data as Array<Record<string, unknown>> | undefined) ?? [];
+  const kind = node.kind as
+    | 'line_chart'
+    | 'bar_chart'
+    | 'area_chart'
+    | 'scatter_chart';
   return (
-    <figure key={node.id} className={node.kind}>
-      <figcaption>
-        {node.kind} ({data.length} points)
-      </figcaption>
-      <pre>{JSON.stringify(data.slice(0, 5))}</pre>
-    </figure>
+    <div key={node.id}>
+      <Chart kind={kind} data={data} />
+    </div>
   );
 }
