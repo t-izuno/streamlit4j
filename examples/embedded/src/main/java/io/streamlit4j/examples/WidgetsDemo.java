@@ -7,15 +7,15 @@ import java.time.LocalTime;
 import java.util.List;
 
 /**
- * Demonstrates the input widget surface: text / number / select / radio /
- * checkbox / button / slider / date / time / color picker. Runnable as
- * {@code java -cp <classpath> io.streamlit4j.examples.WidgetsDemo [port]}.
+ * Demonstrates the input widget surface: text / number / select / radio / checkbox / button / slider / date / time /
+ * color picker. Runnable as {@code java -cp <classpath> io.streamlit4j.examples.WidgetsDemo [port]}.
  */
 public final class WidgetsDemo {
 
     private static final int DEFAULT_PORT = 8501;
 
-    private WidgetsDemo() {}
+    private WidgetsDemo() {
+    }
 
     /** Renders the demo. Invoked once per session by the runtime. */
     public static void run() {
@@ -51,8 +51,11 @@ public final class WidgetsDemo {
     /**
      * Boots an embedded server that serves this demo on the given port.
      *
-     * @param args optional single positional argument: the listen port (default {@value #DEFAULT_PORT})
-     * @throws Exception when the server fails to start
+     * @param args
+     *            optional single positional argument: the listen port (default {@value #DEFAULT_PORT})
+     *
+     * @throws Exception
+     *             when the server fails to start
      */
     public static void main(String[] args) throws Exception {
         int port = args.length > 0 ? Integer.parseInt(args[0]) : DEFAULT_PORT;

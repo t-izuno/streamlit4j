@@ -30,8 +30,8 @@ class Streamlit4jPrincipalHandshakeInterceptorTest {
 
     @Test
     void copiesAuthenticationIntoAttributes() {
-        Authentication auth = new UsernamePasswordAuthenticationToken(
-                "alice", "n/a", List.of(new SimpleGrantedAuthority("ROLE_USER")));
+        Authentication auth = new UsernamePasswordAuthenticationToken("alice", "n/a",
+                List.of(new SimpleGrantedAuthority("ROLE_USER")));
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         Map<String, Object> attributes = new HashMap<>();
@@ -51,20 +51,42 @@ class Streamlit4jPrincipalHandshakeInterceptorTest {
     }
 
     @Test
+    void skipsAttributeWhenAuthenticationPresentButNotAuthenticated() {
+        Authentication auth = new UsernamePasswordAuthenticationToken("alice", "n/a");
+        auth.setAuthenticated(false);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        Map<String, Object> attributes = new HashMap<>();
+        interceptor.beforeHandshake(stubRequest(), stubResponse(), null, attributes);
+
+        assertThat(attributes).doesNotContainKey(Streamlit4jPrincipalHandshakeInterceptor.AUTHENTICATION_ATTRIBUTE);
+    }
+
+    @Test
+    void afterHandshakeIsNoOp() {
+        interceptor.afterHandshake(stubRequest(), stubResponse(), null, null);
+    }
+
+    @Test
+    void currentAuthenticationReturnsNullWhenAttributeIsNotAuthentication() {
+        WebSocketSession session = stubSession(
+                Map.of(Streamlit4jPrincipalHandshakeInterceptor.AUTHENTICATION_ATTRIBUTE, "not-an-auth-object"));
+        assertThat(Streamlit4jPrincipalHandshakeInterceptor.currentAuthentication(session)).isNull();
+    }
+
+    @Test
     void currentAuthenticationReadsFromWebSocketSession() {
         Authentication auth = new UsernamePasswordAuthenticationToken("bob", "n/a", List.of());
-        WebSocketSession session =
-                stubSession(Map.of(Streamlit4jPrincipalHandshakeInterceptor.AUTHENTICATION_ATTRIBUTE, auth));
+        WebSocketSession session = stubSession(
+                Map.of(Streamlit4jPrincipalHandshakeInterceptor.AUTHENTICATION_ATTRIBUTE, auth));
 
-        assertThat(Streamlit4jPrincipalHandshakeInterceptor.currentAuthentication(session))
-                .isSameAs(auth);
+        assertThat(Streamlit4jPrincipalHandshakeInterceptor.currentAuthentication(session)).isSameAs(auth);
     }
 
     @Test
     void currentAuthenticationReturnsNullWhenMissing() {
         WebSocketSession session = stubSession(Map.of());
-        assertThat(Streamlit4jPrincipalHandshakeInterceptor.currentAuthentication(session))
-                .isNull();
+        assertThat(Streamlit4jPrincipalHandshakeInterceptor.currentAuthentication(session)).isNull();
     }
 
     private static ServerHttpRequest stubRequest() {

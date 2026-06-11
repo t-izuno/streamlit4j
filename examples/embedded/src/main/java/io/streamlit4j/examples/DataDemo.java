@@ -9,15 +9,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Demonstrates data display surfaces: dataframe / table / charts / metric /
- * data cache. Uses a small synthetic dataset to keep the example self-contained.
- * Runnable as {@code java -cp <classpath> io.streamlit4j.examples.DataDemo [port]}.
+ * Demonstrates data display surfaces: dataframe / table / charts / metric / data cache. Uses a small synthetic dataset
+ * to keep the example self-contained. Runnable as {@code java -cp <classpath> io.streamlit4j.examples.DataDemo [port]}.
  */
 public final class DataDemo {
 
     private static final int DEFAULT_PORT = 8501;
 
-    private DataDemo() {}
+    private DataDemo() {
+    }
 
     /** Renders the demo. Invoked once per session by the runtime. */
     public static void run() {
@@ -27,9 +27,7 @@ public final class DataDemo {
         List<Map<String, Object>> sales = St.cacheData("sales-2026", Duration.ofMinutes(5), DataDemo::loadSales);
 
         St.header("Metrics");
-        double total = sales.stream()
-                .mapToDouble(row -> ((Number) row.get("amount")).doubleValue())
-                .sum();
+        double total = sales.stream().mapToDouble(row -> ((Number) row.get("amount")).doubleValue()).sum();
         St.columns(2, index -> {
             if (index == 0) {
                 St.metric("Total revenue", String.format("¥%,.0f", total));
@@ -55,8 +53,11 @@ public final class DataDemo {
     /**
      * Boots an embedded server that serves this demo on the given port.
      *
-     * @param args optional single positional argument: the listen port (default {@value #DEFAULT_PORT})
-     * @throws Exception when the server fails to start
+     * @param args
+     *            optional single positional argument: the listen port (default {@value #DEFAULT_PORT})
+     *
+     * @throws Exception
+     *             when the server fails to start
      */
     public static void main(String[] args) throws Exception {
         int port = args.length > 0 ? Integer.parseInt(args[0]) : DEFAULT_PORT;
@@ -68,7 +69,7 @@ public final class DataDemo {
 
     private static List<Map<String, Object>> loadSales() {
         // 実運用では DB やファイルから読む。ここではキャッシュ動作確認のための合成データ。
-        String[] regions = {"Tokyo", "Osaka", "Nagoya", "Fukuoka"};
+        String[] regions = { "Tokyo", "Osaka", "Nagoya", "Fukuoka" };
         List<Map<String, Object>> rows = new ArrayList<>();
         for (int month = 1; month <= 12; month++) {
             for (String region : regions) {

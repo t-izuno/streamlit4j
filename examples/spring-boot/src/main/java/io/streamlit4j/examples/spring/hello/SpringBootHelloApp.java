@@ -7,22 +7,24 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 /**
- * Spring Boot embedded sample that mounts the streamlit4j Hello demo at
- * {@code ${streamlit4j.base-path}} (default {@code /streamlit}).
- *
- * <p>Run with {@code mvn -pl examples spring-boot:run} once the spring-boot-maven-plugin
- * is wired, or use any standard {@code main}-based launch.
+ * Spring Boot embedded sample that mounts the streamlit4j Hello demo at {@code ${streamlit4j.base-path}} (default
+ * {@code /streamlit}).
+ * <p>
+ * Run with {@code mvn -pl examples spring-boot:run} once the spring-boot-maven-plugin is wired, or use any standard
+ * {@code main}-based launch.
  */
 @SpringBootApplication
 public class SpringBootHelloApp {
 
     /** Creates the application bean. */
-    public SpringBootHelloApp() {}
+    public SpringBootHelloApp() {
+    }
 
     /**
      * Boots the Spring application.
      *
-     * @param args command-line arguments
+     * @param args
+     *            command-line arguments
      */
     public static void main(String[] args) {
         SpringApplication.run(SpringBootHelloApp.class, args);

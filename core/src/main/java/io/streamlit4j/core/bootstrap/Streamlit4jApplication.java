@@ -7,8 +7,8 @@ import io.streamlit4j.core.port.DownloadStore;
 import io.streamlit4j.core.port.SessionStore;
 
 /**
- * Fully-wired application instance produced by {@link Bootstrap}. Holds the
- * use cases and the shared adapters needed to serve a single process.
+ * Fully-wired application instance produced by {@link Bootstrap}. Holds the use cases and the shared adapters needed to
+ * serve a single process.
  */
 public final class Streamlit4jApplication implements AutoCloseable {
 
@@ -19,13 +19,8 @@ public final class Streamlit4jApplication implements AutoCloseable {
     private final ComponentRegistry components;
     private final AutoCloseable resourceCloser;
 
-    Streamlit4jApplication(
-            StartSession startSession,
-            ProcessWidgetEvent processWidgetEvent,
-            SessionStore sessions,
-            DownloadStore downloads,
-            ComponentRegistry components,
-            AutoCloseable resourceCloser) {
+    Streamlit4jApplication(StartSession startSession, ProcessWidgetEvent processWidgetEvent, SessionStore sessions,
+            DownloadStore downloads, ComponentRegistry components, AutoCloseable resourceCloser) {
         this.startSession = startSession;
         this.processWidgetEvent = processWidgetEvent;
         this.sessions = sessions;
@@ -96,7 +91,9 @@ public final class Streamlit4jApplication implements AutoCloseable {
     /**
      * Runtime metrics snapshot.
      *
-     * @param activeSessions current active session count
+     * @param activeSessions
+     *            current active session count
      */
-    public record Metrics(int activeSessions) {}
+    public record Metrics(int activeSessions) {
+    }
 }

@@ -5,11 +5,9 @@ import io.streamlit4j.core.domain.SessionState;
 import io.streamlit4j.server.Streamlit4jServer;
 
 /**
- * Sidebar-driven hub that lets the visitor pick any of the bundled demos and
- * see it rendered in place. Each navigation entry delegates to the matching
- * demo's own {@code run()}, so the hub stays in sync with whatever those
- * demos render when launched standalone. Runnable as
- * {@code java -cp <classpath> io.streamlit4j.examples.ShowcaseDemo [port]}.
+ * Sidebar-driven hub that lets the visitor pick any of the bundled demos and see it rendered in place. Each navigation
+ * entry delegates to the matching demo's own {@code run()}, so the hub stays in sync with whatever those demos render
+ * when launched standalone. Runnable as {@code java -cp <classpath> io.streamlit4j.examples.ShowcaseDemo [port]}.
  */
 public final class ShowcaseDemo {
 
@@ -24,7 +22,8 @@ public final class ShowcaseDemo {
     private static final String NAV_COMPONENT = "component";
     private static final String NAV_ABOUT = "about";
 
-    private ShowcaseDemo() {}
+    private ShowcaseDemo() {
+    }
 
     /** Renders the demo. Invoked once per session by the runtime. */
     public static void run() {
@@ -78,8 +77,7 @@ public final class ShowcaseDemo {
 
     private static void renderAbout() {
         St.title("About streamlit4j");
-        St.markdown(
-                """
+        St.markdown("""
                 **streamlit4j** is an independent community open-source project
                 (MIT License). It is not affiliated with Snowflake, Inc. or the
                 Streamlit project; the name "Streamlit" appears within
@@ -103,8 +101,11 @@ public final class ShowcaseDemo {
     /**
      * Boots an embedded server that serves this demo on the given port.
      *
-     * @param args optional single positional argument: the listen port (default {@value #DEFAULT_PORT})
-     * @throws Exception when the server fails to start
+     * @param args
+     *            optional single positional argument: the listen port (default {@value #DEFAULT_PORT})
+     *
+     * @throws Exception
+     *             when the server fails to start
      */
     public static void main(String[] args) throws Exception {
         int port = args.length > 0 ? Integer.parseInt(args[0]) : DEFAULT_PORT;

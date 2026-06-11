@@ -28,7 +28,8 @@ class Streamlit4jServerTest {
 
     @Test
     void startsOnEphemeralPortAndStops() throws Exception {
-        try (Streamlit4jServer server = new Streamlit4jServer(0, () -> () -> {})) {
+        try (Streamlit4jServer server = new Streamlit4jServer(0, () -> () -> {
+        })) {
             server.start();
             assertThat(server.port()).isGreaterThan(0);
         }
@@ -36,14 +37,12 @@ class Streamlit4jServerTest {
 
     @Test
     void servesBundledFrontendIndexHtmlAtRoot() throws Exception {
-        try (Streamlit4jServer server = new Streamlit4jServer(0, () -> () -> {})) {
+        try (Streamlit4jServer server = new Streamlit4jServer(0, () -> () -> {
+        })) {
             server.start();
-            HttpResponse<String> response = HttpClient.newHttpClient()
-                    .send(
-                            HttpRequest.newBuilder(URI.create("http://localhost:" + server.port() + "/"))
-                                    .GET()
-                                    .build(),
-                            HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = HttpClient.newHttpClient().send(
+                    HttpRequest.newBuilder(URI.create("http://localhost:" + server.port() + "/")).GET().build(),
+                    HttpResponse.BodyHandlers.ofString());
             assertThat(response.statusCode()).isEqualTo(200);
             assertThat(response.headers().firstValue("content-type"))
                     .hasValueSatisfying(ct -> assertThat(ct).startsWith("text/html"));
@@ -53,14 +52,12 @@ class Streamlit4jServerTest {
 
     @Test
     void servesBundledFrontendAssetByExactPath() throws Exception {
-        try (Streamlit4jServer server = new Streamlit4jServer(0, () -> () -> {})) {
+        try (Streamlit4jServer server = new Streamlit4jServer(0, () -> () -> {
+        })) {
             server.start();
-            HttpResponse<String> indexResp = HttpClient.newHttpClient()
-                    .send(
-                            HttpRequest.newBuilder(URI.create("http://localhost:" + server.port() + "/index.html"))
-                                    .GET()
-                                    .build(),
-                            HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> indexResp = HttpClient.newHttpClient().send(HttpRequest
+                    .newBuilder(URI.create("http://localhost:" + server.port() + "/index.html")).GET().build(),
+                    HttpResponse.BodyHandlers.ofString());
             assertThat(indexResp.statusCode()).isEqualTo(200);
             assertThat(indexResp.body()).contains("<!doctype html");
         }
@@ -89,8 +86,7 @@ class Streamlit4jServerTest {
             client.start();
             try {
                 CapturingClient ws = new CapturingClient();
-                client.connect(ws, URI.create("ws://localhost:" + server.port() + "/ws"))
-                        .get();
+                client.connect(ws, URI.create("ws://localhost:" + server.port() + "/ws")).get();
 
                 Envelope first = ws.received.poll(2, TimeUnit.SECONDS);
                 assertThat(first).isInstanceOf(SessionInit.class);

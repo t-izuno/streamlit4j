@@ -6,10 +6,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.EventListener;
 
 /**
- * Prints a streamlit4j-specific startup banner with the resolved local URL
- * after the Spring Boot application has finished starting up. Mirrors the
- * banner that {@code Streamlit4jServer} prints in standalone (embedded) use,
- * so both adoption paths surface the URL the user should open.
+ * Prints a streamlit4j-specific startup banner with the resolved local URL after the Spring Boot application has
+ * finished starting up. Mirrors the banner that {@code Streamlit4jServer} prints in standalone (embedded) use, so both
+ * adoption paths surface the URL the user should open.
  */
 public class Streamlit4jStartupBanner {
 
@@ -18,7 +17,8 @@ public class Streamlit4jStartupBanner {
     /**
      * Creates the banner listener.
      *
-     * @param properties streamlit4j configuration (used to resolve base-path)
+     * @param properties
+     *            streamlit4j configuration (used to resolve base-path)
      */
     public Streamlit4jStartupBanner(Streamlit4jProperties properties) {
         this.properties = properties;
@@ -27,7 +27,8 @@ public class Streamlit4jStartupBanner {
     /**
      * Reacts to the application-ready event and prints the local URL.
      *
-     * @param event ready event carrying the running application context
+     * @param event
+     *            ready event carrying the running application context
      */
     @EventListener
     @SuppressWarnings("PMD.SystemPrintln")

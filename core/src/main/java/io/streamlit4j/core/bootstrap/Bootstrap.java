@@ -13,18 +13,20 @@ import io.streamlit4j.core.runtime.ScriptRunner;
 import io.streamlit4j.core.runtime.StructuredLog;
 
 /**
- * Composition root that wires all in-memory adapters into a single
- * {@link Streamlit4jApplication} for the standalone (CLI / embedded) profile.
- * The Spring Boot starter wires the same use cases against Spring-managed beans.
+ * Composition root that wires all in-memory adapters into a single {@link Streamlit4jApplication} for the standalone
+ * (CLI / embedded) profile. The Spring Boot starter wires the same use cases against Spring-managed beans.
  */
 public final class Bootstrap {
 
-    private Bootstrap() {}
+    private Bootstrap() {
+    }
 
     /**
      * Builds a fully-wired application backed by in-memory stores.
      *
-     * @param entrypoints source of script entrypoints
+     * @param entrypoints
+     *            source of script entrypoints
+     *
      * @return ready-to-use application instance
      */
     public static Streamlit4jApplication standalone(EntrypointSource entrypoints) {
@@ -47,8 +49,8 @@ public final class Bootstrap {
     }
 
     /**
-     * Returns a {@link SessionLifecycleListener} that emits structured log events
-     * on session create / destroy / expire transitions.
+     * Returns a {@link SessionLifecycleListener} that emits structured log events on session create / destroy / expire
+     * transitions.
      *
      * @return logging listener
      */

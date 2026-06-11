@@ -10,13 +10,11 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
 /**
- * Copies the current {@link Authentication} from {@link SecurityContextHolder} into
- * the WebSocket handshake attributes, making it available via
- * {@link #currentAuthentication(WebSocketSession)} during message handling.
- *
- * <p>This adapter does not enforce authentication; callers must configure a
- * {@code SecurityFilterChain} that matches the streamlit4j base path. When no
- * {@link Authentication} is present (anonymous or unauthenticated request), the
+ * Copies the current {@link Authentication} from {@link SecurityContextHolder} into the WebSocket handshake attributes,
+ * making it available via {@link #currentAuthentication(WebSocketSession)} during message handling.
+ * <p>
+ * This adapter does not enforce authentication; callers must configure a {@code SecurityFilterChain} that matches the
+ * streamlit4j base path. When no {@link Authentication} is present (anonymous or unauthenticated request), the
  * attribute is simply not set and the handshake proceeds.
  */
 public class Streamlit4jPrincipalHandshakeInterceptor implements HandshakeInterceptor {
@@ -24,13 +22,11 @@ public class Streamlit4jPrincipalHandshakeInterceptor implements HandshakeInterc
     static final String AUTHENTICATION_ATTRIBUTE = "streamlit4j.authentication";
 
     /** Creates the interceptor. */
-    public Streamlit4jPrincipalHandshakeInterceptor() {}
+    public Streamlit4jPrincipalHandshakeInterceptor() {
+    }
 
     @Override
-    public boolean beforeHandshake(
-            ServerHttpRequest request,
-            ServerHttpResponse response,
-            WebSocketHandler wsHandler,
+    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
             Map<String, Object> attributes) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
@@ -40,15 +36,17 @@ public class Streamlit4jPrincipalHandshakeInterceptor implements HandshakeInterc
     }
 
     @Override
-    public void afterHandshake(
-            ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Exception exception) {
+    public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
+            Exception exception) {
         // no-op
     }
 
     /**
      * Retrieves the {@link Authentication} captured at handshake time, if any.
      *
-     * @param session Spring WebSocket session
+     * @param session
+     *            Spring WebSocket session
+     *
      * @return the captured {@link Authentication}, or {@code null} when the request was anonymous
      */
     public static Authentication currentAuthentication(WebSocketSession session) {

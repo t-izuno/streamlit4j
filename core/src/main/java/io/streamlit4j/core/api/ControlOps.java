@@ -8,7 +8,8 @@ import io.streamlit4j.core.runtime.StopRequested;
 /** Script-flow control (rerun / stop / state). */
 final class ControlOps {
 
-    private ControlOps() {}
+    private ControlOps() {
+    }
 
     static void rerun() {
         throw new RerunRequested();

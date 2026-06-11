@@ -19,7 +19,8 @@ final class InputWidgets {
     private static final String PROP_VALUE = "value";
     private static final String PROP_OPTIONS = "options";
 
-    private InputWidgets() {}
+    private InputWidgets() {
+    }
 
     static int slider(String label, int min, int max, int defaultValue) {
         String id = widgetId("slider", label, min, max);

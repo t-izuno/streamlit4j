@@ -8,14 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Package-private helpers shared by the widget facades under
- * {@code io.streamlit4j.core.api}. All emitters and session-state readers
- * funnel through here so per-category classes (TextWidgets, InputWidgets, ...)
- * stay focused on translating arguments into render-node props.
+ * Package-private helpers shared by the widget facades under {@code io.streamlit4j.core.api}. All emitters and
+ * session-state readers funnel through here so per-category classes (TextWidgets, InputWidgets, ...) stay focused on
+ * translating arguments into render-node props.
  */
 final class WidgetSupport {
 
-    private WidgetSupport() {}
+    private WidgetSupport() {
+    }
 
     static void emit(String kind, String id, Map<String, Object> props) {
         RenderContext.current().addNode(new RenderNode(kind, id, props, List.of()));

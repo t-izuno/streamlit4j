@@ -10,8 +10,7 @@ import org.eclipse.jetty.server.Response;
 import org.eclipse.jetty.util.Callback;
 
 /**
- * Jetty handler that serves bytes registered in a {@link DownloadStore} under
- * the {@code /download/<key>} URL prefix.
+ * Jetty handler that serves bytes registered in a {@link DownloadStore} under the {@code /download/<key>} URL prefix.
  */
 public final class DownloadHandler extends Handler.Abstract {
 
@@ -22,7 +21,8 @@ public final class DownloadHandler extends Handler.Abstract {
     /**
      * Creates a handler backed by the given store.
      *
-     * @param store download store to serve assets from
+     * @param store
+     *            download store to serve assets from
      */
     public DownloadHandler(DownloadStore store) {
         this.store = store;
@@ -35,19 +35,17 @@ public final class DownloadHandler extends Handler.Abstract {
             return false;
         }
         String key = path.substring(PREFIX.length());
-        return store.retrieve(key)
-                .map(asset -> {
-                    response.setStatus(HttpStatus.OK_200);
-                    response.getHeaders().put(HttpHeader.CONTENT_TYPE, asset.contentType());
-                    response.getHeaders().put(HttpHeader.CONTENT_LENGTH, asset.bytes().length);
-                    response.getHeaders()
-                            .put(HttpHeader.CONTENT_DISPOSITION, "attachment; filename=\"" + asset.filename() + "\"");
-                    response.write(true, ByteBuffer.wrap(asset.bytes()), callback);
-                    return true;
-                })
-                .orElseGet(() -> {
-                    Response.writeError(request, response, callback, HttpStatus.NOT_FOUND_404);
-                    return true;
-                });
+        return store.retrieve(key).map(asset -> {
+            response.setStatus(HttpStatus.OK_200);
+            response.getHeaders().put(HttpHeader.CONTENT_TYPE, asset.contentType());
+            response.getHeaders().put(HttpHeader.CONTENT_LENGTH, asset.bytes().length);
+            response.getHeaders().put(HttpHeader.CONTENT_DISPOSITION,
+                    "attachment; filename=\"" + asset.filename() + "\"");
+            response.write(true, ByteBuffer.wrap(asset.bytes()), callback);
+            return true;
+        }).orElseGet(() -> {
+            Response.writeError(request, response, callback, HttpStatus.NOT_FOUND_404);
+            return true;
+        });
     }
 }

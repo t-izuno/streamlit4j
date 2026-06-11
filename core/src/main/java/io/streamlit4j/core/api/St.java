@@ -12,17 +12,16 @@ import java.util.function.IntConsumer;
 import java.util.function.Supplier;
 
 /**
- * Public facade for the streamlit4j script-side API. Every entry point is a
- * thin delegation to a package-private widget category class (TextWidgets,
- * InputWidgets, LayoutWidgets, etc.) that lives alongside this class.
- *
- * <p>The facade preserves Streamlit Python's flat surface (`st.title(...)` →
- * {@code St.title(...)}) while keeping each category of widgets in its own
- * source file for readability and maintainability.
+ * Public facade for the streamlit4j script-side API. Every entry point is a thin delegation to a package-private widget
+ * category class (TextWidgets, InputWidgets, LayoutWidgets, etc.) that lives alongside this class.
+ * <p>
+ * The facade preserves Streamlit Python's flat surface (`st.title(...)` → {@code St.title(...)}) while keeping each
+ * category of widgets in its own source file for readability and maintainability.
  */
 public final class St {
 
-    private St() {}
+    private St() {
+    }
 
     // ----- Control flow ------------------------------------------------------
 
@@ -50,7 +49,8 @@ public final class St {
     /**
      * Renders an h1-level title.
      *
-     * @param text title text to display
+     * @param text
+     *            title text to display
      */
     public static void title(String text) {
         TextWidgets.title(text);
@@ -59,7 +59,8 @@ public final class St {
     /**
      * Renders an h2-level section header.
      *
-     * @param text header text to display
+     * @param text
+     *            header text to display
      */
     public static void header(String text) {
         TextWidgets.header(text);
@@ -68,7 +69,8 @@ public final class St {
     /**
      * Renders an h3-level subheader.
      *
-     * @param text subheader text to display
+     * @param text
+     *            subheader text to display
      */
     public static void subheader(String text) {
         TextWidgets.subheader(text);
@@ -77,7 +79,8 @@ public final class St {
     /**
      * Renders muted small-print text below the previous element.
      *
-     * @param text caption text to display
+     * @param text
+     *            caption text to display
      */
     public static void caption(String text) {
         TextWidgets.caption(text);
@@ -86,7 +89,8 @@ public final class St {
     /**
      * Renders Markdown-formatted prose; sanitized in the frontend.
      *
-     * @param body Markdown source to render
+     * @param body
+     *            Markdown source to render
      */
     public static void markdown(String body) {
         TextWidgets.markdown(body);
@@ -95,7 +99,8 @@ public final class St {
     /**
      * Renders the {@code toString} of {@code value} as plain text.
      *
-     * @param value value to stringify and display
+     * @param value
+     *            value to stringify and display
      */
     public static void write(Object value) {
         TextWidgets.write(value);
@@ -104,7 +109,8 @@ public final class St {
     /**
      * Renders a fenced code block without explicit language hinting.
      *
-     * @param body source code to display
+     * @param body
+     *            source code to display
      */
     public static void code(String body) {
         TextWidgets.code(body);
@@ -113,8 +119,10 @@ public final class St {
     /**
      * Renders a fenced code block with a syntax-highlight language hint.
      *
-     * @param body source code to display
-     * @param language syntax-highlight language tag (e.g. {@code "java"})
+     * @param body
+     *            source code to display
+     * @param language
+     *            syntax-highlight language tag (e.g. {@code "java"})
      */
     public static void code(String body, String language) {
         TextWidgets.code(body, language);
@@ -123,7 +131,8 @@ public final class St {
     /**
      * Renders a JSON literal in a code-style block.
      *
-     * @param body JSON text to display
+     * @param body
+     *            JSON text to display
      */
     public static void json(String body) {
         TextWidgets.json(body);
@@ -132,7 +141,8 @@ public final class St {
     /**
      * Renders a LaTeX expression (frontend MathJax/KaTeX rendering).
      *
-     * @param body LaTeX source
+     * @param body
+     *            LaTeX source
      */
     public static void latex(String body) {
         TextWidgets.latex(body);
@@ -141,7 +151,8 @@ public final class St {
     /**
      * Renders raw HTML; sanitized via DOMPurify on the frontend.
      *
-     * @param body HTML source to render
+     * @param body
+     *            HTML source to render
      */
     public static void html(String body) {
         TextWidgets.html(body);
@@ -157,8 +168,10 @@ public final class St {
     /**
      * Renders a labeled metric card with a value.
      *
-     * @param label metric label
-     * @param value metric value (stringified)
+     * @param label
+     *            metric label
+     * @param value
+     *            metric value (stringified)
      */
     public static void metric(String label, Object value) {
         StatusWidgets.metric(label, value);
@@ -167,9 +180,12 @@ public final class St {
     /**
      * Renders a labeled metric card with a value and delta indicator.
      *
-     * @param label metric label
-     * @param value metric value
-     * @param delta delta indicator value (e.g. "+3%")
+     * @param label
+     *            metric label
+     * @param value
+     *            metric value
+     * @param delta
+     *            delta indicator value (e.g. "+3%")
      */
     public static void metric(String label, Object value, Object delta) {
         StatusWidgets.metric(label, value, delta);
@@ -178,7 +194,8 @@ public final class St {
     /**
      * Shows a transient toast notification.
      *
-     * @param text message body
+     * @param text
+     *            message body
      */
     public static void toast(String text) {
         StatusWidgets.toast(text);
@@ -187,7 +204,8 @@ public final class St {
     /**
      * Renders a progress bar; {@code value} is in [0.0, 1.0].
      *
-     * @param value progress fraction
+     * @param value
+     *            progress fraction
      */
     public static void progress(double value) {
         StatusWidgets.progress(value);
@@ -196,7 +214,8 @@ public final class St {
     /**
      * Renders an indeterminate spinner with a caption.
      *
-     * @param text caption shown next to the spinner
+     * @param text
+     *            caption shown next to the spinner
      */
     public static void spinner(String text) {
         StatusWidgets.spinner(text);
@@ -205,7 +224,8 @@ public final class St {
     /**
      * Renders a status banner (info / running).
      *
-     * @param text status text
+     * @param text
+     *            status text
      */
     public static void status(String text) {
         StatusWidgets.status(text);
@@ -216,7 +236,8 @@ public final class St {
     /**
      * Renders rows as an interactive dataframe-style table.
      *
-     * @param rows row data; each map represents one row with column → value
+     * @param rows
+     *            row data; each map represents one row with column → value
      */
     public static void dataframe(List<Map<String, Object>> rows) {
         DataWidgets.dataframe(rows);
@@ -225,7 +246,8 @@ public final class St {
     /**
      * Renders rows as a static HTML table.
      *
-     * @param rows row data
+     * @param rows
+     *            row data
      */
     public static void table(List<Map<String, Object>> rows) {
         DataWidgets.table(rows);
@@ -234,7 +256,8 @@ public final class St {
     /**
      * Renders an editable data grid (round-trip changes via session state).
      *
-     * @param rows initial row data
+     * @param rows
+     *            initial row data
      */
     public static void dataEditor(List<Map<String, Object>> rows) {
         DataWidgets.dataEditor(rows);
@@ -245,7 +268,8 @@ public final class St {
     /**
      * Renders an image referenced by URL or download key.
      *
-     * @param url image URL
+     * @param url
+     *            image URL
      */
     public static void image(String url) {
         MediaWidgets.image(url);
@@ -254,7 +278,8 @@ public final class St {
     /**
      * Renders an audio player.
      *
-     * @param url audio source URL
+     * @param url
+     *            audio source URL
      */
     public static void audio(String url) {
         MediaWidgets.audio(url);
@@ -263,7 +288,8 @@ public final class St {
     /**
      * Renders a video player.
      *
-     * @param url video source URL
+     * @param url
+     *            video source URL
      */
     public static void video(String url) {
         MediaWidgets.video(url);
@@ -274,7 +300,8 @@ public final class St {
     /**
      * Renders a line chart from row data.
      *
-     * @param data plotted rows
+     * @param data
+     *            plotted rows
      */
     public static void lineChart(List<Map<String, Object>> data) {
         ChartWidgets.lineChart(data);
@@ -283,7 +310,8 @@ public final class St {
     /**
      * Renders a bar chart from row data.
      *
-     * @param data plotted rows
+     * @param data
+     *            plotted rows
      */
     public static void barChart(List<Map<String, Object>> data) {
         ChartWidgets.barChart(data);
@@ -292,7 +320,8 @@ public final class St {
     /**
      * Renders a filled area chart from row data.
      *
-     * @param data plotted rows
+     * @param data
+     *            plotted rows
      */
     public static void areaChart(List<Map<String, Object>> data) {
         ChartWidgets.areaChart(data);
@@ -301,7 +330,8 @@ public final class St {
     /**
      * Renders a scatter chart from row data.
      *
-     * @param data plotted rows
+     * @param data
+     *            plotted rows
      */
     public static void scatterChart(List<Map<String, Object>> data) {
         ChartWidgets.scatterChart(data);
@@ -312,10 +342,15 @@ public final class St {
     /**
      * Integer slider.
      *
-     * @param label widget label
-     * @param min minimum value (inclusive)
-     * @param max maximum value (inclusive)
-     * @param defaultValue value before user interaction
+     * @param label
+     *            widget label
+     * @param min
+     *            minimum value (inclusive)
+     * @param max
+     *            maximum value (inclusive)
+     * @param defaultValue
+     *            value before user interaction
+     *
      * @return current value
      */
     public static int slider(String label, int min, int max, int defaultValue) {
@@ -325,8 +360,11 @@ public final class St {
     /**
      * Single-line text input.
      *
-     * @param label widget label
-     * @param defaultValue initial value
+     * @param label
+     *            widget label
+     * @param defaultValue
+     *            initial value
+     *
      * @return current value
      */
     public static String textInput(String label, String defaultValue) {
@@ -336,8 +374,11 @@ public final class St {
     /**
      * Numeric input returning {@code double}.
      *
-     * @param label widget label
-     * @param defaultValue initial value
+     * @param label
+     *            widget label
+     * @param defaultValue
+     *            initial value
+     *
      * @return current value
      */
     public static double numberInput(String label, double defaultValue) {
@@ -347,8 +388,11 @@ public final class St {
     /**
      * Multi-line text input.
      *
-     * @param label widget label
-     * @param defaultValue initial value
+     * @param label
+     *            widget label
+     * @param defaultValue
+     *            initial value
+     *
      * @return current value
      */
     public static String textArea(String label, String defaultValue) {
@@ -358,8 +402,11 @@ public final class St {
     /**
      * Drop-down select.
      *
-     * @param label widget label
-     * @param options selectable options (defaults to the first)
+     * @param label
+     *            widget label
+     * @param options
+     *            selectable options (defaults to the first)
+     *
      * @return chosen option
      */
     public static String selectbox(String label, List<String> options) {
@@ -369,8 +416,11 @@ public final class St {
     /**
      * Multi-select chip input.
      *
-     * @param label widget label
-     * @param options selectable options
+     * @param label
+     *            widget label
+     * @param options
+     *            selectable options
+     *
      * @return list of chosen options
      */
     public static List<String> multiselect(String label, List<String> options) {
@@ -380,7 +430,9 @@ public final class St {
     /**
      * Boolean checkbox defaulting to {@code false}.
      *
-     * @param label widget label
+     * @param label
+     *            widget label
+     *
      * @return current value
      */
     public static boolean checkbox(String label) {
@@ -390,8 +442,11 @@ public final class St {
     /**
      * Boolean checkbox with a configurable default.
      *
-     * @param label widget label
-     * @param defaultValue initial value
+     * @param label
+     *            widget label
+     * @param defaultValue
+     *            initial value
+     *
      * @return current value
      */
     public static boolean checkbox(String label, boolean defaultValue) {
@@ -401,8 +456,11 @@ public final class St {
     /**
      * Radio-button group.
      *
-     * @param label widget label
-     * @param options selectable options
+     * @param label
+     *            widget label
+     * @param options
+     *            selectable options
+     *
      * @return chosen option
      */
     public static String radio(String label, List<String> options) {
@@ -412,7 +470,9 @@ public final class St {
     /**
      * Push button; returns {@code true} on the rerun triggered by the click.
      *
-     * @param label widget label
+     * @param label
+     *            widget label
+     *
      * @return {@code true} when the user just clicked the button
      */
     public static boolean button(String label) {
@@ -422,8 +482,11 @@ public final class St {
     /**
      * Date picker.
      *
-     * @param label widget label
-     * @param defaultValue initial date
+     * @param label
+     *            widget label
+     * @param defaultValue
+     *            initial date
+     *
      * @return chosen date
      */
     public static LocalDate dateInput(String label, LocalDate defaultValue) {
@@ -433,8 +496,11 @@ public final class St {
     /**
      * Time picker.
      *
-     * @param label widget label
-     * @param defaultValue initial time
+     * @param label
+     *            widget label
+     * @param defaultValue
+     *            initial time
+     *
      * @return chosen time
      */
     public static LocalTime timeInput(String label, LocalTime defaultValue) {
@@ -444,8 +510,11 @@ public final class St {
     /**
      * Color picker.
      *
-     * @param label widget label
-     * @param defaultValue initial color (CSS hex)
+     * @param label
+     *            widget label
+     * @param defaultValue
+     *            initial color (CSS hex)
+     *
      * @return chosen color as a CSS hex string
      */
     public static String colorPicker(String label, String defaultValue) {
@@ -455,9 +524,13 @@ public final class St {
     /**
      * Discrete-option slider.
      *
-     * @param label widget label
-     * @param options ordered options
-     * @param defaultValue initial option
+     * @param label
+     *            widget label
+     * @param options
+     *            ordered options
+     * @param defaultValue
+     *            initial option
+     *
      * @return chosen option
      */
     public static String selectSlider(String label, List<String> options, String defaultValue) {
@@ -469,7 +542,9 @@ public final class St {
     /**
      * File upload input.
      *
-     * @param label widget label
+     * @param label
+     *            widget label
+     *
      * @return uploaded file key (download store reference), or empty string before upload
      */
     public static String fileUploader(String label) {
@@ -479,8 +554,11 @@ public final class St {
     /**
      * Renders a download link pointing at an existing URL.
      *
-     * @param label button label
-     * @param url URL to download
+     * @param label
+     *            button label
+     * @param url
+     *            URL to download
+     *
      * @return always {@code false} (download links are anchor elements, not buttons)
      */
     public static boolean downloadButton(String label, String url) {
@@ -490,10 +568,15 @@ public final class St {
     /**
      * Registers the given bytes in the download store and renders a download link.
      *
-     * @param label button label
-     * @param filename suggested filename
-     * @param bytes raw payload
-     * @param contentType MIME type
+     * @param label
+     *            button label
+     * @param filename
+     *            suggested filename
+     * @param bytes
+     *            raw payload
+     * @param contentType
+     *            MIME type
+     *
      * @return always {@code false}
      */
     public static boolean downloadButton(String label, String filename, byte[] bytes, String contentType) {
@@ -503,9 +586,13 @@ public final class St {
     /**
      * Serializes rows to CSV and renders a download link.
      *
-     * @param label button label
-     * @param filename suggested filename
-     * @param rows row data
+     * @param label
+     *            button label
+     * @param filename
+     *            suggested filename
+     * @param rows
+     *            row data
+     *
      * @return always {@code false}
      */
     public static boolean downloadCsv(String label, String filename, List<Map<String, Object>> rows) {
@@ -515,9 +602,13 @@ public final class St {
     /**
      * Encodes the JSON string in UTF-8 and renders a download link.
      *
-     * @param label button label
-     * @param filename suggested filename
-     * @param json JSON text
+     * @param label
+     *            button label
+     * @param filename
+     *            suggested filename
+     * @param json
+     *            JSON text
+     *
      * @return always {@code false}
      */
     public static boolean downloadJson(String label, String filename, String json) {
@@ -529,8 +620,10 @@ public final class St {
     /**
      * Splits the current frame into {@code count} columns.
      *
-     * @param count number of columns
-     * @param body invoked once per column index
+     * @param count
+     *            number of columns
+     * @param body
+     *            invoked once per column index
      */
     public static void columns(int count, IntConsumer body) {
         LayoutWidgets.columns(count, body);
@@ -539,7 +632,8 @@ public final class St {
     /**
      * Groups children into a single container element.
      *
-     * @param body child body
+     * @param body
+     *            child body
      */
     public static void container(Runnable body) {
         LayoutWidgets.container(body);
@@ -548,8 +642,10 @@ public final class St {
     /**
      * Renders a collapsible expander with a label and child content.
      *
-     * @param label expander label
-     * @param body child body
+     * @param label
+     *            expander label
+     * @param body
+     *            child body
      */
     public static void expander(String label, Runnable body) {
         LayoutWidgets.expander(label, body);
@@ -558,8 +654,10 @@ public final class St {
     /**
      * Renders a tab strip; {@code body} is invoked once per tab index.
      *
-     * @param labels tab labels
-     * @param body invoked once per tab index
+     * @param labels
+     *            tab labels
+     * @param body
+     *            invoked once per tab index
      */
     public static void tabs(List<String> labels, IntConsumer body) {
         LayoutWidgets.tabs(labels, body);
@@ -568,7 +666,8 @@ public final class St {
     /**
      * Renders a sidebar container that mounts to the left rail.
      *
-     * @param body child body
+     * @param body
+     *            child body
      */
     public static void sidebar(Runnable body) {
         LayoutWidgets.sidebar(body);
@@ -584,8 +683,10 @@ public final class St {
     /**
      * Buffers inner widget events until the submit button fires.
      *
-     * @param key stable key identifying the form within the session
-     * @param body child body
+     * @param key
+     *            stable key identifying the form within the session
+     * @param body
+     *            child body
      */
     public static void form(String key, Runnable body) {
         FormWidgets.form(key, body);
@@ -594,7 +695,9 @@ public final class St {
     /**
      * Submit button for a {@link #form}; returns {@code true} on click.
      *
-     * @param label button label
+     * @param label
+     *            button label
+     *
      * @return {@code true} when the form was just submitted
      */
     public static boolean formSubmitButton(String label) {
@@ -606,10 +709,15 @@ public final class St {
     /**
      * Caches the result of {@code loader} under {@code key} for {@code ttl}.
      *
-     * @param <T> cached value type
-     * @param key cache key
-     * @param ttl entry lifetime
-     * @param loader invoked on miss
+     * @param <T>
+     *            cached value type
+     * @param key
+     *            cache key
+     * @param ttl
+     *            entry lifetime
+     * @param loader
+     *            invoked on miss
+     *
      * @return cached or freshly loaded value
      */
     public static <T> T cacheData(String key, Duration ttl, Supplier<T> loader) {
@@ -619,9 +727,13 @@ public final class St {
     /**
      * Caches a long-lived resource (effectively permanent within a process).
      *
-     * @param <T> cached value type
-     * @param key cache key
-     * @param loader invoked on miss
+     * @param <T>
+     *            cached value type
+     * @param key
+     *            cache key
+     * @param loader
+     *            invoked on miss
+     *
      * @return cached or freshly loaded value
      */
     public static <T> T cacheResource(String key, Supplier<T> loader) {
@@ -633,7 +745,8 @@ public final class St {
     /**
      * Renders the multi-page navigator and invokes the body of the current page.
      *
-     * @param pages explicit page declarations
+     * @param pages
+     *            explicit page declarations
      */
     public static void pages(List<Page> pages) {
         PageNav.pages(pages);
@@ -644,8 +757,11 @@ public final class St {
     /**
      * Registers a custom component spec for later invocation.
      *
-     * @param <R> declared result type
-     * @param spec component declaration
+     * @param <R>
+     *            declared result type
+     * @param spec
+     *            component declaration
+     *
      * @return the same spec, for fluent chaining
      */
     public static <R> CustomComponent<R> registerComponent(CustomComponent<R> spec) {
@@ -655,9 +771,13 @@ public final class St {
     /**
      * Invokes a custom component without a default; returns {@code null} on first render.
      *
-     * @param <R> declared result type
-     * @param spec component declaration
-     * @param args arguments to pass to the renderer
+     * @param <R>
+     *            declared result type
+     * @param spec
+     *            component declaration
+     * @param args
+     *            arguments to pass to the renderer
+     *
      * @return value yielded by the component, or {@code null} on first render
      */
     public static <R> R component(CustomComponent<R> spec, Map<String, Object> args) {
@@ -667,10 +787,15 @@ public final class St {
     /**
      * Invokes a custom component, returning {@code defaultValue} on the first render.
      *
-     * @param <R> declared result type
-     * @param spec component declaration
-     * @param args arguments to pass to the renderer
-     * @param defaultValue value returned before user interaction
+     * @param <R>
+     *            declared result type
+     * @param spec
+     *            component declaration
+     * @param args
+     *            arguments to pass to the renderer
+     * @param defaultValue
+     *            value returned before user interaction
+     *
      * @return value yielded by the component
      */
     public static <R> R component(CustomComponent<R> spec, Map<String, Object> args, R defaultValue) {
@@ -680,8 +805,10 @@ public final class St {
     /**
      * Invokes a display-only custom component (no return value).
      *
-     * @param name component name
-     * @param args arguments to pass to the renderer
+     * @param name
+     *            component name
+     * @param args
+     *            arguments to pass to the renderer
      */
     public static void component(String name, Map<String, Object> args) {
         ComponentApi.component(name, args);

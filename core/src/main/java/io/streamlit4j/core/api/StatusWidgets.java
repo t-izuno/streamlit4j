@@ -11,7 +11,8 @@ final class StatusWidgets {
 
     private static final String KIND_METRIC = "metric";
 
-    private StatusWidgets() {}
+    private StatusWidgets() {
+    }
 
     static void metric(String label, Object value) {
         emit(KIND_METRIC, widgetId(KIND_METRIC, label), ordered("label", label, "value", value));

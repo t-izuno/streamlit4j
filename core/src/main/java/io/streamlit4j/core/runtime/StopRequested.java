@@ -1,8 +1,8 @@
 package io.streamlit4j.core.runtime;
 
 /**
- * Thrown by {@code St.stop()} to halt the script without scheduling a re-run.
- * Used purely for control flow, not error handling.
+ * Thrown by {@code St.stop()} to halt the script without scheduling a re-run. Used purely for control flow, not error
+ * handling.
  */
 public final class StopRequested extends RuntimeException {
 

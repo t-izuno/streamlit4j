@@ -16,7 +16,8 @@ final class ComponentApi {
 
     private static final String KIND_COMPONENT = "component";
 
-    private ComponentApi() {}
+    private ComponentApi() {
+    }
 
     static <R> CustomComponent<R> registerComponent(CustomComponent<R> spec) {
         ComponentRegistryAccess.registry().register(spec);

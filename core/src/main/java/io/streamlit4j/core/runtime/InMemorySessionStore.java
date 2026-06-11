@@ -13,8 +13,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
- * In-memory implementation of {@link SessionStore} suitable for single-process
- * deployments. Includes an idle-timeout sweeper exposed via {@link #evictIdle()}.
+ * In-memory implementation of {@link SessionStore} suitable for single-process deployments. Includes an idle-timeout
+ * sweeper exposed via {@link #evictIdle()}.
  */
 public final class InMemorySessionStore implements SessionStore {
 
@@ -33,7 +33,8 @@ public final class InMemorySessionStore implements SessionStore {
     /**
      * Creates a store with a custom idle timeout.
      *
-     * @param idleTimeout maximum allowed inactivity before {@link #evictIdle()} removes a session
+     * @param idleTimeout
+     *            maximum allowed inactivity before {@link #evictIdle()} removes a session
      */
     public InMemorySessionStore(Duration idleTimeout) {
         this.idleTimeout = idleTimeout;
@@ -69,7 +70,8 @@ public final class InMemorySessionStore implements SessionStore {
     /**
      * Registers a session lifecycle listener.
      *
-     * @param listener listener to notify on create / destroy / expire events
+     * @param listener
+     *            listener to notify on create / destroy / expire events
      */
     public void addListener(SessionLifecycleListener listener) {
         listeners.add(listener);

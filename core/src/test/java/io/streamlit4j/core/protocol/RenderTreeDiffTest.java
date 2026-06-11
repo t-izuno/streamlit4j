@@ -70,11 +70,8 @@ class RenderTreeDiffTest {
         // Regression: when many trailing children are removed, every patch
         // must target the same fixed index so the client's sequential splice
         // doesn't leave later removes pointing at shifted positions.
-        RenderNode oldRoot = RenderNode.root(List.of(
-                node("title", "w_a", Map.of()),
-                node("markdown", "w_b", Map.of()),
-                node("markdown", "w_c", Map.of()),
-                node("button", "w_d", Map.of())));
+        RenderNode oldRoot = RenderNode.root(List.of(node("title", "w_a", Map.of()), node("markdown", "w_b", Map.of()),
+                node("markdown", "w_c", Map.of()), node("button", "w_d", Map.of())));
         RenderNode newRoot = RenderNode.root(List.of(node("title", "w_a", Map.of())));
 
         List<Patch> patches = RenderTreeDiff.diff(oldRoot, newRoot);
@@ -85,12 +82,10 @@ class RenderTreeDiffTest {
 
     @Test
     void replacesShrinksAndInsertsInOneDiff() {
-        RenderNode oldRoot = RenderNode.root(
-                List.of(node("title", "w_a", Map.of("text", "A")), node("markdown", "w_b", Map.of("body", "B"))));
-        RenderNode newRoot = RenderNode.root(List.of(
-                node("title", "w_a", Map.of("text", "A2")),
-                node("markdown", "w_b", Map.of("body", "B")),
-                node("button", "w_c", Map.of("label", "Go"))));
+        RenderNode oldRoot = RenderNode
+                .root(List.of(node("title", "w_a", Map.of("text", "A")), node("markdown", "w_b", Map.of("body", "B"))));
+        RenderNode newRoot = RenderNode.root(List.of(node("title", "w_a", Map.of("text", "A2")),
+                node("markdown", "w_b", Map.of("body", "B")), node("button", "w_c", Map.of("label", "Go"))));
 
         List<Patch> patches = RenderTreeDiff.diff(oldRoot, newRoot);
 

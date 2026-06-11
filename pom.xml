@@ -65,14 +65,13 @@
     <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>3.5.2</maven-failsafe-plugin.version>
     <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
-    <spotless-maven-plugin.version>2.43.0</spotless-maven-plugin.version>
+    <formatter-maven-plugin.version>2.29.0</formatter-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.5.0</maven-checkstyle-plugin.version>
     <checkstyle.version>10.18.2</checkstyle.version>
     <spotbugs-maven-plugin.version>4.8.6.6</spotbugs-maven-plugin.version>
     <maven-pmd-plugin.version>3.26.0</maven-pmd-plugin.version>
     <pmd.version>7.7.0</pmd.version>
     <dependency-check-maven.version>10.0.4</dependency-check-maven.version>
-    <palantir-java-format.version>2.50.0</palantir-java-format.version>
     <maven-javadoc-plugin.version>3.10.1</maven-javadoc-plugin.version>
     <maven-shade-plugin.version>3.6.0</maven-shade-plugin.version>
     <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
@@ -229,9 +228,9 @@
           <version>${jacoco-maven-plugin.version}</version>
         </plugin>
         <plugin>
-          <groupId>com.diffplug.spotless</groupId>
-          <artifactId>spotless-maven-plugin</artifactId>
-          <version>${spotless-maven-plugin.version}</version>
+          <groupId>net.revelc.code.formatter</groupId>
+          <artifactId>formatter-maven-plugin</artifactId>
+          <version>${formatter-maven-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -349,8 +348,8 @@
                   <version>[3.9.0,)</version>
                 </requireMavenVersion>
                 <requireJavaVersion>
-                  <version>[21,25)</version>
-                  <message>streamlit4j requires JDK 21 LTS (or 22/23/24). JDK 25 is currently not supported because google-java-format / palantir-java-format internals changed; use JDK 21 LTS as documented in requirements.md.</message>
+                  <version>[21,)</version>
+                  <message>streamlit4j requires JDK 21 LTS or newer.</message>
                 </requireJavaVersion>
               </rules>
             </configuration>
@@ -359,28 +358,18 @@
       </plugin>
 
       <plugin>
-        <groupId>com.diffplug.spotless</groupId>
-        <artifactId>spotless-maven-plugin</artifactId>
+        <groupId>net.revelc.code.formatter</groupId>
+        <artifactId>formatter-maven-plugin</artifactId>
         <configuration>
-          <java>
-            <includes>
-              <include>src/main/java/**/*.java</include>
-              <include>src/test/java/**/*.java</include>
-            </includes>
-            <palantirJavaFormat>
-              <version>${palantir-java-format.version}</version>
-            </palantirJavaFormat>
-            <removeUnusedImports/>
-            <trimTrailingWhitespace/>
-            <endWithNewline/>
-          </java>
+          <encoding>UTF-8</encoding>
+          <lineEnding>LF</lineEnding>
         </configuration>
         <executions>
           <execution>
-            <id>spotless-check</id>
+            <id>formatter-validate</id>
             <phase>validate</phase>
             <goals>
-              <goal>check</goal>
+              <goal>validate</goal>
             </goals>
           </execution>
         </executions>

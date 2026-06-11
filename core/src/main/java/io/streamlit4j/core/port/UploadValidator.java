@@ -10,16 +10,20 @@ public interface UploadValidator {
     /**
      * Validation policy applied to an upload.
      *
-     * @param maxSizeBytes maximum allowed payload size in bytes
-     * @param allowedMimeTypes set of accepted MIME types (empty = any)
+     * @param maxSizeBytes
+     *            maximum allowed payload size in bytes
+     * @param allowedMimeTypes
+     *            set of accepted MIME types (empty = any)
      */
     record Constraints(long maxSizeBytes, Set<String> allowedMimeTypes) {
 
         /**
          * Canonical constructor; normalizes a null {@code allowedMimeTypes} to an empty immutable set.
          *
-         * @param maxSizeBytes maximum allowed payload size in bytes
-         * @param allowedMimeTypes accepted MIME types (null treated as empty)
+         * @param maxSizeBytes
+         *            maximum allowed payload size in bytes
+         * @param allowedMimeTypes
+         *            accepted MIME types (null treated as empty)
          */
         public Constraints(long maxSizeBytes, Set<String> allowedMimeTypes) {
             this.maxSizeBytes = maxSizeBytes;
@@ -30,8 +34,10 @@ public interface UploadValidator {
     /**
      * Validation outcome.
      *
-     * @param accepted {@code true} when the upload passed validation
-     * @param reason human-readable reason when {@code accepted=false}; empty otherwise
+     * @param accepted
+     *            {@code true} when the upload passed validation
+     * @param reason
+     *            human-readable reason when {@code accepted=false}; empty otherwise
      */
     record Result(boolean accepted, String reason) {
 
@@ -47,7 +53,9 @@ public interface UploadValidator {
         /**
          * Returns a negative validation result with the given reason.
          *
-         * @param reason rejection reason
+         * @param reason
+         *            rejection reason
+         *
          * @return rejected result
          */
         public static Result reject(String reason) {
@@ -58,10 +66,15 @@ public interface UploadValidator {
     /**
      * Validates a single upload candidate.
      *
-     * @param filename file name reported by the client
-     * @param mimeType MIME type reported by the client
-     * @param sizeBytes payload size in bytes
-     * @param constraints validation policy
+     * @param filename
+     *            file name reported by the client
+     * @param mimeType
+     *            MIME type reported by the client
+     * @param sizeBytes
+     *            payload size in bytes
+     * @param constraints
+     *            validation policy
+     *
      * @return acceptance or rejection result
      */
     Result validate(String filename, String mimeType, long sizeBytes, Constraints constraints);

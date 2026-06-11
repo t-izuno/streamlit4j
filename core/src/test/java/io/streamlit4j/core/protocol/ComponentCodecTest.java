@@ -11,7 +11,8 @@ import org.junit.jupiter.api.Test;
 
 class ComponentCodecTest {
 
-    record Point(int x, int y) {}
+    record Point(int x, int y) {
+    }
 
     @Test
     void encodeArgWrapsPrimitiveAsJsonNode() {
@@ -54,8 +55,7 @@ class ComponentCodecTest {
     @Test
     void decodeReturnReturnsNullForNullNode() {
         assertThat(ComponentCodec.decodeReturn(null, String.class)).isNull();
-        assertThat(ComponentCodec.decodeReturn(NullNode.getInstance(), String.class))
-                .isNull();
+        assertThat(ComponentCodec.decodeReturn(NullNode.getInstance(), String.class)).isNull();
     }
 
     @Test
@@ -93,6 +93,13 @@ class ComponentCodecTest {
     void coerceConvertsMapToRecordViaJackson() {
         Point result = ComponentCodec.coerce(Map.of("x", 5, "y", 6), Point.class, new Point(0, 0));
         assertThat(result).isEqualTo(new Point(5, 6));
+    }
+
+    @Test
+    void coerceFallsBackWhenJsonNodeDecodesToNull() {
+        // NullNode → decodeReturn returns null → coerce returns fallback.
+        Integer result = ComponentCodec.coerce(NullNode.getInstance(), Integer.class, 42);
+        assertThat(result).isEqualTo(42);
     }
 
     @Test

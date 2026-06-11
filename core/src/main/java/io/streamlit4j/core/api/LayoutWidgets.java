@@ -14,7 +14,8 @@ import java.util.function.IntConsumer;
 /** Layout primitives (columns / container / expander / tabs / sidebar / empty). */
 final class LayoutWidgets {
 
-    private LayoutWidgets() {}
+    private LayoutWidgets() {
+    }
 
     static void columns(int count, IntConsumer body) {
         RenderContext ctx = RenderContext.current();

@@ -11,8 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 
 /**
- * Mutable per-user session that holds widget state, render history, and a
- * monotonic sequence number for frame ordering.
+ * Mutable per-user session that holds widget state, render history, and a monotonic sequence number for frame ordering.
  */
 public final class Session {
 
@@ -26,7 +25,8 @@ public final class Session {
     /**
      * Creates a session with the given identifier.
      *
-     * @param id session identifier
+     * @param id
+     *            session identifier
      */
     public Session(String id) {
         this.id = id;
@@ -62,8 +62,10 @@ public final class Session {
     /**
      * Records a widget event by writing the new value into session state.
      *
-     * @param widgetId widget id
-     * @param value new value
+     * @param widgetId
+     *            widget id
+     * @param value
+     *            new value
      */
     public void updateWidget(String widgetId, Object value) {
         state.put(widgetId, value);
@@ -105,18 +107,21 @@ public final class Session {
     /**
      * Stores the most recent render root.
      *
-     * @param root root node from the latest render
+     * @param root
+     *            root node from the latest render
      */
     public void setLastRoot(RenderNode root) {
         this.lastRoot = root;
     }
 
     /**
-     * Runs the given block while holding a re-run mutex to serialize rerenders
-     * within this session.
+     * Runs the given block while holding a re-run mutex to serialize rerenders within this session.
      *
-     * @param <T> return type
-     * @param work block to invoke
+     * @param <T>
+     *            return type
+     * @param work
+     *            block to invoke
+     *
      * @return value returned by {@code work}
      */
     public <T> T withRerunLock(Supplier<T> work) {

@@ -5,19 +5,22 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * JSON wire-format codec for protocol {@link Envelope}s. Wraps a shared
- * {@link ObjectMapper} so all encoding/decoding sites use one schema.
+ * JSON wire-format codec for protocol {@link Envelope}s. Wraps a shared {@link ObjectMapper} so all encoding/decoding
+ * sites use one schema.
  */
 public final class Codec {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    private Codec() {}
+    private Codec() {
+    }
 
     /**
      * Encodes the envelope to its JSON wire form.
      *
-     * @param envelope envelope to encode
+     * @param envelope
+     *            envelope to encode
+     *
      * @return JSON string suitable for WebSocket text frames
      */
     public static String encode(Envelope envelope) {
@@ -29,10 +32,11 @@ public final class Codec {
     }
 
     /**
-     * Decodes a JSON string into the appropriate {@link Envelope} subtype based
-     * on the {@code "type"} field.
+     * Decodes a JSON string into the appropriate {@link Envelope} subtype based on the {@code "type"} field.
      *
-     * @param json JSON wire frame
+     * @param json
+     *            JSON wire frame
+     *
      * @return decoded envelope
      */
     public static Envelope decode(String json) {
@@ -58,10 +62,12 @@ public final class Codec {
     }
 
     /**
-     * Converts an arbitrary Java value to a {@link JsonNode} using the shared
-     * mapper. Encapsulates the mapper so it never escapes this class.
+     * Converts an arbitrary Java value to a {@link JsonNode} using the shared mapper. Encapsulates the mapper so it
+     * never escapes this class.
      *
-     * @param value value to convert
+     * @param value
+     *            value to convert
+     *
      * @return JSON tree representation
      */
     public static JsonNode valueToTree(Object value) {
@@ -71,11 +77,17 @@ public final class Codec {
     /**
      * Converts a {@link JsonNode} into the requested type using the shared mapper.
      *
-     * @param <T> target type
-     * @param node JSON node to convert
-     * @param type target class
+     * @param <T>
+     *            target type
+     * @param node
+     *            JSON node to convert
+     * @param type
+     *            target class
+     *
      * @return converted value
-     * @throws JsonProcessingException when the node cannot be bound to {@code type}
+     *
+     * @throws JsonProcessingException
+     *             when the node cannot be bound to {@code type}
      */
     public static <T> T treeToValue(JsonNode node, Class<T> type) throws JsonProcessingException {
         return MAPPER.treeToValue(node, type);
@@ -84,9 +96,13 @@ public final class Codec {
     /**
      * Converts a Java value to another Java type using the shared mapper.
      *
-     * @param <T> target type
-     * @param raw source value
-     * @param type target class
+     * @param <T>
+     *            target type
+     * @param raw
+     *            source value
+     * @param type
+     *            target class
+     *
      * @return converted value
      */
     public static <T> T convertValue(Object raw, Class<T> type) {

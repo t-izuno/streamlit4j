@@ -15,7 +15,8 @@ import java.util.Map;
 /** File upload and download widgets. */
 final class FileWidgets {
 
-    private FileWidgets() {}
+    private FileWidgets() {
+    }
 
     static String fileUploader(String label) {
         String id = widgetId("file_uploader", label);

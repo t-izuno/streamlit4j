@@ -13,7 +13,8 @@ import java.util.Map;
 /** Form container and submit button. */
 final class FormWidgets {
 
-    private FormWidgets() {}
+    private FormWidgets() {
+    }
 
     static void form(String key, Runnable body) {
         RenderContext ctx = RenderContext.current();

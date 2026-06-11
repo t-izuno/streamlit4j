@@ -7,19 +7,21 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 /**
- * Spring Boot embedded sample that mounts the streamlit4j Chat demo at
- * {@code ${streamlit4j.base-path}} (default {@code /streamlit4j}).
+ * Spring Boot embedded sample that mounts the streamlit4j Chat demo at {@code ${streamlit4j.base-path}} (default
+ * {@code /streamlit4j}).
  */
 @SpringBootApplication
 public class SpringBootChatApp {
 
     /** Creates the application bean. */
-    public SpringBootChatApp() {}
+    public SpringBootChatApp() {
+    }
 
     /**
      * Boots the Spring application.
      *
-     * @param args command-line arguments
+     * @param args
+     *            command-line arguments
      */
     public static void main(String[] args) {
         SpringApplication.run(SpringBootChatApp.class, args);

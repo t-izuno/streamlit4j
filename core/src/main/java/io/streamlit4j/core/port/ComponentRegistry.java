@@ -5,28 +5,30 @@ import java.util.Collection;
 import java.util.Optional;
 
 /**
- * Registry of in-process custom components — i.e. components whose React renderer
- * ships in the frontend bundle distributed with streamlit4j.
- *
- * <p>Registration is the canonical way for an app to declare which component
- * names the bundled frontend is expected to resolve to a built-in renderer.
- * The bundle pipeline and the frontend render path consult this registry to
- * surface the available components to the client.
+ * Registry of in-process custom components — i.e. components whose React renderer ships in the frontend bundle
+ * distributed with streamlit4j.
+ * <p>
+ * Registration is the canonical way for an app to declare which component names the bundled frontend is expected to
+ * resolve to a built-in renderer. The bundle pipeline and the frontend render path consult this registry to surface the
+ * available components to the client.
  */
 public interface ComponentRegistry {
 
     /**
-     * Registers a component under its {@link CustomComponent#name() name}. Re-registering
-     * the same name overwrites the previous entry.
+     * Registers a component under its {@link CustomComponent#name() name}. Re-registering the same name overwrites the
+     * previous entry.
      *
-     * @param component component to register
+     * @param component
+     *            component to register
      */
     void register(CustomComponent<?> component);
 
     /**
      * Returns the registered component for the given name, if any.
      *
-     * @param name component name
+     * @param name
+     *            component name
+     *
      * @return present optional when a component with the given name is registered
      */
     Optional<CustomComponent<?>> find(String name);

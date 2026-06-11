@@ -17,19 +17,13 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 class WebSocketMountPathTest {
 
     @ParameterizedTest
-    @CsvSource({
-        "/streamlit, /streamlit/ws",
-        "/, /ws",
-        "'', /ws",
-        "/apps/demo, /apps/demo/ws",
-        "/apps/demo/, /apps/demo/ws",
-        "streamlit, /streamlit/ws"
-    })
+    @CsvSource({ "/streamlit, /streamlit/ws", "/, /ws", "'', /ws", "/apps/demo, /apps/demo/ws",
+            "/apps/demo/, /apps/demo/ws", "streamlit, /streamlit/ws" })
     void registersHandlerAtNormalizedPath(String basePath, String expectedPath) {
         Streamlit4jProperties properties = new Streamlit4jProperties();
         properties.setBasePath(basePath);
-        Streamlit4jAutoConfiguration.WebSocketRegistration registration =
-                new Streamlit4jAutoConfiguration.WebSocketRegistration(null, properties, emptyProvider());
+        Streamlit4jAutoConfiguration.WebSocketRegistration registration = new Streamlit4jAutoConfiguration.WebSocketRegistration(
+                null, properties, emptyProvider());
 
         CapturingRegistry registry = new CapturingRegistry();
         registration.registerWebSocketHandlers(registry);

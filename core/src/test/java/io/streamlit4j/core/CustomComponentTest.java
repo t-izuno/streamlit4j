@@ -16,7 +16,8 @@ import org.junit.jupiter.api.Test;
 
 class CustomComponentTest {
 
-    record ColorRgb(int r, int g, int b) {}
+    record ColorRgb(int r, int g, int b) {
+    }
 
     @Test
     void componentEmitsNodeWithNameAndArgs() {
@@ -24,8 +25,8 @@ class CustomComponentTest {
             Session session = new Session("s-1");
             CustomComponent<String> myChart = new CustomComponent<>("my-chart", String.class);
 
-            RenderNode root =
-                    runner.render(session, () -> St.component(myChart, Map.of("series", "sales", "color", "#4f46e5")));
+            RenderNode root = runner.render(session,
+                    () -> St.component(myChart, Map.of("series", "sales", "color", "#4f46e5")));
 
             assertThat(root.children()).hasSize(1);
             RenderNode node = root.children().get(0);
@@ -95,8 +96,7 @@ class CustomComponentTest {
             });
 
             assertThat(root.children()).hasSize(2);
-            assertThat(root.children().get(0).id())
-                    .isNotEqualTo(root.children().get(1).id());
+            assertThat(root.children().get(0).id()).isNotEqualTo(root.children().get(1).id());
         }
     }
 

@@ -6,9 +6,9 @@ import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
 
 /**
- * Servlet {@link HttpSessionListener} that terminates streamlit4j internal sessions bound
- * to a destroyed HTTP session. Triggered for both servlet-native expiry and Spring Session
- * destruction events (since Spring Session also fires this listener).
+ * Servlet {@link HttpSessionListener} that terminates streamlit4j internal sessions bound to a destroyed HTTP session.
+ * Triggered for both servlet-native expiry and Spring Session destruction events (since Spring Session also fires this
+ * listener).
  */
 public class Streamlit4jHttpSessionListener implements HttpSessionListener {
 
@@ -18,8 +18,10 @@ public class Streamlit4jHttpSessionListener implements HttpSessionListener {
     /**
      * Wires the listener with its dependencies.
      *
-     * @param registry HTTP ↔ streamlit4j session registry
-     * @param application streamlit4j application whose sessions will be terminated
+     * @param registry
+     *            HTTP ↔ streamlit4j session registry
+     * @param application
+     *            streamlit4j application whose sessions will be terminated
      */
     public Streamlit4jHttpSessionListener(Streamlit4jHttpSessionRegistry registry, Streamlit4jApplication application) {
         this.registry = registry;

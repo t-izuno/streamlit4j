@@ -24,16 +24,59 @@ class Streamlit4jHttpSessionIntegrationTest {
         mock.setSession(httpSession);
 
         Map<String, Object> attributes = new HashMap<>();
-        boolean proceed = interceptor.beforeHandshake(
-                new ServletServerHttpRequest(mock),
-                new org.springframework.http.server.ServletServerHttpResponse(new MockHttpServletResponse()),
-                null,
+        boolean proceed = interceptor.beforeHandshake(new ServletServerHttpRequest(mock),
+                new org.springframework.http.server.ServletServerHttpResponse(new MockHttpServletResponse()), null,
                 attributes);
 
         assertThat(proceed).isTrue();
-        assertThat(attributes)
-                .containsEntry(
-                        Streamlit4jHttpSessionHandshakeInterceptor.HTTP_SESSION_ID_ATTRIBUTE, httpSession.getId());
+        assertThat(attributes).containsEntry(Streamlit4jHttpSessionHandshakeInterceptor.HTTP_SESSION_ID_ATTRIBUTE,
+                httpSession.getId());
+    }
+
+    @Test
+    void handshakeInterceptorSkipsWhenRequestIsNotServletServerRequest() {
+        Streamlit4jHttpSessionHandshakeInterceptor interceptor = new Streamlit4jHttpSessionHandshakeInterceptor();
+        org.springframework.http.server.ServerHttpRequest req = org.mockito.Mockito
+                .mock(org.springframework.http.server.ServerHttpRequest.class);
+        Map<String, Object> attributes = new HashMap<>();
+        boolean proceed = interceptor.beforeHandshake(req,
+                new org.springframework.http.server.ServletServerHttpResponse(new MockHttpServletResponse()), null,
+                attributes);
+        assertThat(proceed).isTrue();
+        assertThat(attributes).doesNotContainKey(Streamlit4jHttpSessionHandshakeInterceptor.HTTP_SESSION_ID_ATTRIBUTE);
+    }
+
+    @Test
+    void afterHandshakeIsNoOp() {
+        Streamlit4jHttpSessionHandshakeInterceptor interceptor = new Streamlit4jHttpSessionHandshakeInterceptor();
+        MockHttpServletRequest mock = new MockHttpServletRequest("GET", "/ws");
+        interceptor.afterHandshake(new ServletServerHttpRequest(mock),
+                new org.springframework.http.server.ServletServerHttpResponse(new MockHttpServletResponse()), null,
+                null);
+    }
+
+    @Test
+    void httpSessionIdReturnsNullWhenAttributeIsNotString() {
+        WebSocketSessionWithAttributes session = new WebSocketSessionWithAttributes();
+        session.attributes.put(Streamlit4jHttpSessionHandshakeInterceptor.HTTP_SESSION_ID_ATTRIBUTE, 12345);
+        assertThat(Streamlit4jHttpSessionHandshakeInterceptor.httpSessionId(session)).isNull();
+    }
+
+    @Test
+    void unbindRemovesLastEntryAndClearsHttpKey() {
+        Streamlit4jHttpSessionRegistry registry = new Streamlit4jHttpSessionRegistry();
+        registry.bind("http-1", "stream-a");
+        registry.unbind("http-1", "stream-a");
+        assertThat(registry.activeHttpSessions()).isZero();
+    }
+
+    @Test
+    void unbindRemovesOneOfManyAndKeepsHttpKey() {
+        Streamlit4jHttpSessionRegistry registry = new Streamlit4jHttpSessionRegistry();
+        registry.bind("http-1", "stream-a");
+        registry.bind("http-1", "stream-b");
+        registry.unbind("http-1", "stream-a");
+        assertThat(registry.activeHttpSessions()).isEqualTo(1);
     }
 
     @Test
@@ -42,10 +85,8 @@ class Streamlit4jHttpSessionIntegrationTest {
         MockHttpServletRequest mock = new MockHttpServletRequest("GET", "/ws");
 
         Map<String, Object> attributes = new HashMap<>();
-        interceptor.beforeHandshake(
-                new ServletServerHttpRequest(mock),
-                new org.springframework.http.server.ServletServerHttpResponse(new MockHttpServletResponse()),
-                null,
+        interceptor.beforeHandshake(new ServletServerHttpRequest(mock),
+                new org.springframework.http.server.ServletServerHttpResponse(new MockHttpServletResponse()), null,
                 attributes);
 
         assertThat(attributes).doesNotContainKey(Streamlit4jHttpSessionHandshakeInterceptor.HTTP_SESSION_ID_ATTRIBUTE);
@@ -53,7 +94,8 @@ class Streamlit4jHttpSessionIntegrationTest {
 
     @Test
     void httpSessionListenerTerminatesBoundStreamlit4jSessions() {
-        Streamlit4jApplication application = Bootstrap.standalone(() -> () -> {});
+        Streamlit4jApplication application = Bootstrap.standalone(() -> () -> {
+        });
         try {
             Streamlit4jHttpSessionRegistry registry = new Streamlit4jHttpSessionRegistry();
             Streamlit4jHttpSessionListener listener = new Streamlit4jHttpSessionListener(registry, application);

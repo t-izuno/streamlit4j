@@ -14,8 +14,8 @@ class Streamlit4jAutoConfigurationTest {
     private final WebApplicationContextRunner webContextRunner = new WebApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(Streamlit4jAutoConfiguration.class));
 
-    private final ApplicationContextRunner nonWebContextRunner =
-            new ApplicationContextRunner().withConfiguration(AutoConfigurations.of(Streamlit4jAutoConfiguration.class));
+    private final ApplicationContextRunner nonWebContextRunner = new ApplicationContextRunner()
+            .withConfiguration(AutoConfigurations.of(Streamlit4jAutoConfiguration.class));
 
     @Test
     void loadsBeansInServletWebEnvironment() {
@@ -54,12 +54,11 @@ class Streamlit4jAutoConfigurationTest {
 
     @Test
     void honoursUserProvidedEntrypointSource() {
-        EntrypointSource userSource = () -> () -> {};
-        webContextRunner
-                .withBean("customEntrypoint", EntrypointSource.class, () -> userSource)
-                .run(context -> {
-                    assertThat(context.getBean(EntrypointSource.class)).isSameAs(userSource);
-                });
+        EntrypointSource userSource = () -> () -> {
+        };
+        webContextRunner.withBean("customEntrypoint", EntrypointSource.class, () -> userSource).run(context -> {
+            assertThat(context.getBean(EntrypointSource.class)).isSameAs(userSource);
+        });
     }
 
     @Test

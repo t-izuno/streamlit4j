@@ -14,12 +14,14 @@ import org.springframework.context.annotation.Bean;
 public class SpringBootShowcaseApp {
 
     /** Creates the application bean. */
-    public SpringBootShowcaseApp() {}
+    public SpringBootShowcaseApp() {
+    }
 
     /**
      * Boots the Spring application.
      *
-     * @param args command-line arguments
+     * @param args
+     *            command-line arguments
      */
     public static void main(String[] args) {
         SpringApplication.run(SpringBootShowcaseApp.class, args);

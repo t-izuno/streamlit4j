@@ -4,10 +4,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * Configuration properties for the streamlit4j Spring Boot starter.
- *
- * <p>Bound under the {@code streamlit4j} prefix in {@code application.properties} /
- * {@code application.yml}. Property semantics will be expanded by follow-up tasks
- * (TASK-093 onward); v1 starts with the mount path.
+ * <p>
+ * Bound under the {@code streamlit4j} prefix in {@code application.properties} / {@code application.yml}. Property
+ * semantics will be expanded by follow-up tasks (TASK-093 onward); v1 starts with the mount path.
  */
 @ConfigurationProperties(prefix = "streamlit4j")
 public class Streamlit4jProperties {
@@ -15,7 +14,8 @@ public class Streamlit4jProperties {
     private String basePath = "/streamlit4j";
 
     /** Creates a properties instance populated with defaults. */
-    public Streamlit4jProperties() {}
+    public Streamlit4jProperties() {
+    }
 
     /**
      * Returns the mount path used for the streamlit4j WebSocket and assets.
@@ -29,7 +29,8 @@ public class Streamlit4jProperties {
     /**
      * Sets the mount path.
      *
-     * @param basePath new mount path
+     * @param basePath
+     *            new mount path
      */
     public void setBasePath(String basePath) {
         this.basePath = basePath;

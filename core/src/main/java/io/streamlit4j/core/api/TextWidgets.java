@@ -13,7 +13,8 @@ final class TextWidgets {
     private static final String PROP_BODY = "body";
     private static final String KIND_CODE = "code";
 
-    private TextWidgets() {}
+    private TextWidgets() {
+    }
 
     static void title(String text) {
         emit("title", widgetId("title", text), Map.of(PROP_TEXT, text));

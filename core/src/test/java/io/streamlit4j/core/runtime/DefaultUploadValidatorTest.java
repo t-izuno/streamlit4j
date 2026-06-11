@@ -30,6 +30,14 @@ class DefaultUploadValidatorTest {
     }
 
     @Test
+    void acceptsAnyMimeWhenAllowSetIsEmpty() {
+        var validator = new DefaultUploadValidator();
+        var constraints = new UploadValidator.Constraints(1024, Set.of());
+        var result = validator.validate("x.bin", "anything/at-all", 1, constraints);
+        assertThat(result.accepted()).isTrue();
+    }
+
+    @Test
     void rejectsDisallowedMime() {
         var validator = new DefaultUploadValidator();
         var constraints = new UploadValidator.Constraints(Long.MAX_VALUE, Set.of("text/csv"));

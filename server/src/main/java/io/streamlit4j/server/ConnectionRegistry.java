@@ -13,7 +13,8 @@ public final class ConnectionRegistry {
     private final ConcurrentMap<String, ProtocolEndpoint> endpoints = new ConcurrentHashMap<>();
 
     /** Creates an empty registry. */
-    public ConnectionRegistry() {}
+    public ConnectionRegistry() {
+    }
 
     void register(String sessionId, ProtocolEndpoint endpoint) {
         endpoints.put(sessionId, endpoint);
@@ -35,7 +36,8 @@ public final class ConnectionRegistry {
     /**
      * Sends a reload notice to every active session.
      *
-     * @param reason diagnostic reason embedded in the notice
+     * @param reason
+     *            diagnostic reason embedded in the notice
      */
     public void broadcastReload(String reason) {
         for (var entry : endpoints.entrySet()) {

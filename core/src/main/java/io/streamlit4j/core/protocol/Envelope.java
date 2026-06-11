@@ -1,8 +1,8 @@
 package io.streamlit4j.core.protocol;
 
 /**
- * Sealed root of all WebSocket protocol messages. Implementing records share
- * a common envelope header (version, type discriminator, session id).
+ * Sealed root of all WebSocket protocol messages. Implementing records share a common envelope header (version, type
+ * discriminator, session id).
  */
 public sealed interface Envelope permits SessionInit, RenderDelta, WidgetEvent, ErrorMessage, FileUpload, ReloadNotice {
 

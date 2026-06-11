@@ -25,20 +25,20 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 
 /**
  * Auto-configuration entrypoint for the streamlit4j Spring Boot starter.
- *
- * <p>Mounts the WebSocket endpoint at {@code ${streamlit4j.base-path}/ws} when the host
- * application is a servlet web environment and Spring WebSocket is on the classpath.
- * Optional inner configurations integrate with Spring Security and Servlet HTTP sessions
- * (compatible with Spring Session deployments). Static resource serving is added in TASK-096.
+ * <p>
+ * Mounts the WebSocket endpoint at {@code ${streamlit4j.base-path}/ws} when the host application is a servlet web
+ * environment and Spring WebSocket is on the classpath. Optional inner configurations integrate with Spring Security
+ * and Servlet HTTP sessions (compatible with Spring Session deployments). Static resource serving is added in TASK-096.
  */
 @AutoConfiguration
-@ConditionalOnClass({Bootstrap.class, WebSocketHandler.class})
+@ConditionalOnClass({ Bootstrap.class, WebSocketHandler.class })
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @EnableConfigurationProperties(Streamlit4jProperties.class)
 public class Streamlit4jAutoConfiguration {
 
     /** Creates the auto-configuration. */
-    public Streamlit4jAutoConfiguration() {}
+    public Streamlit4jAutoConfiguration() {
+    }
 
     /** Normalizes a configured base path into a leading-slash, no-trailing-slash form ({@code ""} for root). */
     static String normalizeBasePath(String basePath) {
@@ -57,13 +57,16 @@ public class Streamlit4jAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public EntrypointSource streamlit4jEntrypointSource() {
-        return () -> () -> {};
+        return () -> () -> {
+        };
     }
 
     /**
      * Prints the streamlit4j startup banner on {@code ApplicationReadyEvent}.
      *
-     * @param properties streamlit4j configuration bean
+     * @param properties
+     *            streamlit4j configuration bean
+     *
      * @return startup banner listener
      */
     @Bean
@@ -75,7 +78,9 @@ public class Streamlit4jAutoConfiguration {
     /**
      * Builds the streamlit4j application backed by in-memory adapters.
      *
-     * @param entrypoints entrypoint source bean
+     * @param entrypoints
+     *            entrypoint source bean
+     *
      * @return application instance
      */
     @Bean(destroyMethod = "close")
@@ -85,17 +90,20 @@ public class Streamlit4jAutoConfiguration {
     }
 
     /**
-     * Composes any user-supplied {@link Streamlit4jConnectionListener} beans into
-     * a single listener attached to the WebSocket handler.
+     * Composes any user-supplied {@link Streamlit4jConnectionListener} beans into a single listener attached to the
+     * WebSocket handler.
      *
-     * @param application streamlit4j application
-     * @param listeners optional list of connection listeners discovered in the context
+     * @param application
+     *            streamlit4j application
+     * @param listeners
+     *            optional list of connection listeners discovered in the context
+     *
      * @return WebSocket handler bean
      */
     @Bean
     @ConditionalOnMissingBean
-    public Streamlit4jWebSocketHandler streamlit4jWebSocketHandler(
-            Streamlit4jApplication application, ObjectProvider<Streamlit4jConnectionListener> listeners) {
+    public Streamlit4jWebSocketHandler streamlit4jWebSocketHandler(Streamlit4jApplication application,
+            ObjectProvider<Streamlit4jConnectionListener> listeners) {
         Streamlit4jConnectionListener listener = composite(listeners);
         return new Streamlit4jWebSocketHandler(application, listener);
     }
@@ -107,16 +115,16 @@ public class Streamlit4jAutoConfiguration {
         }
         return new Streamlit4jConnectionListener() {
             @Override
-            public void onConnectionEstablished(
-                    org.springframework.web.socket.WebSocketSession session, String streamlit4jSessionId) {
+            public void onConnectionEstablished(org.springframework.web.socket.WebSocketSession session,
+                    String streamlit4jSessionId) {
                 for (Streamlit4jConnectionListener listener : ordered) {
                     listener.onConnectionEstablished(session, streamlit4jSessionId);
                 }
             }
 
             @Override
-            public void onConnectionClosed(
-                    org.springframework.web.socket.WebSocketSession session, String streamlit4jSessionId) {
+            public void onConnectionClosed(org.springframework.web.socket.WebSocketSession session,
+                    String streamlit4jSessionId) {
                 for (Streamlit4jConnectionListener listener : ordered) {
                     listener.onConnectionClosed(session, streamlit4jSessionId);
                 }
@@ -125,9 +133,8 @@ public class Streamlit4jAutoConfiguration {
     }
 
     /**
-     * Delegates authentication to the host application's Spring Security configuration
-     * by copying the current {@link org.springframework.security.core.Authentication}
-     * into WebSocket handshake attributes.
+     * Delegates authentication to the host application's Spring Security configuration by copying the current
+     * {@link org.springframework.security.core.Authentication} into WebSocket handshake attributes.
      */
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnClass(name = "org.springframework.security.core.context.SecurityContextHolder")
@@ -141,9 +148,9 @@ public class Streamlit4jAutoConfiguration {
     }
 
     /**
-     * Binds streamlit4j internal sessions to the hosting HTTP session and terminates them
-     * when the HTTP session is destroyed. Works for both vanilla servlet sessions and
-     * Spring Session deployments, since both surface as Servlet {@link jakarta.servlet.http.HttpSession}.
+     * Binds streamlit4j internal sessions to the hosting HTTP session and terminates them when the HTTP session is
+     * destroyed. Works for both vanilla servlet sessions and Spring Session deployments, since both surface as Servlet
+     * {@link jakarta.servlet.http.HttpSession}.
      */
     @Configuration(proxyBeanMethods = false)
     static class HttpSessionIntegration {
@@ -173,10 +180,9 @@ public class Streamlit4jAutoConfiguration {
     }
 
     /**
-     * Serves the bundled streamlit4j frontend SPA at {@code ${streamlit4j.base-path}/**}.
-     * Assets live in {@code META-INF/resources/streamlit4j/} on the classpath
-     * (contributed by the {@code streamlit4j-frontend-assets} jar). Skipped when the
-     * base path is empty or root to avoid clobbering Spring's default static handlers.
+     * Serves the bundled streamlit4j frontend SPA at {@code ${streamlit4j.base-path}/**}. Assets live in
+     * {@code META-INF/resources/streamlit4j/} on the classpath (contributed by the {@code streamlit4j-frontend-assets}
+     * jar). Skipped when the base path is empty or root to avoid clobbering Spring's default static handlers.
      */
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnClass(WebMvcConfigurer.class)
@@ -208,9 +214,7 @@ public class Streamlit4jAutoConfiguration {
         private final Streamlit4jProperties properties;
         private final ObjectProvider<HandshakeInterceptor> interceptors;
 
-        WebSocketRegistration(
-                Streamlit4jWebSocketHandler handler,
-                Streamlit4jProperties properties,
+        WebSocketRegistration(Streamlit4jWebSocketHandler handler, Streamlit4jProperties properties,
                 ObjectProvider<HandshakeInterceptor> interceptors) {
             this.handler = handler;
             this.properties = properties;
@@ -219,8 +223,8 @@ public class Streamlit4jAutoConfiguration {
 
         @Override
         public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-            WebSocketHandlerRegistration registration =
-                    registry.addHandler(handler, normalizeBasePath(properties.getBasePath()) + "/ws");
+            WebSocketHandlerRegistration registration = registry.addHandler(handler,
+                    normalizeBasePath(properties.getBasePath()) + "/ws");
             List<HandshakeInterceptor> all = interceptors.orderedStream().toList();
             if (!all.isEmpty()) {
                 registration.addInterceptors(all.toArray(HandshakeInterceptor[]::new));

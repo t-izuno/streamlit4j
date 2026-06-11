@@ -7,8 +7,7 @@ import io.streamlit4j.core.port.SessionStore;
 import io.streamlit4j.core.protocol.RenderNode;
 
 /**
- * Application use case that creates a fresh session and produces the first
- * render frame from the resolved entrypoint.
+ * Application use case that creates a fresh session and produces the first render frame from the resolved entrypoint.
  */
 public final class StartSession {
 
@@ -19,9 +18,12 @@ public final class StartSession {
     /**
      * Wires the use case with its dependencies.
      *
-     * @param sessions session store port
-     * @param entrypoints entrypoint source port
-     * @param renderer renderer port
+     * @param sessions
+     *            session store port
+     * @param entrypoints
+     *            entrypoint source port
+     * @param renderer
+     *            renderer port
      */
     public StartSession(SessionStore sessions, EntrypointSource entrypoints, Renderer renderer) {
         this.sessions = sessions;
@@ -43,8 +45,11 @@ public final class StartSession {
     /**
      * Outcome of {@link #execute()}.
      *
-     * @param sessionId new session id
-     * @param root initial render-tree root
+     * @param sessionId
+     *            new session id
+     * @param root
+     *            initial render-tree root
      */
-    public record Result(String sessionId, RenderNode root) {}
+    public record Result(String sessionId, RenderNode root) {
+    }
 }

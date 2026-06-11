@@ -7,7 +7,8 @@ import java.util.function.Supplier;
 /** Data and resource caching helpers. */
 final class CacheOps {
 
-    private CacheOps() {}
+    private CacheOps() {
+    }
 
     static <T> T cacheData(String key, Duration ttl, Supplier<T> loader) {
         return CacheAccess.dataCache().getOrLoad(key, ttl, loader);

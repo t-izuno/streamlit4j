@@ -8,8 +8,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Default {@link Renderer} that executes each render on a fresh virtual thread.
- * Holds the executor lifecycle; call {@link #close()} during shutdown.
+ * Default {@link Renderer} that executes each render on a fresh virtual thread. Holds the executor lifecycle; call
+ * {@link #close()} during shutdown.
  */
 public final class ScriptRunner implements Renderer, AutoCloseable {
 
@@ -30,32 +30,30 @@ public final class ScriptRunner implements Renderer, AutoCloseable {
     private RenderNode renderUnderLock(Session session, Runnable entrypoint) {
         try {
             RenderNode root = executor.submit(() -> {
-                        RenderContext ctx = new RenderContext(session.state());
-                        RenderContext.bind(ctx);
+                RenderContext ctx = new RenderContext(session.state());
+                RenderContext.bind(ctx);
+                try {
+                    int reruns = 0;
+                    while (true) {
+                        ctx.reset();
                         try {
-                            int reruns = 0;
-                            while (true) {
-                                ctx.reset();
-                                try {
-                                    entrypoint.run();
-                                    break;
-                                } catch (RerunRequested rerun) {
-                                    reruns++;
-                                    if (reruns > MAX_RERUNS_PER_REQUEST) {
-                                        throw new IllegalStateException(
-                                                "Rerun signal triggered more than " + MAX_RERUNS_PER_REQUEST + " times",
-                                                rerun);
-                                    }
-                                } catch (StopRequested stop) {
-                                    break;
-                                }
+                            entrypoint.run();
+                            break;
+                        } catch (RerunRequested rerun) {
+                            reruns++;
+                            if (reruns > MAX_RERUNS_PER_REQUEST) {
+                                throw new IllegalStateException(
+                                        "Rerun signal triggered more than " + MAX_RERUNS_PER_REQUEST + " times", rerun);
                             }
-                            return ctx.buildRoot();
-                        } finally {
-                            RenderContext.unbind();
+                        } catch (StopRequested stop) {
+                            break;
                         }
-                    })
-                    .get();
+                    }
+                    return ctx.buildRoot();
+                } finally {
+                    RenderContext.unbind();
+                }
+            }).get();
             session.setLastRoot(root);
             session.touch();
             return root;

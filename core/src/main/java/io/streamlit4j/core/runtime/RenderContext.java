@@ -9,9 +9,8 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Per-render thread-local context that accumulates emitted nodes and exposes
- * the active session state to the script. {@code St.*} entry points read from
- * the currently bound context via {@link #current()}.
+ * Per-render thread-local context that accumulates emitted nodes and exposes the active session state to the script.
+ * {@code St.*} entry points read from the currently bound context via {@link #current()}.
  */
 public final class RenderContext {
 
@@ -24,7 +23,8 @@ public final class RenderContext {
     /**
      * Creates a context backed by the given session state map.
      *
-     * @param sessionState session-state backing map (mutable)
+     * @param sessionState
+     *            session-state backing map (mutable)
      */
     public RenderContext(Map<String, Object> sessionState) {
         this.sessionState = Objects.requireNonNull(sessionState, "sessionState");
@@ -35,7 +35,9 @@ public final class RenderContext {
      * Returns the context bound to the current thread.
      *
      * @return the active context
-     * @throws IllegalStateException when no context is bound
+     *
+     * @throws IllegalStateException
+     *             when no context is bound
      */
     public static RenderContext current() {
         RenderContext ctx = CURRENT.get();
@@ -48,7 +50,8 @@ public final class RenderContext {
     /**
      * Binds the given context to the current thread.
      *
-     * @param ctx context to bind
+     * @param ctx
+     *            context to bind
      */
     public static void bind(RenderContext ctx) {
         CURRENT.set(ctx);
@@ -71,7 +74,8 @@ public final class RenderContext {
     /**
      * Appends a node to the top frame.
      *
-     * @param node node to append
+     * @param node
+     *            node to append
      */
     public void addNode(RenderNode node) {
         frames.peek().add(node);
@@ -119,7 +123,8 @@ public final class RenderContext {
     /**
      * Sets the form-suppression flag.
      *
-     * @param suppressed new value
+     * @param suppressed
+     *            new value
      */
     public void setFormSuppressed(boolean suppressed) {
         formSuppressed = suppressed;

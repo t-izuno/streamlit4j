@@ -56,16 +56,38 @@ class CodecTest {
     @Test
     void rejectsUnknownType() {
         String json = "{\"v\":1,\"type\":\"unknown\",\"sessionId\":\"s-1\"}";
-        assertThatThrownBy(() -> Codec.decode(json))
-                .isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> Codec.decode(json)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Unknown envelope type");
+    }
+
+    @Test
+    void roundTripsErrorMessage() {
+        ErrorMessage original = ErrorMessage.of("s-1", "boom", "trace");
+        Envelope decoded = Codec.decode(Codec.encode(original));
+        assertThat(decoded).isInstanceOf(ErrorMessage.class);
+        assertThat(((ErrorMessage) decoded).message()).isEqualTo("boom");
+    }
+
+    @Test
+    void roundTripsFileUpload() {
+        FileUpload original = FileUpload.of("s-1", "w-up", "a.bin", "application/octet-stream", "Zm9v");
+        Envelope decoded = Codec.decode(Codec.encode(original));
+        assertThat(decoded).isInstanceOf(FileUpload.class);
+        assertThat(((FileUpload) decoded).filename()).isEqualTo("a.bin");
+    }
+
+    @Test
+    void roundTripsReloadNotice() {
+        ReloadNotice original = ReloadNotice.of("s-1", "src-change");
+        Envelope decoded = Codec.decode(Codec.encode(original));
+        assertThat(decoded).isInstanceOf(ReloadNotice.class);
+        assertThat(((ReloadNotice) decoded).reason()).isEqualTo("src-change");
     }
 
     @Test
     void rejectsMissingType() {
         String json = "{\"v\":1,\"sessionId\":\"s-1\"}";
-        assertThatThrownBy(() -> Codec.decode(json))
-                .isInstanceOf(IllegalArgumentException.class)
+        assertThatThrownBy(() -> Codec.decode(json)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Missing 'type'");
     }
 }

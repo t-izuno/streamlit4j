@@ -7,9 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Minimal chat demo: a bot that echoes back whatever you type, prefixed with
- * {@code "echo: "}. Demonstrates session-state-backed message history, the
- * form widget for an Enter-to-submit input, and the rerun-on-event loop.
+ * Minimal chat demo: a bot that echoes back whatever you type, prefixed with {@code "echo: "}. Demonstrates
+ * session-state-backed message history, the form widget for an Enter-to-submit input, and the rerun-on-event loop.
  * Runnable as {@code java -cp <classpath> io.streamlit4j.examples.ChatDemo [port]}.
  */
 public final class ChatDemo {
@@ -17,7 +16,8 @@ public final class ChatDemo {
     private static final int DEFAULT_PORT = 8501;
     private static final String STATE_KEY = "chat_messages";
 
-    private ChatDemo() {}
+    private ChatDemo() {
+    }
 
     /** Renders the demo. Invoked once per session by the runtime. */
     @SuppressWarnings("unchecked")
@@ -65,8 +65,11 @@ public final class ChatDemo {
     /**
      * Boots an embedded server that serves this demo on the given port.
      *
-     * @param args optional single positional argument: the listen port (default {@value #DEFAULT_PORT})
-     * @throws Exception when the server fails to start
+     * @param args
+     *            optional single positional argument: the listen port (default {@value #DEFAULT_PORT})
+     *
+     * @throws Exception
+     *             when the server fails to start
      */
     public static void main(String[] args) throws Exception {
         int port = args.length > 0 ? Integer.parseInt(args[0]) : DEFAULT_PORT;
@@ -77,5 +80,6 @@ public final class ChatDemo {
     }
 
     /** One chat message, either from the user or the echo bot. */
-    private record Message(String role, String text) {}
+    private record Message(String role, String text) {
+    }
 }

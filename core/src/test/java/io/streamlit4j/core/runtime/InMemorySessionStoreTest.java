@@ -37,6 +37,23 @@ class InMemorySessionStoreTest {
     }
 
     @Test
+    void removeOfUnknownIdIsNoOpAndFiresNoEvent() {
+        InMemorySessionStore store = new InMemorySessionStore();
+        List<SessionLifecycleListener.Event> events = new ArrayList<>();
+        store.addListener((event, s) -> events.add(event));
+        store.remove("nope");
+        assertThat(events).isEmpty();
+    }
+
+    @Test
+    void evictIdleSkipsFreshSessions() {
+        InMemorySessionStore store = new InMemorySessionStore(Duration.ofMinutes(5));
+        store.create();
+        int evicted = store.evictIdle();
+        assertThat(evicted).isZero();
+    }
+
+    @Test
     void evictIdleRemovesStaleSessionsAndFiresExpired() throws InterruptedException {
         InMemorySessionStore store = new InMemorySessionStore(Duration.ofMillis(10));
         List<SessionLifecycleListener.Event> events = new ArrayList<>();

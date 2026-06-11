@@ -59,7 +59,8 @@ final class WebSocketSessionWithAttributes implements WebSocketSession {
     }
 
     @Override
-    public void setTextMessageSizeLimit(int messageSizeLimit) {}
+    public void setTextMessageSizeLimit(int messageSizeLimit) {
+    }
 
     @Override
     public int getTextMessageSizeLimit() {
@@ -67,7 +68,8 @@ final class WebSocketSessionWithAttributes implements WebSocketSession {
     }
 
     @Override
-    public void setBinaryMessageSizeLimit(int messageSizeLimit) {}
+    public void setBinaryMessageSizeLimit(int messageSizeLimit) {
+    }
 
     @Override
     public int getBinaryMessageSizeLimit() {
@@ -80,7 +82,8 @@ final class WebSocketSessionWithAttributes implements WebSocketSession {
     }
 
     @Override
-    public void sendMessage(WebSocketMessage<?> message) {}
+    public void sendMessage(WebSocketMessage<?> message) {
+    }
 
     @Override
     public boolean isOpen() {

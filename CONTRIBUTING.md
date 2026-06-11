@@ -47,7 +47,7 @@ docs/                     ← ドキュメント全般
 
 実行される検証:
 
-- Spotless（palantir-java-format）
+- formatter-maven-plugin（Eclipse JDT formatter）
 - Checkstyle
 - JaCoCo カバレッジ
 - ArchUnit（レイヤー違反 / threadlocal / virtual thread 局所化）
@@ -106,7 +106,7 @@ npm run docs:build      # docs/devel/.vitepress/dist へ静的出力
 
 | 項目 | ルール |
 | --- | --- |
-| Java フォーマット | palantir-java-format（Spotless で自動適用） |
+| Java フォーマット | Eclipse JDT formatter（formatter-maven-plugin で自動適用） |
 | Java 静的解析 | Checkstyle / ArchUnit |
 | TypeScript フォーマット | Prettier |
 | TypeScript 静的解析 | ESLint + dependency-cruiser |

@@ -10,8 +10,8 @@ import io.streamlit4j.core.protocol.RenderTreeDiff;
 import java.util.List;
 
 /**
- * Application use case that updates session state with an incoming widget event
- * and re-runs the script to produce the next render-tree diff.
+ * Application use case that updates session state with an incoming widget event and re-runs the script to produce the
+ * next render-tree diff.
  */
 public final class ProcessWidgetEvent {
 
@@ -22,9 +22,12 @@ public final class ProcessWidgetEvent {
     /**
      * Wires the use case with its dependencies.
      *
-     * @param sessions session store port
-     * @param entrypoints entrypoint source port
-     * @param renderer renderer port
+     * @param sessions
+     *            session store port
+     * @param entrypoints
+     *            entrypoint source port
+     * @param renderer
+     *            renderer port
      */
     public ProcessWidgetEvent(SessionStore sessions, EntrypointSource entrypoints, Renderer renderer) {
         this.sessions = sessions;
@@ -35,14 +38,18 @@ public final class ProcessWidgetEvent {
     /**
      * Applies the widget event to the named session and returns the next render frame.
      *
-     * @param sessionId owning session id
-     * @param widgetId widget that emitted the event
-     * @param value new widget value
+     * @param sessionId
+     *            owning session id
+     * @param widgetId
+     *            widget that emitted the event
+     * @param value
+     *            new widget value
+     *
      * @return result containing the new root and the patch list to send
      */
     public Result execute(String sessionId, String widgetId, Object value) {
-        Session session =
-                sessions.find(sessionId).orElseThrow(() -> new IllegalStateException("Unknown session: " + sessionId));
+        Session session = sessions.find(sessionId)
+                .orElseThrow(() -> new IllegalStateException("Unknown session: " + sessionId));
         RenderNode previous = session.lastRoot().orElse(null);
         session.updateWidget(widgetId, value);
         RenderNode current = renderer.render(session, entrypoints.next());
@@ -54,10 +61,15 @@ public final class ProcessWidgetEvent {
     /**
      * Outcome of {@link #execute(String, String, Object)}.
      *
-     * @param sessionId owning session id
-     * @param seq monotonic sequence number for this frame
-     * @param root current render root
-     * @param patches keyed-diff patch list to apply on the client
+     * @param sessionId
+     *            owning session id
+     * @param seq
+     *            monotonic sequence number for this frame
+     * @param root
+     *            current render root
+     * @param patches
+     *            keyed-diff patch list to apply on the client
      */
-    public record Result(String sessionId, long seq, RenderNode root, List<Patch> patches) {}
+    public record Result(String sessionId, long seq, RenderNode root, List<Patch> patches) {
+    }
 }

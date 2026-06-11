@@ -11,7 +11,8 @@ final class ChartWidgets {
 
     private static final String PROP_DATA = "data";
 
-    private ChartWidgets() {}
+    private ChartWidgets() {
+    }
 
     static void lineChart(List<Map<String, Object>> data) {
         emit("line_chart", widgetId("line_chart", data), Map.of(PROP_DATA, data));

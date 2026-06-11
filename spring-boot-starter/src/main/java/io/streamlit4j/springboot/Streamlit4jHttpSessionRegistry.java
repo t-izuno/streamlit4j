@@ -6,34 +6,37 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * Maintains the binding between HTTP session ids and streamlit4j internal session ids.
- *
- * <p>When the HTTP session is destroyed (logout, expiry, or Spring Session backend
- * eviction), the streamlit4j sessions bound to it are looked up here so they can be
- * terminated in lock-step.
+ * <p>
+ * When the HTTP session is destroyed (logout, expiry, or Spring Session backend eviction), the streamlit4j sessions
+ * bound to it are looked up here so they can be terminated in lock-step.
  */
 public class Streamlit4jHttpSessionRegistry {
 
     private final ConcurrentMap<String, Set<String>> bindings = new ConcurrentHashMap<>();
 
     /** Creates an empty registry. */
-    public Streamlit4jHttpSessionRegistry() {}
+    public Streamlit4jHttpSessionRegistry() {
+    }
 
     /**
      * Records a binding between an HTTP session and a streamlit4j session.
      *
-     * @param httpSessionId HTTP session id
-     * @param streamlit4jSessionId streamlit4j session id
+     * @param httpSessionId
+     *            HTTP session id
+     * @param streamlit4jSessionId
+     *            streamlit4j session id
      */
     public void bind(String httpSessionId, String streamlit4jSessionId) {
-        bindings.computeIfAbsent(httpSessionId, key -> ConcurrentHashMap.newKeySet())
-                .add(streamlit4jSessionId);
+        bindings.computeIfAbsent(httpSessionId, key -> ConcurrentHashMap.newKeySet()).add(streamlit4jSessionId);
     }
 
     /**
      * Removes a single binding.
      *
-     * @param httpSessionId HTTP session id
-     * @param streamlit4jSessionId streamlit4j session id
+     * @param httpSessionId
+     *            HTTP session id
+     * @param streamlit4jSessionId
+     *            streamlit4j session id
      */
     public void unbind(String httpSessionId, String streamlit4jSessionId) {
         bindings.computeIfPresent(httpSessionId, (key, set) -> {
@@ -45,7 +48,9 @@ public class Streamlit4jHttpSessionRegistry {
     /**
      * Atomically removes all bindings for the HTTP session and returns the previously bound streamlit4j ids.
      *
-     * @param httpSessionId HTTP session id
+     * @param httpSessionId
+     *            HTTP session id
+     *
      * @return snapshot of removed streamlit4j session ids
      */
     public Set<String> drain(String httpSessionId) {

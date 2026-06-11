@@ -19,6 +19,8 @@
     <!-- example projects are not published to Maven Central -->
     <maven.deploy.skip>true</maven.deploy.skip>
     <central-publishing.skip>true</central-publishing.skip>
+    <!-- Default mainClass; override with -Dexec.mainClass=... at the CLI. -->
+    <exec.mainClass>io.streamlit4j.examples.ShowcaseDemo</exec.mainClass>
   </properties>
 
   <dependencies>
@@ -55,9 +57,8 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <configuration>
-          <!-- Default to the sidebar-driven hub so `mvn exec:java` without
-               -Dexec.mainClass lands on the navigable showcase. -->
-          <mainClass>io.streamlit4j.examples.ShowcaseDemo</mainClass>
+          <!-- Default to the sidebar-driven hub; override via -Dexec.mainClass=... -->
+          <mainClass>${exec.mainClass}</mainClass>
         </configuration>
       </plugin>
     </plugins>

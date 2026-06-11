@@ -47,6 +47,37 @@ class InMemoryCacheStoreTest {
     }
 
     @Test
+    void getReturnsValueWhenFresh() {
+        InMemoryCacheStore cache = new InMemoryCacheStore();
+        cache.getOrLoad("k", Duration.ofMinutes(5), () -> "v");
+        assertThat(cache.<String> get("k")).contains("v");
+    }
+
+    @Test
+    void getReturnsEmptyWhenMissing() {
+        InMemoryCacheStore cache = new InMemoryCacheStore();
+        assertThat(cache.get("missing")).isEmpty();
+    }
+
+    @Test
+    void getReturnsEmptyWhenExpired() throws InterruptedException {
+        InMemoryCacheStore cache = new InMemoryCacheStore();
+        cache.getOrLoad("k", Duration.ofMillis(10), () -> "v");
+        Thread.sleep(30);
+        assertThat(cache.get("k")).isEmpty();
+    }
+
+    @Test
+    void invalidateAllRemovesEveryEntry() {
+        InMemoryCacheStore cache = new InMemoryCacheStore();
+        cache.getOrLoad("a", Duration.ofMinutes(5), () -> "1");
+        cache.getOrLoad("b", Duration.ofMinutes(5), () -> "2");
+        assertThat(cache.size()).isEqualTo(2);
+        cache.invalidateAll();
+        assertThat(cache.size()).isZero();
+    }
+
+    @Test
     void expiredEntryReloads() throws InterruptedException {
         InMemoryCacheStore cache = new InMemoryCacheStore();
         AtomicInteger calls = new AtomicInteger();

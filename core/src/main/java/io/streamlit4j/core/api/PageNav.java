@@ -13,7 +13,8 @@ import java.util.Map;
 /** Multi-page navigation. */
 final class PageNav {
 
-    private PageNav() {}
+    private PageNav() {
+    }
 
     static void pages(List<Page> pages) {
         if (pages.isEmpty()) {
@@ -22,10 +23,7 @@ final class PageNav {
         RenderContext ctx = RenderContext.current();
         Object stored = ctx.sessionState().get("__page__");
         String currentPath = stored instanceof String s ? s : pages.get(0).path();
-        Page current = pages.stream()
-                .filter(p -> p.path().equals(currentPath))
-                .findFirst()
-                .orElse(pages.get(0));
+        Page current = pages.stream().filter(p -> p.path().equals(currentPath)).findFirst().orElse(pages.get(0));
         List<Map<String, Object>> pageList = new ArrayList<>();
         for (Page p : pages) {
             pageList.add(Map.of("name", p.name(), "path", p.path()));

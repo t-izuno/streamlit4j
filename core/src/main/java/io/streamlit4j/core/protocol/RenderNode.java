@@ -8,10 +8,14 @@ import java.util.Objects;
 /**
  * Immutable representation of a single rendered element in the render tree.
  *
- * @param kind element type tag (e.g. {@code "title"}, {@code "slider"})
- * @param id stable widget identifier
- * @param props element-specific properties (immutable copy)
- * @param children child nodes (immutable copy)
+ * @param kind
+ *            element type tag (e.g. {@code "title"}, {@code "slider"})
+ * @param id
+ *            stable widget identifier
+ * @param props
+ *            element-specific properties (immutable copy)
+ * @param children
+ *            child nodes (immutable copy)
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record RenderNode(String kind, String id, Map<String, Object> props, List<RenderNode> children) {
@@ -19,10 +23,14 @@ public record RenderNode(String kind, String id, Map<String, Object> props, List
     /**
      * Canonical constructor; validates required fields and freezes the props / children collections.
      *
-     * @param kind element type tag
-     * @param id stable widget identifier
-     * @param props element-specific properties (null treated as empty)
-     * @param children child nodes (null treated as empty)
+     * @param kind
+     *            element type tag
+     * @param id
+     *            stable widget identifier
+     * @param props
+     *            element-specific properties (null treated as empty)
+     * @param children
+     *            child nodes (null treated as empty)
      */
     public RenderNode(String kind, String id, Map<String, Object> props, List<RenderNode> children) {
         this.kind = Objects.requireNonNull(kind, "kind");
@@ -34,7 +42,9 @@ public record RenderNode(String kind, String id, Map<String, Object> props, List
     /**
      * Builds a {@code root} node wrapping the given top-level children.
      *
-     * @param children top-level child nodes
+     * @param children
+     *            top-level child nodes
+     *
      * @return root node
      */
     public static RenderNode root(List<RenderNode> children) {

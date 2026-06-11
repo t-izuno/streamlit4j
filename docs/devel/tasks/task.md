@@ -26,7 +26,7 @@
 | TASK-001 | ✅ | Maven でマルチモジュール骨格を構築する | - |
 | TASK-002 | ✅ | JDK 21 ツールチェーンと共通ビルド規約を設定する | TASK-001 |
 | TASK-003 | ✅ | JUnit 5 ベースの Java 単体テスト基盤を構築する | TASK-002 |
-| TASK-004 | ✅ | Spotless / Checkstyle / ArchUnit で Java 静的解析・アーキテクチャー検査を設定する | TASK-002 |
+| TASK-004 | ✅ | formatter-maven-plugin / Checkstyle / ArchUnit で Java 静的解析・アーキテクチャー検査を設定する | TASK-002 |
 | TASK-005 | ✅ | JaCoCo でカバレッジ計測とレポート出力を構築する | TASK-003 |
 | TASK-006 | ✅ | Vitest と Testing Library でフロント単体テスト基盤を構築する | TASK-001 |
 | TASK-007 | ✅ | ESLint / Prettier / dependency-cruiser でフロント静的解析・整形・依存検査を設定する | TASK-001 |

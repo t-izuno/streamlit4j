@@ -25,60 +25,15 @@ class CatalogCoverageTest {
             Set<String> kinds = new LinkedHashSet<>();
             collectKinds(root, kinds);
 
-            assertThat(kinds)
-                    .as("v1 catalog target is 40 main elements (requirements.md §5.2)")
+            assertThat(kinds).as("v1 catalog target is 40 main elements (requirements.md §5.2)")
                     .hasSizeGreaterThanOrEqualTo(40);
-            assertThat(kinds)
-                    .contains(
-                            "title",
-                            "header",
-                            "subheader",
-                            "caption",
-                            "markdown",
-                            "write",
-                            "code",
-                            "json",
-                            "latex",
-                            "html",
-                            "divider",
-                            "metric",
-                            "dataframe",
-                            "table",
-                            "data_editor",
-                            "image",
-                            "audio",
-                            "video",
-                            "toast",
-                            "progress",
-                            "spinner",
-                            "status",
-                            "line_chart",
-                            "bar_chart",
-                            "area_chart",
-                            "scatter_chart",
-                            "slider",
-                            "text_input",
-                            "number_input",
-                            "text_area",
-                            "selectbox",
-                            "multiselect",
-                            "checkbox",
-                            "radio",
-                            "button",
-                            "date_input",
-                            "time_input",
-                            "color_picker",
-                            "select_slider",
-                            "file_uploader",
-                            "download_button",
-                            "columns",
-                            "container",
-                            "expander",
-                            "tabs",
-                            "sidebar",
-                            "empty",
-                            "form",
-                            "form_submit_button");
+            assertThat(kinds).contains("title", "header", "subheader", "caption", "markdown", "write", "code", "json",
+                    "latex", "html", "divider", "metric", "dataframe", "table", "data_editor", "image", "audio",
+                    "video", "toast", "progress", "spinner", "status", "line_chart", "bar_chart", "area_chart",
+                    "scatter_chart", "slider", "text_input", "number_input", "text_area", "selectbox", "multiselect",
+                    "checkbox", "radio", "button", "date_input", "time_input", "color_picker", "select_slider",
+                    "file_uploader", "download_button", "columns", "container", "expander", "tabs", "sidebar", "empty",
+                    "form", "form_submit_button");
         }
     }
 

@@ -8,13 +8,17 @@ import java.util.List;
  */
 public final class RenderTreeDiff {
 
-    private RenderTreeDiff() {}
+    private RenderTreeDiff() {
+    }
 
     /**
      * Diffs two render trees and returns the patch list to apply on the client.
      *
-     * @param oldRoot previous render root (may be {@code null} for the first frame)
-     * @param newRoot new render root
+     * @param oldRoot
+     *            previous render root (may be {@code null} for the first frame)
+     * @param newRoot
+     *            new render root
+     *
      * @return ordered patch list
      */
     public static List<Patch> diff(RenderNode oldRoot, RenderNode newRoot) {
@@ -37,8 +41,8 @@ public final class RenderTreeDiff {
         }
 
         // 2. Remove trailing old children. Always remove at the same fixed
-        //    index (newChildren.size()) because each remove shifts later
-        //    elements down on the client side.
+        // index (newChildren.size()) because each remove shifts later
+        // elements down on the client side.
         for (int i = oldChildren.size(); i > newChildren.size(); i--) {
             patches.add(Patch.remove("main/" + newChildren.size()));
         }

@@ -10,11 +10,11 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
 /**
- * Captures the HTTP session id (if present) into the WebSocket handshake attributes so
- * downstream listeners can correlate streamlit4j sessions with their hosting HTTP session.
- *
- * <p>Works transparently with both vanilla servlet sessions and Spring Session, since both
- * surface as {@link HttpSession} through the Servlet API.
+ * Captures the HTTP session id (if present) into the WebSocket handshake attributes so downstream listeners can
+ * correlate streamlit4j sessions with their hosting HTTP session.
+ * <p>
+ * Works transparently with both vanilla servlet sessions and Spring Session, since both surface as {@link HttpSession}
+ * through the Servlet API.
  */
 public class Streamlit4jHttpSessionHandshakeInterceptor implements HandshakeInterceptor {
 
@@ -22,13 +22,11 @@ public class Streamlit4jHttpSessionHandshakeInterceptor implements HandshakeInte
     public static final String HTTP_SESSION_ID_ATTRIBUTE = "streamlit4j.httpSessionId";
 
     /** Creates the interceptor. */
-    public Streamlit4jHttpSessionHandshakeInterceptor() {}
+    public Streamlit4jHttpSessionHandshakeInterceptor() {
+    }
 
     @Override
-    public boolean beforeHandshake(
-            ServerHttpRequest request,
-            ServerHttpResponse response,
-            WebSocketHandler wsHandler,
+    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
             Map<String, Object> attributes) {
         if (request instanceof ServletServerHttpRequest servletRequest) {
             HttpSession httpSession = servletRequest.getServletRequest().getSession(false);
@@ -40,15 +38,17 @@ public class Streamlit4jHttpSessionHandshakeInterceptor implements HandshakeInte
     }
 
     @Override
-    public void afterHandshake(
-            ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Exception exception) {
+    public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
+            Exception exception) {
         // no-op
     }
 
     /**
      * Retrieves the HTTP session id previously stashed on the WebSocket session, if any.
      *
-     * @param session Spring WebSocket session
+     * @param session
+     *            Spring WebSocket session
+     *
      * @return HTTP session id or {@code null}
      */
     public static String httpSessionId(WebSocketSession session) {

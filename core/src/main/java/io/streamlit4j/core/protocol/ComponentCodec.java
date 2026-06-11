@@ -4,25 +4,26 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * Serializes custom component arguments and return values across the WebSocket
- * boundary. Arguments flow Java → JSON (server → client); return values flow
- * JSON → Java (client → server) using the type declared by
+ * Serializes custom component arguments and return values across the WebSocket boundary. Arguments flow Java → JSON
+ * (server → client); return values flow JSON → Java (client → server) using the type declared by
  * {@code CustomComponent.resultType()}.
- *
- * <p>This is the canonical bridge between {@code St.component(...)} (domain-level
- * typed API) and the wire format defined by {@link Codec}. It deliberately reuses
- * the shared protocol {@link com.fasterxml.jackson.databind.ObjectMapper} so that
- * encoding inside render_delta and decoding inside widget_event share one schema.
+ * <p>
+ * This is the canonical bridge between {@code St.component(...)} (domain-level typed API) and the wire format defined
+ * by {@link Codec}. It deliberately reuses the shared protocol {@link com.fasterxml.jackson.databind.ObjectMapper} so
+ * that encoding inside render_delta and decoding inside widget_event share one schema.
  */
 public final class ComponentCodec {
 
-    private ComponentCodec() {}
+    private ComponentCodec() {
+    }
 
     /**
-     * Encodes a component argument value to its JSON tree representation. Supports
-     * primitives, {@code Map}/{@code List}, records, and any Jackson-bindable POJO.
+     * Encodes a component argument value to its JSON tree representation. Supports primitives,
+     * {@code Map}/{@code List}, records, and any Jackson-bindable POJO.
      *
-     * @param value the Java-side argument to encode
+     * @param value
+     *            the Java-side argument to encode
+     *
      * @return the JSON tree representation
      */
     public static JsonNode encodeArg(Object value) {
@@ -30,12 +31,16 @@ public final class ComponentCodec {
     }
 
     /**
-     * Decodes a JSON tree node into the declared result type. Returns {@code null}
-     * when the node is missing or JSON-null.
+     * Decodes a JSON tree node into the declared result type. Returns {@code null} when the node is missing or
+     * JSON-null.
      *
-     * @param <R> declared result type
-     * @param node JSON node from the wire
-     * @param resultType target Java type
+     * @param <R>
+     *            declared result type
+     * @param node
+     *            JSON node from the wire
+     * @param resultType
+     *            target Java type
+     *
      * @return the decoded value, or {@code null} for missing / JSON-null input
      */
     public static <R> R decodeReturn(JsonNode node, Class<R> resultType) {
@@ -50,14 +55,18 @@ public final class ComponentCodec {
     }
 
     /**
-     * Coerces a raw stored value (Java instance, {@link JsonNode}, or any
-     * Jackson-convertible object) into the declared result type. Returns the
-     * supplied fallback when the value is null or cannot be converted.
+     * Coerces a raw stored value (Java instance, {@link JsonNode}, or any Jackson-convertible object) into the declared
+     * result type. Returns the supplied fallback when the value is null or cannot be converted.
      *
-     * @param <R> declared result type
-     * @param raw raw value from session state (instance, JsonNode, Map, etc.)
-     * @param resultType target Java type
-     * @param fallback value returned when {@code raw} is null or coercion fails
+     * @param <R>
+     *            declared result type
+     * @param raw
+     *            raw value from session state (instance, JsonNode, Map, etc.)
+     * @param resultType
+     *            target Java type
+     * @param fallback
+     *            value returned when {@code raw} is null or coercion fails
+     *
      * @return the coerced value, or {@code fallback}
      */
     public static <R> R coerce(Object raw, Class<R> resultType, R fallback) {

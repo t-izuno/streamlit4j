@@ -9,7 +9,8 @@ import java.util.Map;
 /** Tabular data display widgets (dataframe, table, data editor). */
 final class DataWidgets {
 
-    private DataWidgets() {}
+    private DataWidgets() {
+    }
 
     static void dataframe(List<Map<String, Object>> rows) {
         emit("dataframe", widgetId("dataframe", rows), Map.of("rows", rows));

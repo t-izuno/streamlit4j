@@ -7,19 +7,21 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 /**
- * Spring Boot embedded sample that mounts the streamlit4j Layout demo at
- * {@code ${streamlit4j.base-path}} (default {@code /streamlit}).
+ * Spring Boot embedded sample that mounts the streamlit4j Layout demo at {@code ${streamlit4j.base-path}} (default
+ * {@code /streamlit}).
  */
 @SpringBootApplication
 public class SpringBootLayoutApp {
 
     /** Creates the application bean. */
-    public SpringBootLayoutApp() {}
+    public SpringBootLayoutApp() {
+    }
 
     /**
      * Boots the Spring application.
      *
-     * @param args command-line arguments
+     * @param args
+     *            command-line arguments
      */
     public static void main(String[] args) {
         SpringApplication.run(SpringBootLayoutApp.class, args);

@@ -21,8 +21,10 @@ public interface SessionLifecycleListener {
     /**
      * Handles a lifecycle event.
      *
-     * @param event transition kind
-     * @param session affected session
+     * @param event
+     *            transition kind
+     * @param session
+     *            affected session
      */
     void on(Event event, Session session);
 }

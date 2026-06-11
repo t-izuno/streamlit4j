@@ -4,8 +4,8 @@ import io.streamlit4j.core.domain.Session;
 import java.util.Optional;
 
 /**
- * Port that owns the lifecycle of {@link Session} instances. Implementations
- * decide the storage strategy (in-memory, distributed, etc.).
+ * Port that owns the lifecycle of {@link Session} instances. Implementations decide the storage strategy (in-memory,
+ * distributed, etc.).
  */
 public interface SessionStore {
 
@@ -19,7 +19,9 @@ public interface SessionStore {
     /**
      * Looks up a session by id.
      *
-     * @param id session identifier
+     * @param id
+     *            session identifier
+     *
      * @return present optional when the session is still active
      */
     Optional<Session> find(String id);
@@ -27,7 +29,8 @@ public interface SessionStore {
     /**
      * Removes the session with the given id, if any.
      *
-     * @param id session identifier
+     * @param id
+     *            session identifier
      */
     void remove(String id);
 

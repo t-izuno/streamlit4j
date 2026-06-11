@@ -22,9 +22,9 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 /**
- * Spring WebSocket adapter that bridges {@link WebSocketSession} to streamlit4j core
- * application use cases. One instance is shared across all clients; per-connection state
- * lives in {@link WebSocketSession#getAttributes()} so the handler stays stateless.
+ * Spring WebSocket adapter that bridges {@link WebSocketSession} to streamlit4j core application use cases. One
+ * instance is shared across all clients; per-connection state lives in {@link WebSocketSession#getAttributes()} so the
+ * handler stays stateless.
  */
 public class Streamlit4jWebSocketHandler extends TextWebSocketHandler {
 
@@ -38,7 +38,8 @@ public class Streamlit4jWebSocketHandler extends TextWebSocketHandler {
     /**
      * Creates a handler with a no-op connection listener.
      *
-     * @param application streamlit4j application
+     * @param application
+     *            streamlit4j application
      */
     public Streamlit4jWebSocketHandler(Streamlit4jApplication application) {
         this(application, Streamlit4jConnectionListener.NO_OP);
@@ -47,8 +48,10 @@ public class Streamlit4jWebSocketHandler extends TextWebSocketHandler {
     /**
      * Creates a handler with a custom connection listener.
      *
-     * @param application streamlit4j application
-     * @param listener connection lifecycle hook
+     * @param application
+     *            streamlit4j application
+     * @param listener
+     *            connection lifecycle hook
      */
     public Streamlit4jWebSocketHandler(Streamlit4jApplication application, Streamlit4jConnectionListener listener) {
         this.application = application;
@@ -76,8 +79,8 @@ public class Streamlit4jWebSocketHandler extends TextWebSocketHandler {
             Envelope incoming = Codec.decode(message.getPayload());
             ProcessWidgetEvent processor = application.processWidgetEvent();
             if (incoming instanceof WidgetEvent event) {
-                ProcessWidgetEvent.Result result =
-                        processor.execute(sessionId, event.widgetId(), unwrap(event.value()));
+                ProcessWidgetEvent.Result result = processor.execute(sessionId, event.widgetId(),
+                        unwrap(event.value()));
                 send(ws, RenderDelta.of(sessionId, result.seq(), result.patches()));
             } else if (incoming instanceof FileUpload upload) {
                 byte[] bytes = Base64.getDecoder().decode(upload.contentBase64());
@@ -145,9 +148,13 @@ public class Streamlit4jWebSocketHandler extends TextWebSocketHandler {
     /**
      * Decoded file-upload payload delivered to the script as a widget value.
      *
-     * @param filename original filename reported by the client
-     * @param mimeType MIME type
-     * @param bytes raw decoded bytes
+     * @param filename
+     *            original filename reported by the client
+     * @param mimeType
+     *            MIME type
+     * @param bytes
+     *            raw decoded bytes
      */
-    public record UploadedFile(String filename, String mimeType, byte[] bytes) {}
+    public record UploadedFile(String filename, String mimeType, byte[] bytes) {
+    }
 }

@@ -8,7 +8,8 @@ import java.util.Map;
 /** Media playback widgets (image, audio, video). */
 final class MediaWidgets {
 
-    private MediaWidgets() {}
+    private MediaWidgets() {
+    }
 
     static void image(String url) {
         emit("image", widgetId("image", url), Map.of("src", url));

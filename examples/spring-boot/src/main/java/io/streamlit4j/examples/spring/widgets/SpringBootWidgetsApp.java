@@ -7,19 +7,21 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 /**
- * Spring Boot embedded sample that mounts the streamlit4j Widgets gallery at
- * {@code ${streamlit4j.base-path}} (default {@code /streamlit}).
+ * Spring Boot embedded sample that mounts the streamlit4j Widgets gallery at {@code ${streamlit4j.base-path}} (default
+ * {@code /streamlit}).
  */
 @SpringBootApplication
 public class SpringBootWidgetsApp {
 
     /** Creates the application bean. */
-    public SpringBootWidgetsApp() {}
+    public SpringBootWidgetsApp() {
+    }
 
     /**
      * Boots the Spring application.
      *
-     * @param args command-line arguments
+     * @param args
+     *            command-line arguments
      */
     public static void main(String[] args) {
         SpringApplication.run(SpringBootWidgetsApp.class, args);
