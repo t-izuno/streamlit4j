@@ -116,8 +116,8 @@ class ProtocolEndpointTest {
             ConnectionRegistry registry = new ConnectionRegistry();
             ProtocolEndpoint endpoint = new ProtocolEndpoint(app.startSession(), app.processWidgetEvent(), registry);
             endpoint.onOpen(null);
-            endpoint.onMessage(
-                    "{\"v\":1,\"type\":\"session_init\",\"sessionId\":\"s\",\"root\":{\"kind\":\"root\",\"id\":\"root\"}}");
+            endpoint.onMessage("{\"v\":1,\"type\":\"session_init\",\"sessionId\":\"s\","
+                    + "\"root\":{\"kind\":\"root\",\"id\":\"root\"}}");
         }
     }
 
@@ -131,11 +131,11 @@ class ProtocolEndpointTest {
             endpoint.onOpen(null);
             String sessionId = mostRecentSessionId(app);
 
+            // The trailing element exercises the object branch in unwrap().
             for (com.fasterxml.jackson.databind.JsonNode node : new com.fasterxml.jackson.databind.JsonNode[] {
                     IntNode.valueOf(1), LongNode.valueOf(2L), DoubleNode.valueOf(3.5), BooleanNode.TRUE,
-                    TextNode.valueOf("hello"), NullNode.getInstance(), Codec.valueToTree(java.util.Map.of("k", "v")) // object
-                                                                                                                     // branch
-            }) {
+                    TextNode.valueOf("hello"), NullNode.getInstance(),
+                    Codec.valueToTree(java.util.Map.of("k", "v")) }) {
                 String json = Codec.encode(WidgetEvent.of(sessionId, "w-x", node));
                 endpoint.onMessage(json);
             }

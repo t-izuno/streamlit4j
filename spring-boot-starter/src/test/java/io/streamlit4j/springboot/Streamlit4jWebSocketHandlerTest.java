@@ -149,8 +149,8 @@ class Streamlit4jWebSocketHandlerTest {
         handler.afterConnectionEstablished(ws);
         ws.sent.clear();
 
-        handler.handleMessage(ws, new TextMessage(
-                "{\"v\":1,\"type\":\"session_init\",\"sessionId\":\"s\",\"root\":{\"kind\":\"root\",\"id\":\"root\"}}"));
+        handler.handleMessage(ws, new TextMessage("{\"v\":1,\"type\":\"session_init\",\"sessionId\":\"s\","
+                + "\"root\":{\"kind\":\"root\",\"id\":\"root\"}}"));
 
         assertThat(ws.sent).isEmpty();
     }

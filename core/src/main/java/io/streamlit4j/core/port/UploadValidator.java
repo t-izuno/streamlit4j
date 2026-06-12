@@ -5,6 +5,7 @@ import java.util.Set;
 /**
  * Port for validating incoming file uploads against size and MIME type constraints.
  */
+@FunctionalInterface
 public interface UploadValidator {
 
     /**

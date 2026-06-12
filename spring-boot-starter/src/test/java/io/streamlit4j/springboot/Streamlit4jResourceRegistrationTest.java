@@ -45,8 +45,7 @@ class Streamlit4jResourceRegistrationTest {
     private static List<String> handlersFor(String basePath) {
         Streamlit4jProperties properties = new Streamlit4jProperties();
         properties.setBasePath(basePath);
-        Streamlit4jAutoConfiguration.ResourceRegistration registration = new Streamlit4jAutoConfiguration.ResourceRegistration(
-                properties);
+        var registration = new Streamlit4jAutoConfiguration.ResourceRegistration(properties);
 
         CapturingResourceRegistry registry = new CapturingResourceRegistry();
         registration.addResourceHandlers(registry);

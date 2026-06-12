@@ -31,5 +31,14 @@
       Renaming every accessor or field would defeat idiomatic Java naming.
     -->
     <exclude name="AvoidFieldNameMatchingMethodName"/>
+    <!--
+      Approved 2026-06-11.
+      WebSocket protocol endpoints (ProtocolEndpoint.onOpen / onMessage) must
+      convert any unexpected throwable into an Error envelope sent back to the
+      client; refusing to catch `Exception` would either leak runtime errors to
+      the Jetty layer or require enumerating every possible exception type from
+      Codec / Base64 / usecase paths, breaking the protocol-boundary contract.
+    -->
+    <exclude name="AvoidCatchingGenericException"/>
   </rule>
 </ruleset>

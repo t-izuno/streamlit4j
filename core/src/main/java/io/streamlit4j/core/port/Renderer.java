@@ -6,6 +6,7 @@ import io.streamlit4j.core.protocol.RenderNode;
 /**
  * Port that executes a script entrypoint inside the streamlit4j runtime and returns the resulting render tree.
  */
+@FunctionalInterface
 public interface Renderer {
 
     /**

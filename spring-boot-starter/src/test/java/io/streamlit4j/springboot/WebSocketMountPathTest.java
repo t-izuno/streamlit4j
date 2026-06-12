@@ -22,8 +22,7 @@ class WebSocketMountPathTest {
     void registersHandlerAtNormalizedPath(String basePath, String expectedPath) {
         Streamlit4jProperties properties = new Streamlit4jProperties();
         properties.setBasePath(basePath);
-        Streamlit4jAutoConfiguration.WebSocketRegistration registration = new Streamlit4jAutoConfiguration.WebSocketRegistration(
-                null, properties, emptyProvider());
+        var registration = new Streamlit4jAutoConfiguration.WebSocketRegistration(null, properties, emptyProvider());
 
         CapturingRegistry registry = new CapturingRegistry();
         registration.registerWebSocketHandlers(registry);
