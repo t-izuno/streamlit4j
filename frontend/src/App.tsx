@@ -86,7 +86,7 @@ export function App({ websocketUrl, client: injectedClient }: AppProps = {}) {
       }
     });
     if (!injectedClient) {
-      const url = websocketUrl ?? defaultWebsocketUrl();
+      const url = websocketUrl ?? defaultTransportUrl();
       client.connect(url);
     }
     return () => {
@@ -199,10 +199,18 @@ export function App({ websocketUrl, client: injectedClient }: AppProps = {}) {
   );
 }
 
-function defaultWebsocketUrl(): string {
+function defaultTransportUrl(): string {
   if (typeof window === 'undefined') {
-    return 'ws://localhost/ws';
+    return 'http://localhost/events';
   }
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('transport') === 'websocket') {
+    return defaultWebsocketUrl();
+  }
+  return `${window.location.protocol}//${window.location.host}/events`;
+}
+
+function defaultWebsocketUrl(): string {
   const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   return `${proto}//${window.location.host}/ws`;
 }

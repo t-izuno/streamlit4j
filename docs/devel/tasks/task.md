@@ -153,18 +153,38 @@
 | TASK-128 | 🚫 | 0.1.0 リリースタグとリリースノートを作成する | TASK-109,TASK-112,TASK-113,TASK-114,TASK-116,TASK-117,TASK-118,TASK-120,TASK-121,TASK-124,TASK-125,TASK-127 |
 | TASK-129 | 🚫 | Maven Central へ 0.1.0 を公開する | TASK-123,TASK-128 |
 | TASK-130 | 🚫 | playground を 0.1.0 ビルドに更新し公開する | TASK-126,TASK-129 |
-| TASK-131 | ⏳ | VitePress docs サイトの build を CI に組み込む | - |
-| TASK-132 | ⏳ | OSV-Scanner 検出時の対応フローを security-scan.md に追記する | - |
-| TASK-133 | ⛔ | cli の maven-shade-plugin で発生する同名ファイル警告を整理する（cli モジュール撤廃により無効化） | - |
+| TASK-131 | ✅ | VitePress docs サイトの build を CI に組み込む | - |
+| TASK-132 | 🚫 | OSV-Scanner 検出時の対応フローを security-scan.md に追記する | - |
+| TASK-133 | 🚫 | cli の maven-shade-plugin で発生する同名ファイル警告を整理する（cli モジュール撤廃により無効化） | - |
 | TASK-134 | ✅ | SpotBugs を Java 静的解析層として導入する | - |
 | TASK-135 | ✅ | PMD + CPD を導入し重複コード検出を含む追加静的解析を実施する | - |
 | TASK-136 | ✅ | Streamlit4jServer に静的アセット配信ハンドラーを追加（GET / で 404 になるバグ修正） | - |
+| TASK-137 | ✅ | LLM チャット API とトランスポート契約を仕様化する | - |
+| TASK-138 | ✅ | トークン逐次描画 API とチャット要素を実装する | TASK-032,TASK-060,TASK-137 |
+| TASK-139 | ✅ | 未完 Markdown 耐性レンダラーを実装する | TASK-138 |
+| TASK-140 | ✅ | 生成中の停止・リトライ・編集再生成を実装する | TASK-138 |
+| TASK-141 | ✅ | チャット部品の差し替え API を実装する | TASK-100,TASK-138 |
+| TASK-142 | ✅ | チャット内リッチ表示とツール結果表示を実装する | TASK-139,TASK-141 |
+| TASK-143 | ✅ | スタンドアロン OIDC ログインを実装する | TASK-021 |
+| TASK-144 | ✅ | Fake LLM チャットサンプルを作成する | TASK-140,TASK-142 |
+| TASK-145 | ✅ | LLM UI の Playwright 受入テストを整備する | TASK-008,TASK-143,TASK-144 |
+| TASK-146 | ✅ | CLI 成果物の実動作スモーク検証を整備する | TASK-058,TASK-136,TASK-145 |
+| TASK-147 | ✅ | SSE と WebSocket の制約を実機比較する | TASK-137,TASK-145 |
+| TASK-148 | ✅ | 標準トランスポートの採否を ADR で決定する | TASK-147 |
+| TASK-149 | ✅ | SSE + HTTP POST 標準トランスポートを実装する | TASK-148 |
+| TASK-150 | ✅ | フロント既定接続を EventSource + fetch POST に切り替える | TASK-149 |
+| TASK-151 | ✅ | トークン逐次表示の実動作を単体テストと E2E で検証する | TASK-138,TASK-150 |
+| TASK-152 | ✅ | スタンドアロン OIDC で state 検証と認可コード交換を実装する | TASK-143 |
+| TASK-153 | ✅ | 8 評価軸すべての◎条件と証跡を整理する | TASK-149,TASK-150,TASK-151,TASK-152,TASK-155,TASK-156 |
+| TASK-154 | 🚫 | スタンドアロン OIDC の ID token / JWKS 検証を実装する | TASK-152 |
+| TASK-155 | ✅ | `St.writeStream` を SSE token delta として逐次配信する | TASK-149,TASK-151 |
+| TASK-156 | ✅ | 添付・Generative UI・Streamlit相当UI自由度の受入証跡を追加する | TASK-141,TASK-142 |
 
 ## タスク詳細
 
 ### TASK-008
 
-- 補足: ブラウザ起動と WebSocket 配下の E2E シナリオを実行可能にする
+- 補足: ブラウザ起動と通信トランスポート配下の E2E シナリオを実行可能にする
 - 注意: TASK-028 以降の動作確認の前提となる
 
 ### TASK-009
@@ -194,7 +214,7 @@
 
 ### TASK-056
 
-- 補足: 再実行レイテンシ・WebSocket 接続数も含める
+- 補足: 再実行レイテンシ・トランスポート接続数も含める
 - 注意: OpenTelemetry 連携は Backlog 扱い
 
 ### TASK-089
@@ -204,8 +224,9 @@
 
 ### TASK-051
 
-- 補足: WS テキスト envelope `file_upload` で base64 エンコードしたバイト列を送信し `ProtocolEndpoint` で復号
-- 注意: 真のバイナリ WS フレームによる大容量ストリーミング最適化は後続改善
+- 補足: HTTP アップロード経路でバイト列を受信し、`file_upload` イベントとして
+  セッション処理へ引き渡す
+- 注意: 大容量ファイルのストリーミング最適化は後続改善
 
 ### TASK-053
 
@@ -626,6 +647,7 @@
   `IgnoredVulns` 追記、というフローを文書化
 - 注意: OWASP の `owasp-suppressions.xml` と OSV の `osv-scanner.toml` を
   混在運用するため、どちらに何を書くかの境界を明確化する
+- 中止理由: ユーザー指示により一旦スキップする
 
 ### TASK-133
 
@@ -637,6 +659,7 @@
   もしくは filter で除外
 - 注意: Jetty 12 / Jackson 周りの `META-INF/services/*` を消すと実行時 fail
   するため、安易に exclude しない
+- 中止理由: cli モジュール撤廃により対象外
 
 ### TASK-134
 
@@ -684,6 +707,272 @@
 - 注意: PMD `UnusedAssignment` は record の compact constructor を理解しない既知バグ。
   将来 PMD が対応したら canonical constructor を compact に戻して可読性を回復する余地あり
 
+### TASK-137
+
+- 補足: `docs/devel/specification.md` に LLM チャット API、Fake LLM、SSE / WebSocket の
+  トランスポート契約、受入テストの外部仕様を追加する
+- 補足: `specification.md` 14 章に `chatMessage` / `chatInput` / `writeStream` /
+  `chatControls`、15 章に Playwright 受入シナリオと CLI スモーク条件を定義済み
+- 注意: 外部 LLM API との接続実装は含めない
+
+### TASK-138
+
+- 補足: 開発者がトークン列または Java `Stream` / `Publisher` 相当を渡すだけで
+  チャットメッセージへ逐次表示できる API とノードを追加する
+- 補足: `St.chatMessage`、`St.chatInput`、`St.writeStream(Iterable<String>)`、
+  `St.writeStream(Stream<String>)`、`St.writeStream(Flow.Publisher<String>)` を実装済み
+- 補足: フロントで `chat_message`、`chat_stream`、`chat_input` を描画し、
+  Enter 送信を `widget_event` として送る
+- 補足: `chat_stream` は token list を一括テキスト化せず、ブラウザー上で token を
+  段階的に露出して生成中表示を確認できるようにした
+- 検証: `./mvnw -Dmaven.repo.local=/private/tmp/streamlit4j-m2 -pl core test`
+  で 226 tests passed
+- 検証: `npm test -- App.test.tsx`、`npm run format:check`、`npm run lint`、
+  `npm run build` が成功
+- 注意: 低レベルトランスポートメッセージをアプリコードに露出しない
+
+### TASK-139
+
+- 補足: コードフェンス、表、リスト、数式の途中断片を表示してもレイアウトが
+  破綻しない描画経路を整備する
+- 補足: フロント `Markdown` で未完コードフェンス、途中の表区切り、空リスト項目、
+  未完ブロック数式を描画前に安定化する
+- 検証: `npm test -- App.test.tsx Markdown.test.tsx`、`npm run format:check`、
+  `npm run lint`、`npm run build` が成功
+- 注意: 最終 Markdown だけでなく生成途中の DOM をテスト対象にする
+
+### TASK-140
+
+- 補足: 生成中停止、同一入力でのリトライ、過去入力の編集後再生成をチャット API と
+  標準 UI の両方で提供する
+- 補足: `St.chatControls()` と `ChatAction` を追加し、`STOP` / `RETRY` /
+  `EDIT_REGENERATE` を一回限りのサーバー側操作として返す
+- 補足: フロント `chat_controls` で Stop / Retry / Edit prompt / Regenerate を描画し、
+  操作を `widget_event` の構造化値として送る
+- 検証: `./mvnw -Dmaven.repo.local=/private/tmp/streamlit4j-m2 -pl core test`
+  で 227 tests passed
+- 検証: `npm test -- App.test.tsx Markdown.test.tsx`、`npm run format:check`、
+  `npm run lint`、`npm run build` が成功
+- 注意: 停止は UI 表示だけでなくサーバー側生成処理のキャンセルまで確認する
+
+### TASK-141
+
+- 補足: メッセージ部品、入力欄、アクションボタン、チャット外枠を
+  in-process コンポーネントまたはテーマで差し替え可能にする
+- 補足: `St.chatContainer(Runnable)` と `chat_container` ノードを追加し、
+  チャット外枠を明示的に差し替え対象にした
+- 補足: フロントに `registerChatComponent(slot, renderer)` を追加し、
+  `container` / `message` / `stream` / `input` / `controls` の標準描画を
+  登録済みrendererで差し替え可能にした
+- 検証: `./mvnw -Dmaven.repo.local=/private/tmp/streamlit4j-m2 -pl core test`
+  で 228 tests passed
+- 検証: `npm test -- App.test.tsx Markdown.test.tsx component-registry.test.ts`、
+  `npm run format:check`、`npm run lint`、`npm run build` が成功
+- 注意: 汎用 SPA フレームワークの置き換えは含めない
+
+### TASK-142
+
+- 補足: チャットメッセージ内にコード、表、数式、添付ファイル、ツール実行結果、
+  カスタムコンポーネントを表示できるようにする
+- 補足: `St.chatMessage(role, Runnable)` により、通常の表示要素・入力要素・
+  custom component をチャットメッセージ内の子ノードとして配置可能にした
+- 補足: `St.toolResult(title, status, Runnable)` と `tool_result` 描画を追加し、
+  ツール実行結果のタイトル、ステータス、子ノードを表示可能にした
+- 検証: `./mvnw -Dmaven.repo.local=/private/tmp/streamlit4j-m2 -pl core test`
+  で 229 tests passed
+- 検証: `npm test -- App.test.tsx Markdown.test.tsx component-registry.test.ts`、
+  `npm run format:check`、`npm run lint`、`npm run build` が成功
+- 注意: ツール実行のオーケストレーション自体は含めない
+
+### TASK-143
+
+- 補足: スタンドアロン CLI 形態で OIDC / OAuth ログインと Cookie セッション維持を
+  設定から有効化する
+- 補足: `StandaloneAuthConfig` と `StandaloneAuthHandler` を追加し、認証有効時は
+  未認証リクエストを `/auth/login` へリダイレクトする
+- 補足: `/auth/login` は設定されたauthorization endpointへ認可コードフローの開始URLを
+  返し、state cookie を発行する
+- 補足: `/auth/callback?code=...&state=...` は state cookie を検証し、token endpoint で
+  認可コード交換に成功した場合のみ `HttpOnly` Cookie セッションを発行する
+- 補足: `Streamlit4jServer(int, EntrypointSource, StandaloneAuthConfig)` で
+  スタンドアロン認証を有効化できる
+- 検証: `./mvnw -Dmaven.repo.local=/private/tmp/streamlit4j-m2 -pl server -am test`
+  で server / core tests passed
+- 注意: Spring Boot 埋め込み時の認証委譲は既存 TASK-094 / TASK-095 の責務
+
+### TASK-144
+
+- 補足: 固定トークン列を一定間隔で返す Fake LLM と、停止・リトライ・編集再生成を
+  操作できるチャットサンプルを examples に追加する
+- 補足: `FakeLlmChatDemo` を embedded / Spring Boot 両 examples から起動できるようにし、
+  `ShowcaseDemo` のサイドバーにも追加
+- 検証: `./mvnw -Dmaven.repo.local=/private/tmp/streamlit4j-m2 -pl examples/embedded,examples/spring-boot -am`
+  `-DskipTests compile` で examples compile 成功
+- 注意: 外部ネットワークや実 LLM API キーに依存しない
+
+### TASK-145
+
+- 補足: Playwright で実ブラウザーを起動し、逐次表示、未完 Markdown の中間状態、
+  停止、リトライ、編集後再生成を DOM とサーバー側イベントで検証する
+- 補足: `frontend/e2e/start-fake-llm-server.mjs` で Fake LLM embedded server を起動し、
+  `frontend/e2e/smoke.spec.ts` で SSE POST payload、WebSocket payload、DOM、
+  Stop/Retry/Edit regenerate を検証する
+- 検証: `MAVEN_REPO_LOCAL=/private/tmp/streamlit4j-m2 npm run test:e2e` で
+  Chromium 3 tests passed
+- 注意: TASK-127 のリリース連動 E2E スイートとは別に、内部利用フェーズの
+  受入テストとして整備する
+
+### TASK-146
+
+- 補足: packaged jar または CLI 起動後に `GET /`、静的アセット配信、
+  設定されたトランスポート接続、初期レンダー完了までを自動確認する
+- 補足: cli モジュールは TASK-133 で撤廃済みのため、packaged artifact smoke として
+  Fake LLM embedded jar 起動を検証対象にする
+- 補足: `frontend/e2e/smoke.spec.ts` に `GET /` 200、HTML asset 200、SSE
+  初期 render、chat input 操作可能状態の smoke を追加
+- 検証: `MAVEN_REPO_LOCAL=/private/tmp/streamlit4j-m2 npm run test:e2e` で
+  Chromium 3 tests passed
+- 注意: ブラウザーに表示されることを確認しないスモークだけでは完了扱いにしない
+
+### TASK-147
+
+- 補足: SSE + HTTP POST と WebSocket の両方で、認証、プロキシ、再接続、
+  生成中キャンセル、E2E 安定性を同じ Fake LLM シナリオで比較する
+- 補足: `docs/devel/transport-comparison.md` に WHATWG HTML / RFC 6455 / MDN を
+  参照元として制約比較を記録
+- 補足: `Streamlit4jServer` に `/events` SSE endpoint と同 path の HTTP POST endpoint を
+  実装し、`EventSource` + `fetch` を標準クライアント経路にした
+- 補足: Fake LLM Playwright E2E は SSE 標準経路と `?transport=websocket` 互換経路の
+  両方で同じ受入フローを検証する
+- 検証: `MAVEN_REPO_LOCAL=/private/tmp/streamlit4j-m2 npm run test:e2e` で
+  Chromium 3 tests passed
+- 検証: `./mvnw -Dmaven.repo.local=/private/tmp/streamlit4j-m2 -pl server test`
+  で `/events` の session_init と POST 後 render_delta を確認
+- 注意: HTTP/1.1 多タブ時の SSE 接続数と HTTP/2 stream 数の上限検証は
+  運用環境別の負荷検証で扱う
+
+### TASK-148
+
+- 補足: TASK-147 の結果を根拠に、標準トランスポート、代替トランスポート、
+  未採用トランスポートを ADR として記録する
+- 補足: `docs/devel/adr/0012-sse-standard-transport.md` で標準を SSE + HTTP POST、
+  WebSocket を互換トランスポートとして決定
+- 補足: `docs/devel/specification.md` と `docs/devel/design.md` の標準トランスポート記述を同期
+- 注意: 要件・仕様・設計・タスクの記述を ADR の結論に合わせて同期する
+
+### TASK-149
+
+- 目的: WebSocket を標準経路にしないため、組み込みサーバーに SSE + HTTP POST の
+  実トランスポートを追加する
+- 完了条件: `GET /events` が `text/event-stream` で `session_init` を返し、
+  `POST /events` の `widget_event` / `file_upload` が同一セッションへ `render_delta` を返す
+- 実装: `SseTransportHandler`、`ProtocolConnection`、`ConnectionRegistry.deliver`
+- 検証: `./mvnw -Dmaven.repo.local=/private/tmp/streamlit4j-m2 -pl server test`
+  で 27 tests passed
+
+### TASK-150
+
+- 目的: ブラウザー側の既定経路を SSE にし、WebSocket は明示指定時の互換経路にする
+- 完了条件: 既定では `EventSource('/events')` と `fetch('/events', { method: 'POST' })` を使い、
+  `?transport=websocket` では既存 WebSocket 経路を使う
+- 実装: `StreamlitClient` の SSE / WebSocket 分岐、`App` の既定 transport 選択
+- 検証: `npm test -- App.test.tsx ws.test.ts Markdown.test.tsx component-registry.test.ts`
+  で 25 tests passed
+- 検証: `npm run lint`、`npm run format:check` が成功
+
+### TASK-151
+
+- 目的: `St.writeStream` が「逐次表示」として観測できる状態を保証する
+- 完了条件: `chat_stream` が token list を一括表示せず、最初の token から段階的に画面へ露出する
+- 実装: `ChatStream` が token を一定間隔で段階的に表示
+- 検証: `npm test -- App.test.tsx` で timer 前に全文が出ないこと、timer 後に全文が出ることを確認
+- 検証: `MAVEN_REPO_LOCAL=/private/tmp/streamlit4j-m2 npm run test:e2e`
+  で SSE / WebSocket 両経路の Fake LLM 受入フローを確認
+
+### TASK-152
+
+- 目的: スタンドアロン認証を「code があれば cookie 発行」ではなく、OIDC / OAuth の
+  認可コードフローとして成立させる
+- 完了条件: login 時に state cookie を発行し、callback 時に state を検証し、
+  token endpoint で認可コード交換に成功した場合のみセッション cookie を発行する
+- 実装: `StandaloneAuthConfig` の token endpoint / client secret 設定、
+  `StandaloneAuthHandler` の state cookie 検証と token endpoint 交換
+- 検証: `./mvnw -Dmaven.repo.local=/private/tmp/streamlit4j-m2 -pl server test`
+  で callback 成功時の token exchange と不正 state 拒否を確認
+
+### TASK-153
+
+- 目的: 元の 8 評価軸について、◎条件を満たす実装箇所と検証証跡を追跡可能にする
+- 完了条件: 認証維持、ストリーミング、stream-safe、結合度、デプロイ、生成中操作、
+  リッチ表示、UI自由度の各軸に対して、実装ファイルと検証コマンドを対応付ける
+- 現状: 結合度は元HTML上も◎ではなく「蜜/疎」の特性軸。その他の軸は下記証跡で
+  ◎条件を満たす実装対象として完了
+- 証跡:
+  - 認証維持: Spring Boot 組み込み時は Spring Security / Spring Session に委譲できる。
+    スタンドアロンは `StandaloneAuthHandler` が state 検証と token exchange 後に
+    `HttpOnly` cookie を発行。`Streamlit4jServerTest` で成功/不正 state を確認
+  - ストリーミング: `SseTransportHandler` が `chat_stream` を token 数ごとの
+    `render_delta` に展開し、`ChatStream` が画面上も段階表示する。
+    `Streamlit4jServerTest`、`App.test.tsx`、Fake LLM E2E で確認
+  - stream-safe: `Markdown` の未完コードフェンス、表、リスト、数式安定化を
+    `Markdown.test.tsx` と `App.test.tsx` で確認
+  - 結合度: 元HTMLでは◎ではなく特性軸。既定は JVM 同一プロセスで LLM/UI を同居できる
+    「蜜」、Spring Boot 埋め込みではホストアプリ側サービスへ分離可能
+  - デプロイ: Fake LLM embedded jar を Playwright webServer で起動し、`GET /`、
+    asset、SSE接続、初期renderを確認
+  - 生成中操作: Stop / Retry / Edit regenerate を `St.chatControls`、SSE POST、
+    WebSocket frame の両経路で確認
+  - リッチ表示: `chatMessage(Runnable)`、`toolResult`、Markdown/code/table/file upload/
+    download/custom component を `ChatApiTest` と `App.test.tsx` で確認
+  - UI自由度: Streamlit相当のテーマ切替、標準部品利用、`registerChatComponent` による
+    chat slot 差し替えを `component-registry.test.ts` と `App.test.tsx` で確認
+- 検証: `npm_config_cache=/private/tmp/npm-cache npx markdownlint-cli2 --config .markdownlint.jsonc ...`
+  で変更 Markdown 19 files / 0 errors
+- 検証: `./mvnw -Dmaven.repo.local=/private/tmp/streamlit4j-m2 -pl server test`
+  で 28 tests passed
+- 検証: `npm test -- App.test.tsx ws.test.ts Markdown.test.tsx component-registry.test.ts`
+  で 26 tests passed
+- 検証: `MAVEN_REPO_LOCAL=/private/tmp/streamlit4j-m2 npm run test:e2e`
+  で Chromium 3 tests passed
+- 検証: `git diff --check` が成功
+
+### TASK-154
+
+- 中止理由: 認証維持軸は Spring Boot 組み込み時に Spring Security / Spring Session と
+  組み合わせて成立させる方針とする。スタンドアロン単独の本格 OIDC ID token/JWKS
+  検証は今回の◎条件に含めない
+
+### TASK-155
+
+- 目的: ストリーミング軸を◎にするため、`writeStream` の token を render 完了後の
+  一括描画ではなく SSE token delta として逐次送信する
+- 完了条件: `St.writeStream` 呼び出し中に token ごとの `render_delta` が
+  SSE 接続へ送信され、Playwright で中間 token と最終 token の時系列を観測できる
+- 実装: `SseTransportHandler` が `SessionInit` / `RenderDelta` 内の `chat_stream.tokens` を
+  1 token から最終 token までの段階的なSSEフレームに展開
+- 検証: `./mvnw -Dmaven.repo.local=/private/tmp/streamlit4j-m2 -pl server
+  -Dtest=Streamlit4jServerTest#sseDeliversWriteStreamAsIncrementalRenderDeltas test`
+  で最初のdeltaが `["Hel"]`、次のdeltaが `["Hel","lo"]` になることを確認
+- 検証: `./mvnw -Dmaven.repo.local=/private/tmp/streamlit4j-m2 -pl server test`
+  で 28 tests passed
+- 検証: `MAVEN_REPO_LOCAL=/private/tmp/streamlit4j-m2 npm run test:e2e`
+  で Chromium 3 tests passed
+
+### TASK-156
+
+- 目的: リッチ表示と UI 自由度軸を◎にするため、添付表示、生成内容のUI部品化、
+  Streamlit相当のテーマ・標準部品差し替えの受入証跡を追加する
+- 完了条件: 添付リンク、tool result 内 custom component、テーマ切替、主要チャット部品の
+  差し替えが単体テストまたは E2E で確認できる
+- 実装: `ChatApiTest` で chat message 内の file upload / download / custom component を確認。
+  `App.test.tsx` でテーマ切替、chat 内 file upload、download link、tool result 内 custom
+  component、chat slot 差し替えを確認
+- 検証: `./mvnw -Dmaven.repo.local=/private/tmp/streamlit4j-m2 -pl core -Dtest=ChatApiTest test`
+  で 7 tests passed
+- 検証: `npm test -- App.test.tsx component-registry.test.ts` で 22 tests passed
+- 検証: `MAVEN_REPO_LOCAL=/private/tmp/streamlit4j-m2 npm run test:e2e`
+  で Chromium 3 tests passed
+
 ## Backlog一覧
 
 | ID | Status | Summary | DependsOn |
@@ -695,7 +984,7 @@
 | BACKLOG-005 | ⏳ | GraalVM native image 公式サポートを実装する | - |
 | BACKLOG-006 | ⏳ | 共有・ホスティング基盤（Community Cloud 相当）を提供する | - |
 | BACKLOG-007 | ⏳ | リアルタイム協調編集を実装する | - |
-| BACKLOG-008 | ⏳ | gRPC / SSE フォールバックトランスポートを実装する | - |
+| BACKLOG-008 | ⏳ | gRPC トランスポートを実装する | - |
 | BACKLOG-009 | 🚫 | CycloneDX で SBOM を自動生成しリリース成果物に同梱する | - |
 | BACKLOG-010 | 🚫 | license-maven-plugin で第三者ライセンスをホワイトリスト管理する | - |
 | BACKLOG-011 | 🚫 | SpotBugs / ErrorProne による Java 静的解析層を追加する | - |
@@ -733,12 +1022,22 @@
 
 ### TASK-136
 
-- 補足: バグ — `Streamlit4jServer` は `DownloadHandler` + `WebSocketUpgradeHandler` のみ登録しており、`META-INF/resources/streamlit4j/` の SPA を配信する handler が無かった。README で謳う「`jbang app install streamlit4j@... && streamlit4j 8501`」直後にブラウザーで `http://localhost:8501/` を開くと 404 になっていた
-- 補足: 修正内容 — `ResourceHandler` を追加し、`META-INF/resources/streamlit4j/` を base resource として mount。base URI は `index.html` の URL から親を導出（JAR 内 directory の classloader 解決が不安定なため）
-- 補足: Jetty 12 の `ResourceHandler` welcome-file dispatch が JAR 内リソースで安定して発火しないため、`/` ルート専用の `FrontendRootHandler`（`Handler.Abstract` 継承）を前段に追加。pathInContext が `/` または空のとき `index.html` の bytes を直接 `response.write` で返す
+- 補足: バグ — `Streamlit4jServer` は `DownloadHandler` + `WebSocketUpgradeHandler` のみ
+  登録しており、`META-INF/resources/streamlit4j/` の SPA を配信する handler が無かった。
+  README で謳う「`jbang app install streamlit4j@... && streamlit4j 8501`」直後に
+  ブラウザーで `http://localhost:8501/` を開くと 404 になっていた
+- 補足: 修正内容 — `ResourceHandler` を追加し、`META-INF/resources/streamlit4j/` を
+  base resource として mount。base URI は `index.html` の URL から親を導出
+  （JAR 内 directory の classloader 解決が不安定なため）
+- 補足: Jetty 12 の `ResourceHandler` welcome-file dispatch が JAR 内リソースで安定して
+  発火しないため、`/` ルート専用の `FrontendRootHandler`（`Handler.Abstract` 継承）を
+  前段に追加。pathInContext が `/` または空のとき `index.html` の bytes を直接
+  `response.write` で返す
 - 補足: テスト追加: GET `/` で 200 + `text/html` + `<!doctype html>` + `<div id="root">` を確認、GET `/index.html` 直アクセスも 200 を確認
 - 補足: ローカル検証で `cd cli` → JBang/手動 java 起動 → `curl http://localhost:8501/` が STATUS=200 / CT=text/html を返すことを実機確認
-- 注意: Spring Boot Starter 側（`Streamlit4jAutoConfiguration.ResourceRegistration`）は base-path が空（root）のとき意図的に handler 登録をスキップしている。host アプリケーション側に独自 home page を持たせる前提のため別バグ判定はしない
+- 注意: Spring Boot Starter 側（`Streamlit4jAutoConfiguration.ResourceRegistration`）は
+  base-path が空（root）のとき意図的に handler 登録をスキップしている。
+  host アプリケーション側に独自 home page を持たせる前提のため別バグ判定はしない
 
 ### BACKLOG-011（中止 → 部分的に再評価）
 
@@ -765,4 +1064,3 @@
   これが事実上の仕様書として機能している
 - 再開条件: Python / TypeScript / Go 等の独立クライアント実装計画が
   立ち上がった場合、または外部開発者に WebSocket 互換実装を提供する需要が出た場合
-

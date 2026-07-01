@@ -33,7 +33,9 @@ streamlit4j SPA は WebSocket で受け取るレンダーツリー（`kind` / `i
 主な理由:
 
 - **本家 Streamlit との API 互換性確保が容易**: Streamlit Components V2 の公式推奨が React 18 で、将来 V2 互換のコンポーネントを取り込む / vendor する際に手戻りが小さい
-- **エコシステムの厚さ**: dataframe / chart / 仮想スクロール / アクセシビリティーなど streamlit4j で必要になりうる UI 部品が React ライブラリーとして揃っている。Lit / Svelte ではエコシステム規模が劣る
+- **エコシステムの厚さ**: dataframe / chart / 仮想スクロール /
+  アクセシビリティーなど streamlit4j で必要になりうる UI 部品が React
+  ライブラリーとして揃っている。Lit / Svelte ではエコシステム規模が劣る
 - **動的レンダーツリー描画との相性**: `props.children` ベースの再帰描画が、サーバーから流れてくる任意ツリーの描画と素直にマッピングする。リアクティブモデル（Vue / Svelte）はテンプレート静的解析が前提のため動的ツリーには工夫が必要
 - **TypeScript 統合の成熟度**: 型定義 / ESLint プラグイン / IDE サポートのいずれも React + TS が最厚
 - **テスト基盤の整備**: React Testing Library + Vitest（[ADR-0009](./0009-vite-for-frontend.md)）でユニットテストを書く構成が業界標準

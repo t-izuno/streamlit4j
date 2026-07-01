@@ -1,8 +1,10 @@
 # Reference
 
-streamlit4j の公開 API の各要素を、Java 側シグネチャー / WebSocket プロトコル / フロントエンド描画の 3 点で網羅する。
+streamlit4j の公開 API の各要素を、Java 側シグネチャー / JSON プロトコル / フロントエンド描画の 3 点で網羅する。
 
-公開ファサードは [`io.streamlit4j.core.api.St`](https://github.com/t-izuno/streamlit4j/blob/main/core/src/main/java/io/streamlit4j/core/api/St.java) に集約され、内部は要素カテゴリー別の package-private クラス群（`TextWidgets` / `InputWidgets` ほか）に委譲される。
+公開ファサードは [`io.streamlit4j.core.api.St`](https://github.com/t-izuno/streamlit4j/blob/main/core/src/main/java/io/streamlit4j/core/api/St.java)
+に集約され、内部は要素カテゴリー別の package-private クラス群
+（`TextWidgets` / `InputWidgets` ほか）に委譲される。
 
 ## カテゴリー一覧
 

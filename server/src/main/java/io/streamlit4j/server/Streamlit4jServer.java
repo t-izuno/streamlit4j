@@ -32,6 +32,7 @@ public final class Streamlit4jServer implements AutoCloseable {
     private final ServerConnector connector;
     private final Streamlit4jApplication app;
     private final ConnectionRegistry connections = new ConnectionRegistry();
+    private final StandaloneAuthConfig authConfig;
 
     /**
      * Configures (but does not start) a server on the given port.
@@ -42,9 +43,24 @@ public final class Streamlit4jServer implements AutoCloseable {
      *            source of script entrypoints
      */
     public Streamlit4jServer(int port, EntrypointSource entrypoints) {
+        this(port, entrypoints, StandaloneAuthConfig.disabled());
+    }
+
+    /**
+     * Configures (but does not start) a server on the given port with standalone authentication.
+     *
+     * @param port
+     *            TCP port (0 for an ephemeral port)
+     * @param entrypoints
+     *            source of script entrypoints
+     * @param authConfig
+     *            standalone authentication configuration
+     */
+    public Streamlit4jServer(int port, EntrypointSource entrypoints, StandaloneAuthConfig authConfig) {
         this.app = Bootstrap.standalone(entrypoints);
         this.jetty = new Server();
         this.connector = new ServerConnector(jetty);
+        this.authConfig = authConfig;
         this.connector.setPort(port);
         this.jetty.addConnector(connector);
         configureHandlers();
@@ -57,9 +73,11 @@ public final class Streamlit4jServer implements AutoCloseable {
                     app.processWidgetEvent(), connections));
         });
         DownloadHandler downloadHandler = new DownloadHandler(app.downloads());
+        SseTransportHandler sseHandler = new SseTransportHandler(app.startSession(), app.processWidgetEvent(),
+                connections);
         ResourceHandler frontend = frontendHandler();
-        Handler.Sequence sequence = new Handler.Sequence(wsHandler, downloadHandler,
-                new FrontendRootHandler(frontend.getBaseResource()), frontend);
+        Handler.Sequence sequence = new Handler.Sequence(new StandaloneAuthHandler(authConfig), sseHandler, wsHandler,
+                downloadHandler, new FrontendRootHandler(frontend.getBaseResource()), frontend);
         context.setHandler(sequence);
         jetty.setHandler(context);
     }
@@ -166,7 +184,8 @@ public final class Streamlit4jServer implements AutoCloseable {
         System.out.println("  streamlit4j is ready.");
         System.out.println();
         System.out.println("  Local URL: " + url);
-        System.out.println("  WebSocket: " + url.replaceFirst("http", "ws") + "/ws");
+        System.out.println("  SSE: " + url + "/events");
+        System.out.println("  WebSocket fallback: " + url.replaceFirst("http", "ws") + "/ws");
         System.out.println();
         System.out.println("  Press Ctrl+C to stop.");
         System.out.println();

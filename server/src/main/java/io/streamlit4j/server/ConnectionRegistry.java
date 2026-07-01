@@ -6,17 +6,17 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * Tracks active WebSocket sessions for server-wide broadcasts (e.g. reload notices).
+ * Tracks active protocol sessions for server-wide broadcasts (e.g. reload notices).
  */
 public final class ConnectionRegistry {
 
-    private final ConcurrentMap<String, ProtocolEndpoint> endpoints = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, ProtocolConnection> endpoints = new ConcurrentHashMap<>();
 
     /** Creates an empty registry. */
     public ConnectionRegistry() {
     }
 
-    void register(String sessionId, ProtocolEndpoint endpoint) {
+    void register(String sessionId, ProtocolConnection endpoint) {
         endpoints.put(sessionId, endpoint);
     }
 
@@ -31,6 +31,13 @@ public final class ConnectionRegistry {
      */
     public int activeConnections() {
         return endpoints.size();
+    }
+
+    void deliver(String sessionId, Envelope envelope) {
+        ProtocolConnection endpoint = endpoints.get(sessionId);
+        if (endpoint != null) {
+            endpoint.deliver(envelope);
+        }
     }
 
     /**

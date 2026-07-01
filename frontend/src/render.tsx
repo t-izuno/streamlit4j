@@ -1,6 +1,6 @@
 import DOMPurify from 'dompurify';
-import type { JSX } from 'react';
-import { findComponent } from './component-registry';
+import { useEffect, useMemo, useRef, useState, type JSX } from 'react';
+import { findChatComponent, findComponent, type ChatComponentSlot } from './component-registry';
 import { Chart } from './components/Chart';
 import { Markdown } from './components/Markdown';
 import { Slider } from './components/Slider';
@@ -73,6 +73,43 @@ function renderNode(node: RenderNode, onChange: WidgetChangeHandler): JSX.Elemen
       return <Markdown key={node.id} body={String(props.body ?? '')} />;
     case 'write':
       return <Write key={node.id} value={String(props.value ?? '')} />;
+    case 'chat_container':
+      return renderChatSlot(
+        'container',
+        node,
+        onChange,
+        <div key={node.id} className="chat-container">
+          {node.children.map((c) => renderNode(c, onChange))}
+        </div>,
+      );
+    case 'chat_message': {
+      const role = String(props.role ?? 'assistant');
+      return renderChatSlot(
+        'message',
+        node,
+        onChange,
+        <article
+          key={node.id}
+          className={`chat-message chat-message--${role}`}
+          aria-label={`${role} message`}
+        >
+          <div className="chat-message__role">{role}</div>
+          {props.content !== undefined && <Markdown body={String(props.content)} />}
+          {node.children.map((c) => renderNode(c, onChange))}
+        </article>,
+      );
+    }
+    case 'chat_stream': {
+      const tokens = (props.tokens as unknown[] | undefined) ?? [];
+      return renderChatSlot('stream', node, onChange, <ChatStream key={node.id} tokens={tokens} />);
+    }
+    case 'chat_controls':
+      return renderChatSlot(
+        'controls',
+        node,
+        onChange,
+        <ChatControls key={node.id} node={node} onChange={onChange} />,
+      );
     case 'code':
       return (
         <pre key={node.id} className="code" data-language={String(props.language ?? '')}>
@@ -135,6 +172,18 @@ function renderNode(node: RenderNode, onChange: WidgetChangeHandler): JSX.Elemen
           {String(props.text ?? '')}
         </div>
       );
+    case 'tool_result':
+      return (
+        <section key={node.id} className="tool-result">
+          <header className="tool-result__header">
+            <strong>{String(props.title ?? '')}</strong>
+            <span>{String(props.status ?? '')}</span>
+          </header>
+          <div className="tool-result__body">
+            {node.children.map((c) => renderNode(c, onChange))}
+          </div>
+        </section>
+      );
     case 'line_chart':
     case 'bar_chart':
     case 'area_chart':
@@ -160,6 +209,27 @@ function renderNode(node: RenderNode, onChange: WidgetChangeHandler): JSX.Elemen
           value={String(props.value ?? '')}
           onChange={(v) => onChange(node.id, v)}
         />
+      );
+    case 'chat_input':
+      return renderChatSlot(
+        'input',
+        node,
+        onChange,
+        labeled(
+          node,
+          props.label,
+          <input
+            type="text"
+            className="chat-input"
+            defaultValue={String(props.value ?? '')}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                onChange(node.id, e.currentTarget.value);
+              }
+            }}
+          />,
+        ),
       );
     case 'number_input':
       return (
@@ -409,6 +479,100 @@ function renderNode(node: RenderNode, onChange: WidgetChangeHandler): JSX.Elemen
   }
 }
 
+function renderChatSlot(
+  slot: ChatComponentSlot,
+  node: RenderNode,
+  onChange: WidgetChangeHandler,
+  fallback: JSX.Element,
+): JSX.Element {
+  const Renderer = findChatComponent(slot);
+  if (!Renderer) {
+    return fallback;
+  }
+  return (
+    <Renderer
+      key={node.id}
+      args={node.props}
+      value={node.props.value}
+      onChange={(v) => onChange(node.id, v)}
+    >
+      {fallback}
+    </Renderer>
+  );
+}
+
+function ChatStream({ tokens }: { tokens: unknown[] }): JSX.Element {
+  const normalized = useMemo(() => tokens.map((token) => String(token)), [tokens]);
+  const tokenKey = useMemo(() => normalized.join('\u0000'), [normalized]);
+  const [visibleCount, setVisibleCount] = useState(() => Math.min(1, normalized.length));
+
+  useEffect(() => {
+    setVisibleCount(Math.min(1, normalized.length));
+    if (normalized.length <= 1) {
+      return undefined;
+    }
+    const timer = window.setInterval(() => {
+      setVisibleCount((current) => {
+        const next = Math.min(current + 1, normalized.length);
+        if (next >= normalized.length) {
+          window.clearInterval(timer);
+        }
+        return next;
+      });
+    }, 24);
+    return () => window.clearInterval(timer);
+  }, [normalized.length, tokenKey]);
+
+  return (
+    <div className="chat-stream" role="status" aria-label="streamed response">
+      <Markdown body={normalized.slice(0, visibleCount).join('')} />
+    </div>
+  );
+}
+
+function ChatControls({
+  node,
+  onChange,
+}: {
+  node: RenderNode;
+  onChange: WidgetChangeHandler;
+}): JSX.Element {
+  const [editedPrompt, setEditedPrompt] = useState('');
+  const editedPromptRef = useRef<HTMLInputElement>(null);
+  return (
+    <div className="chat-controls" role="group" aria-label="Chat controls">
+      <div className="chat-controls__buttons">
+        <button type="button" onClick={() => onChange(node.id, { action: 'stop' })}>
+          Stop
+        </button>
+        <button type="button" onClick={() => onChange(node.id, { action: 'retry' })}>
+          Retry
+        </button>
+      </div>
+      <label className="chat-controls__edit">
+        <span>Edit prompt</span>
+        <input
+          ref={editedPromptRef}
+          type="text"
+          value={editedPrompt}
+          onChange={(e) => setEditedPrompt(e.target.value)}
+        />
+      </label>
+      <button
+        type="button"
+        onClick={() =>
+          onChange(node.id, {
+            action: 'edit_regenerate',
+            value: editedPromptRef.current?.value ?? editedPrompt,
+          })
+        }
+      >
+        Regenerate
+      </button>
+    </div>
+  );
+}
+
 function labeled(node: RenderNode, label: unknown, control: JSX.Element): JSX.Element {
   return (
     <label key={node.id}>
@@ -456,11 +620,7 @@ function renderTable(node: RenderNode): JSX.Element {
 
 function renderChart(node: RenderNode): JSX.Element {
   const data = (node.props.data as Array<Record<string, unknown>> | undefined) ?? [];
-  const kind = node.kind as
-    | 'line_chart'
-    | 'bar_chart'
-    | 'area_chart'
-    | 'scatter_chart';
+  const kind = node.kind as 'line_chart' | 'bar_chart' | 'area_chart' | 'scatter_chart';
   return (
     <div key={node.id}>
       <Chart kind={kind} data={data} />

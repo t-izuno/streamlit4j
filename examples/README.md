@@ -7,12 +7,14 @@ Sample applications for the two streamlit4j adoption paths.
 | [`embedded/`](embedded) | A. Library + embedded server | Tiny standalone `main` that boots `Streamlit4jServer` (Jetty) directly |
 | [`spring-boot/`](spring-boot) | B. Spring Boot Starter | `@SpringBootApplication` launchers that mount the same demos under `${streamlit4j.base-path}` |
 
-Both sub-projects ship the **same seven demos** —
+Both sub-projects ship the **same eight demos** —
 [`Hello`](embedded/src/main/java/io/streamlit4j/examples/Hello.java),
 [`WidgetsDemo`](embedded/src/main/java/io/streamlit4j/examples/WidgetsDemo.java),
 [`LayoutDemo`](embedded/src/main/java/io/streamlit4j/examples/LayoutDemo.java),
 [`DataDemo`](embedded/src/main/java/io/streamlit4j/examples/DataDemo.java),
 [`ChatDemo`](embedded/src/main/java/io/streamlit4j/examples/ChatDemo.java) (echo bot),
+[`FakeLlmChatDemo`](embedded/src/main/java/io/streamlit4j/examples/FakeLlmChatDemo.java)
+(deterministic streamed chat),
 [`ComponentDemo`](embedded/src/main/java/io/streamlit4j/examples/ComponentDemo.java),
 [`ShowcaseDemo`](embedded/src/main/java/io/streamlit4j/examples/ShowcaseDemo.java)
 (sidebar hub linking to the rest). Only the launcher differs, so you can compare the

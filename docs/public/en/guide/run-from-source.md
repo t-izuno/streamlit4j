@@ -90,7 +90,9 @@ Available `mainClass` values:
 On startup you will see:
 
 ```text
-streamlit4j listening on ws://localhost:8501/ws
+Local URL: http://localhost:8501
+SSE: http://localhost:8501/events
+WebSocket fallback: ws://localhost:8501/ws
 ```
 
 ### Path B (Spring Boot Starter)

@@ -128,7 +128,7 @@ For a clone-and-launch walkthrough, see [Run from source](./run-from-source).
 
 ## Understanding the rerun model
 
-For each WebSocket session, `render()` runs on a **virtual thread**. When a widget changes:
+For each protocol session, `render()` runs on a **virtual thread**. When a widget changes:
 
 1. Update the session state with the new value
 2. Rerun `render()` (serialized within the same session)

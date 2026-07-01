@@ -12,7 +12,11 @@ import io.streamlit4j.core.protocol.SessionInit;
 import io.streamlit4j.core.protocol.WidgetEvent;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.eclipse.jetty.websocket.api.Callback;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
@@ -24,7 +28,7 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
  * use cases.
  */
 @WebSocket
-public final class ProtocolEndpoint {
+public final class ProtocolEndpoint implements ProtocolConnection {
 
     private final StartSession startSession;
     private final ProcessWidgetEvent processWidgetEvent;
@@ -108,7 +112,8 @@ public final class ProtocolEndpoint {
         }
     }
 
-    void deliver(Envelope envelope) {
+    @Override
+    public void deliver(Envelope envelope) {
         send(envelope);
     }
 
@@ -118,7 +123,7 @@ public final class ProtocolEndpoint {
         }
     }
 
-    private static Object unwrap(JsonNode node) {
+    static Object unwrap(JsonNode node) {
         if (node == null || node.isNull()) {
             return null;
         }
@@ -136,6 +141,16 @@ public final class ProtocolEndpoint {
         }
         if (node.isTextual()) {
             return node.asText();
+        }
+        if (node.isArray()) {
+            List<Object> values = new ArrayList<>();
+            node.forEach(value -> values.add(unwrap(value)));
+            return values;
+        }
+        if (node.isObject()) {
+            Map<String, Object> values = new LinkedHashMap<>();
+            node.fields().forEachRemaining(entry -> values.put(entry.getKey(), unwrap(entry.getValue())));
+            return values;
         }
         return node;
     }

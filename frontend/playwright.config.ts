@@ -8,7 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: [['html', { open: 'never' }]],
   use: {
-    baseURL: 'http://localhost:4173',
+    baseURL: 'http://localhost:8511',
     trace: 'on-first-retry',
   },
   projects: [
@@ -18,8 +18,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run preview',
-    url: 'http://localhost:4173',
+    command: 'node e2e/start-fake-llm-server.mjs',
+    url: 'http://localhost:8511',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },

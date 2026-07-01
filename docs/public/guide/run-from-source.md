@@ -82,7 +82,9 @@ examples には A 候補（Library / 自前 `main`）と B 候補（Spring Boot 
 起動すると以下が表示されます：
 
 ```text
-streamlit4j listening on ws://localhost:8501/ws
+Local URL: http://localhost:8501
+SSE: http://localhost:8501/events
+WebSocket fallback: ws://localhost:8501/ws
 ```
 
 ### B 候補（Spring Boot Starter）で起動

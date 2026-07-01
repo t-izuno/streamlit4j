@@ -1,8 +1,11 @@
 # Reference
 
-This section covers each element of the streamlit4j public API across three aspects: the Java-side signature, the WebSocket protocol, and the frontend rendering.
+This section covers each element of the streamlit4j public API across three aspects:
+the Java-side signature, the JSON protocol, and the frontend rendering.
 
-The public facade is consolidated in [`io.streamlit4j.core.api.St`](https://github.com/t-izuno/streamlit4j/blob/main/core/src/main/java/io/streamlit4j/core/api/St.java), and internal work is delegated to package-private classes organized by element category (`TextWidgets`, `InputWidgets`, and others).
+The public facade is consolidated in [`io.streamlit4j.core.api.St`](https://github.com/t-izuno/streamlit4j/blob/main/core/src/main/java/io/streamlit4j/core/api/St.java),
+and internal work is delegated to package-private classes organized by element category
+(`TextWidgets`, `InputWidgets`, and others).
 
 ## Category list
 

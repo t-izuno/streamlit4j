@@ -6,7 +6,7 @@
 
 ## Context
 
-サーバーとブラウザー間の WebSocket メッセージは次の 2 候補があった。
+サーバーとブラウザー間のプロトコルペイロードは次の 2 候補があった。
 
 1. **JSON**: ブラウザー標準の `JSON.parse` / `JSON.stringify`、Java 側は Jackson
 2. **MessagePack**: バイナリーで小さく速い。ただし両端で専用ライブラリーを要する
@@ -24,7 +24,9 @@ v1 は **JSON（Jackson）** を採用する。MessagePack は採用しない。
 - **ブラウザー側ゼロ依存**: `JSON.parse` がネイティブ実装で、SPA バンドルに追加デコーダーを含めずに済む
 - **既存資産の活用**: Java 側は Jackson が事実上の標準で、Records / sealed / `@JsonTypeInfo` 等の機能成熟度が高い
 - **可観測性**: DevTools の Network タブでメッセージが可読のため、開発・デバッグ・障害解析が容易
-- **早期最適化の回避**: render_delta は keyed diff 後の最小パッチ列で 1 回あたりのペイロードが小〜中規模。MessagePack の利得（バイト数削減）は計測上のボトルネックが顕在化するまで不要であり、`permessage-deflate` で実効差はさらに縮小する
+- **早期最適化の回避**: render_delta は keyed diff 後の最小パッチ列で 1 回あたりの
+  ペイロードが小〜中規模。MessagePack の利得（バイト数削減）は計測上の
+  ボトルネックが顕在化するまで不要
 - **抽象化済み**: `Codec` クラスを介しているため、将来ベンチマーク結果で必要になれば別 ADR で MessagePack へ差し替え可能
 
 ## Consequences
@@ -38,8 +40,7 @@ v1 は **JSON（Jackson）** を採用する。MessagePack は採用しない。
 
 悪い影響:
 
-- 同じデータ量で MessagePack より大きい（ただし WebSocket は permessage-deflate
-  圧縮が効くため実効差は縮小）
+- 同じデータ量で MessagePack より大きい
 - 数値の精度（とくに Long / BigDecimal）に JSON 仕様上の上限がある（53bit）
 
 ## Alternatives Considered

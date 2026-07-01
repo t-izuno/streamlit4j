@@ -68,10 +68,10 @@
 ## 1. 全体アーキテクチャー
 
 ```text
-+---------------------------+        WebSocket        +------------------------+
++---------------------------+  Transport abstraction   +------------------------+
 |        Browser            |  <-------------------->  |   streamlit4j Server   |
-|  (React + TS SPA)         |    render_delta /        |   (embedded HTTP/WS)   |
-|  - 要素ツリー描画          |    widget_event          |                        |
+|  (React + TS SPA)         |  SSE+POST or WebSocket   |   (embedded HTTP)      |
+|  - 要素ツリー描画          |    render_delta / event  |                        |
 |  - イベント送信            |                          |  +------------------+  |
 +---------------------------+                          |  | Session Manager  |  |
                                                        |  +--------+---------+  |
@@ -145,7 +145,8 @@
 ### 5.1 モジュール分担
 
 - `core`: サーブレットや特定 Web フレームワークに依存しない純粋な実行エンジン
-- `server`: 軽量 HTTP/WS サーバー（組み込み Jetty / Undertow 等）で `core` を公開
+- `server`: 軽量 HTTP サーバー（組み込み Jetty / Undertow 等）で `core` を公開し、
+  SSE / WebSocket のトランスポートを差し替え可能にする
 - `spring-boot-starter`: auto-configuration で指定パスにマウントし、ホストの
   Security / Session に委譲する
 - `cli`: `server` をラップし、JBang で単一ファイルを起動する
@@ -158,7 +159,12 @@
 ## 6. プロトコル設計方針
 
 - v1 はデバッグ性とツール親和性を優先し JSON エンベロープを採用
-- 将来 MessagePack / Protobuf によるバイナリ最適化を差し替え可能にする
+- SSE + HTTP POST と WebSocket を同じエンベロープで扱えるトランスポート境界を置く
+- 標準トランスポートは SSE + HTTP POST とする（ADR-0012）
+- WebSocket は互換トランスポートとして残し、Upgrade 制約が許容できる環境向けの
+  別トランスポートとして再評価する
+- 将来 MessagePack / Protobuf によるバイナリ最適化が必要になった場合は、
+  別トランスポートとして再評価する
 - メッセージ種別はバージョン付きエンベロープで明示する
 - 具体的なエンベロープ構造とメッセージ種別は `specification.md` 2 章参照
 
@@ -174,7 +180,7 @@
 | --- | --- | --- | --- |
 | JDK | 21 LTS | 仮想スレッド・records・sealed・pattern matching | 25 LTS 待ち |
 | 並行 | 仮想スレッド | セッション単位の安価な並行実行 | プラットフォームスレッドプール |
-| 通信 | WebSocket + JSON | 双方向・デバッグ容易・ツール親和 | Protobuf / MessagePack |
+| 通信 | SSE + HTTP POST / WebSocket + JSON | 制約を実機検証し、環境に合う経路を選べる | gRPC |
 | サーバー | 組み込み Jetty/Undertow | 軽量・埋め込み容易 | Netty 直叩き |
 | フロント | React + TypeScript | 部品の厚さ・component 整合 | Lit（Web Components） |
 | フロントビルド | Vite | 高速・SPA 標準 | webpack |

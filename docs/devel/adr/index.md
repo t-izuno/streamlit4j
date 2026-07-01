@@ -19,6 +19,7 @@ ADR にはアーキテクチャー境界・非機能特性・外部依存・セ�
 | [ADR-0009](./0009-vite-for-frontend.md) | Accepted | フロントエンドビルドツールに Vite を採用する |
 | [ADR-0010](./0010-vitepress-for-docs.md) | Accepted | ドキュメントサイトに VitePress を採用する |
 | [ADR-0011](./0011-jetty-embedded-server.md) | Accepted | 組み込みサーバーに Jetty 12 を採用する |
+| [ADR-0012](./0012-sse-standard-transport.md) | Accepted | 標準トランスポートは SSE + HTTP POST とする |
 
 VitePress を含むサイドバーへの追加と、ブランドカラー反映は TASK-114 で同時に行った。
 

@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { App } from './App';
-import { clearComponents, registerComponent } from './component-registry';
+import { clearComponents, registerChatComponent, registerComponent } from './component-registry';
 import type { Envelope } from './protocol';
 import type {
   ConnectionState,
@@ -23,6 +23,10 @@ function createStubClient() {
     sendWidgetEvent: vi.fn((sessionId: string, widgetId: string, value: unknown) => {
       sent.push({ sessionId, widgetId, value });
     }),
+    sendFileUpload: vi.fn((sessionId: string, widgetId: string, file: File) => {
+      sent.push({ sessionId, widgetId, file });
+      return Promise.resolve();
+    }),
     emit: (envelope: Envelope) => handlers.forEach((h) => h(envelope)),
     emitState: (state: ConnectionState, info: ConnectionStateInfo = {}) =>
       stateHandlers.forEach((h) => h(state, info)),
@@ -38,6 +42,8 @@ function createStubClient() {
 describe('App', () => {
   afterEach(() => {
     clearComponents();
+    window.localStorage.clear();
+    delete document.documentElement.dataset.theme;
   });
 
   it('shows connecting status before SessionInit arrives', () => {
@@ -63,6 +69,25 @@ describe('App', () => {
       });
     });
     expect(screen.getByRole('heading', { name: 'Hi' })).toBeInTheDocument();
+  });
+
+  it('switches and persists the built-in theme', () => {
+    const client = createStubClient();
+    render(<App client={client} />);
+    act(() => {
+      client.emit({
+        v: 1,
+        type: 'session_init',
+        sessionId: 's-1',
+        root: { kind: 'root', id: 'root', props: {}, children: [] },
+      });
+    });
+
+    fireEvent.click(screen.getByRole('radio', { name: 'Dark mode' }));
+    expect(document.documentElement.dataset.theme).toBe('dark');
+    expect(window.localStorage.getItem('streamlit4j.theme')).toBe('dark');
+    fireEvent.click(screen.getByRole('radio', { name: 'Light mode' }));
+    expect(document.documentElement.dataset.theme).toBe('light');
   });
 
   it('replaces tree from render_delta with op replace at /', () => {
@@ -196,6 +221,245 @@ describe('App', () => {
     expect((client as unknown as { sent: unknown[] }).sent).toEqual([
       { sessionId: 's-1', widgetId: 'w_year', value: 2024 },
     ]);
+  });
+
+  it('renders chat message and reveals streamed tokens incrementally', () => {
+    vi.useFakeTimers();
+    const client = createStubClient();
+    render(<App client={client} />);
+    act(() => {
+      client.emit({
+        v: 1,
+        type: 'session_init',
+        sessionId: 's-1',
+        root: {
+          kind: 'root',
+          id: 'root',
+          props: {},
+          children: [
+            {
+              kind: 'chat_message',
+              id: 'w_msg',
+              props: { role: 'assistant', content: 'Hello **there**' },
+              children: [],
+            },
+            {
+              kind: 'chat_stream',
+              id: 'w_stream',
+              props: { tokens: ['Hel', 'lo'] },
+              children: [],
+            },
+          ],
+        },
+      });
+    });
+    expect(screen.getByText('assistant')).toBeInTheDocument();
+    expect(screen.getByText('there')).toBeInTheDocument();
+    expect(screen.getByRole('status', { name: 'streamed response' })).toHaveTextContent('Hel');
+    expect(screen.getByRole('status', { name: 'streamed response' })).not.toHaveTextContent(
+      'Hello',
+    );
+    act(() => {
+      vi.runAllTimers();
+    });
+    expect(screen.getByRole('status', { name: 'streamed response' })).toHaveTextContent('Hello');
+    vi.useRealTimers();
+  });
+
+  it('sends chat input value on enter', () => {
+    const client = createStubClient();
+    render(<App client={client} />);
+    act(() => {
+      client.emit({
+        v: 1,
+        type: 'session_init',
+        sessionId: 's-1',
+        root: {
+          kind: 'root',
+          id: 'root',
+          props: {},
+          children: [
+            {
+              kind: 'chat_input',
+              id: 'w_chat',
+              props: { label: 'Ask', value: '' },
+              children: [],
+            },
+          ],
+        },
+      });
+    });
+    const input = screen.getByLabelText('Ask');
+    fireEvent.change(input, { target: { value: 'Explain SSE' } });
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect((client as unknown as { sent: unknown[] }).sent).toEqual([
+      { sessionId: 's-1', widgetId: 'w_chat', value: 'Explain SSE' },
+    ]);
+  });
+
+  it('sends chat control actions', () => {
+    const client = createStubClient();
+    render(<App client={client} />);
+    act(() => {
+      client.emit({
+        v: 1,
+        type: 'session_init',
+        sessionId: 's-1',
+        root: {
+          kind: 'root',
+          id: 'root',
+          props: {},
+          children: [
+            {
+              kind: 'chat_controls',
+              id: 'w_controls',
+              props: {},
+              children: [],
+            },
+          ],
+        },
+      });
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: 'Stop' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+    const editInput = screen.getByLabelText('Edit prompt');
+    fireEvent.change(editInput, { target: { value: 'Edited prompt' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Regenerate' }));
+
+    expect((client as unknown as { sent: unknown[] }).sent).toEqual([
+      { sessionId: 's-1', widgetId: 'w_controls', value: { action: 'stop' } },
+      { sessionId: 's-1', widgetId: 'w_controls', value: { action: 'retry' } },
+      {
+        sessionId: 's-1',
+        widgetId: 'w_controls',
+        value: { action: 'edit_regenerate', value: 'Edited prompt' },
+      },
+    ]);
+  });
+
+  it('renders registered chat component overrides', () => {
+    registerChatComponent('container', ({ children }) => (
+      <section data-testid="custom-chat-container">{children}</section>
+    ));
+    registerChatComponent('message', ({ args }) => (
+      <p data-testid="custom-chat-message">
+        {String(args.role)}:{String(args.content)}
+      </p>
+    ));
+    const client = createStubClient();
+    render(<App client={client} />);
+    act(() => {
+      client.emit({
+        v: 1,
+        type: 'session_init',
+        sessionId: 's-1',
+        root: {
+          kind: 'root',
+          id: 'root',
+          props: {},
+          children: [
+            {
+              kind: 'chat_container',
+              id: 'w_chat_container',
+              props: {},
+              children: [
+                {
+                  kind: 'chat_message',
+                  id: 'w_msg',
+                  props: { role: 'assistant', content: 'Hi' },
+                  children: [],
+                },
+              ],
+            },
+          ],
+        },
+      });
+    });
+
+    expect(screen.getByTestId('custom-chat-container')).toBeInTheDocument();
+    expect(screen.getByTestId('custom-chat-message')).toHaveTextContent('assistant:Hi');
+  });
+
+  it('renders rich chat children and tool results', () => {
+    registerComponent('answer-card', ({ args }) => (
+      <aside data-testid="answer-card">{String(args.title)}</aside>
+    ));
+    const client = createStubClient();
+    render(<App client={client} />);
+    act(() => {
+      client.emit({
+        v: 1,
+        type: 'session_init',
+        sessionId: 's-1',
+        root: {
+          kind: 'root',
+          id: 'root',
+          props: {},
+          children: [
+            {
+              kind: 'chat_message',
+              id: 'w_msg',
+              props: { role: 'assistant' },
+              children: [
+                {
+                  kind: 'code',
+                  id: 'w_code',
+                  props: { body: 'System.out.println(1);', language: 'java' },
+                  children: [],
+                },
+                {
+                  kind: 'file_uploader',
+                  id: 'w_upload',
+                  props: { label: 'Attach context' },
+                  children: [],
+                },
+                {
+                  kind: 'download_button',
+                  id: 'w_download',
+                  props: { label: 'Download answer', url: '/download/a1' },
+                  children: [],
+                },
+                {
+                  kind: 'tool_result',
+                  id: 'w_tool',
+                  props: { title: 'Search', status: 'success' },
+                  children: [
+                    {
+                      kind: 'table',
+                      id: 'w_table',
+                      props: { rows: [{ name: 'streamlit4j' }] },
+                      children: [],
+                    },
+                    {
+                      kind: 'component',
+                      id: 'w_component',
+                      props: { name: 'answer-card', args: { title: 'Generated panel' } },
+                      children: [],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      });
+    });
+
+    expect(screen.getByLabelText('assistant message')).toHaveTextContent('System.out.println(1);');
+    const file = new File(['notes'], 'notes.txt', { type: 'text/plain' });
+    fireEvent.change(screen.getByLabelText('Attach context'), { target: { files: [file] } });
+    expect((client as unknown as { sent: unknown[] }).sent).toEqual([
+      { sessionId: 's-1', widgetId: 'w_upload', file },
+    ]);
+    expect(screen.getByRole('link', { name: 'Download answer' })).toHaveAttribute(
+      'href',
+      '/download/a1',
+    );
+    expect(screen.getByText('Search')).toBeInTheDocument();
+    expect(screen.getByText('success')).toBeInTheDocument();
+    expect(screen.getByRole('table')).toHaveTextContent('streamlit4j');
+    expect(screen.getByTestId('answer-card')).toHaveTextContent('Generated panel');
   });
 
   it('shows a script error banner with message and stack trace', () => {

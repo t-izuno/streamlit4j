@@ -8,8 +8,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Flow;
 import java.util.function.IntConsumer;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * Public facade for the streamlit4j script-side API. Every entry point is a thin delegation to a package-private widget
@@ -104,6 +106,106 @@ public final class St {
      */
     public static void write(Object value) {
         TextWidgets.write(value);
+    }
+
+    /**
+     * Renders a completed chat message.
+     *
+     * @param role
+     *            message role such as {@code "user"} or {@code "assistant"}
+     * @param content
+     *            Markdown-capable message body
+     */
+    public static void chatMessage(String role, String content) {
+        ChatWidgets.chatMessage(role, content);
+    }
+
+    /**
+     * Renders a chat message that contains regular Streamlit4j elements.
+     *
+     * @param role
+     *            message role such as {@code "user"} or {@code "assistant"}
+     * @param body
+     *            rich message body
+     */
+    public static void chatMessage(String role, Runnable body) {
+        ChatWidgets.chatMessage(role, body);
+    }
+
+    /**
+     * Renders a chat input and returns the submitted value for the current session.
+     *
+     * @param label
+     *            accessible input label
+     *
+     * @return submitted text, or {@code null} when no value has been submitted
+     */
+    public static String chatInput(String label) {
+        return ChatWidgets.chatInput(label);
+    }
+
+    /**
+     * Renders standard chat controls and returns a one-shot action when the user requests stop, retry, or
+     * edit-regenerate.
+     *
+     * @return requested chat action, or {@code null} when no action has been submitted
+     */
+    public static ChatAction chatControls() {
+        return ChatWidgets.chatControls();
+    }
+
+    /**
+     * Renders a chat container that groups chat messages, streams, inputs, and controls.
+     *
+     * @param body
+     *            chat content to render inside the container
+     */
+    public static void chatContainer(Runnable body) {
+        ChatWidgets.chatContainer(body);
+    }
+
+    /**
+     * Renders a structured tool result inside a chat message.
+     *
+     * @param title
+     *            tool result title
+     * @param status
+     *            tool result status
+     * @param body
+     *            tool result body
+     */
+    public static void toolResult(String title, String status, Runnable body) {
+        ChatWidgets.toolResult(title, status, body);
+    }
+
+    /**
+     * Renders streamed assistant tokens.
+     *
+     * @param tokens
+     *            token chunks to display in order
+     */
+    public static void writeStream(Iterable<String> tokens) {
+        ChatWidgets.writeStream(tokens);
+    }
+
+    /**
+     * Renders streamed assistant tokens.
+     *
+     * @param tokens
+     *            token chunks to display in order
+     */
+    public static void writeStream(Stream<String> tokens) {
+        ChatWidgets.writeStream(tokens);
+    }
+
+    /**
+     * Renders streamed assistant tokens from a Java Flow publisher.
+     *
+     * @param tokens
+     *            token chunks to display in order
+     */
+    public static void writeStream(Flow.Publisher<String> tokens) {
+        ChatWidgets.writeStream(tokens);
     }
 
     /**

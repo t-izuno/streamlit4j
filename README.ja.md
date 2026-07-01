@@ -12,7 +12,8 @@ Java 向けの対話型データアプリ / ダッシュボードフレームワ
 
 ## 何ができるか
 
-`St.*` の静的メソッド呼び出しを並べるだけで、WebSocket + React 製の UI が自動生成される。
+`St.*` の静的メソッド呼び出しを並べるだけで、SSE + HTTP POST + React 製の UI が自動生成される。
+WebSocket は互換トランスポートとして利用できる。
 
 ```java
 import io.streamlit4j.core.api.St;
@@ -114,7 +115,7 @@ streamlit4j:
 | Maven 座標 | 役割 |
 | --- | --- |
 | `io.streamlit4j:streamlit4j-core` | フレームワーク非依存の実行エンジン |
-| `io.streamlit4j:streamlit4j-server` | 組み込み Jetty + WebSocket |
+| `io.streamlit4j:streamlit4j-server` | 組み込み Jetty + SSE / WebSocket トランスポート |
 | `io.streamlit4j:streamlit4j-frontend-assets` | 事前ビルド済みフロントを classpath に同梱 |
 | `io.streamlit4j:streamlit4j-spring-boot-starter` | Spring Boot 自動構成 |
 | `io.streamlit4j:streamlit4j-examples-embedded` | 自前 `main` + 組み込み `Streamlit4jServer` で起動するスタンドアロンデモ群 |

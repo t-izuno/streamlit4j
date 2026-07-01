@@ -13,7 +13,8 @@ An interactive data-app and dashboard framework for Java. streamlit4j brings the
 
 ## What it does
 
-Compose static calls on `St.*` and a WebSocket + React UI is produced for you.
+Compose static calls on `St.*` and an SSE + HTTP POST + React UI is produced for you.
+WebSocket remains available as a fallback transport.
 
 ```java
 import io.streamlit4j.core.api.St;
@@ -117,7 +118,7 @@ Spring Session integration. See [Spring Boot Integration](docs/public/guide/spri
 | Maven coordinate | Role |
 | --- | --- |
 | `io.streamlit4j:streamlit4j-core` | Framework-agnostic execution engine |
-| `io.streamlit4j:streamlit4j-server` | Embedded Jetty + WebSocket |
+| `io.streamlit4j:streamlit4j-server` | Embedded Jetty + SSE / WebSocket transports |
 | `io.streamlit4j:streamlit4j-frontend-assets` | Pre-built frontend bundled in classpath |
 | `io.streamlit4j:streamlit4j-spring-boot-starter` | Spring Boot auto-configuration |
 | `io.streamlit4j:streamlit4j-examples-embedded` | Standalone demos launched via own `main` + embedded `Streamlit4jServer` |

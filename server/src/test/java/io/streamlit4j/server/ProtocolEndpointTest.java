@@ -2,6 +2,7 @@ package io.streamlit4j.server;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.fasterxml.jackson.databind.node.IntNode;
@@ -140,6 +141,18 @@ class ProtocolEndpointTest {
                 endpoint.onMessage(json);
             }
         }
+    }
+
+    @Test
+    void unwrapConvertsObjectsAndArraysToJavaCollections() {
+        JsonNode object = Codec.valueToTree(java.util.Map.of("action", "stop", "value", "edited"));
+        JsonNode array = Codec.valueToTree(java.util.List.of("a", java.util.Map.of("b", 1)));
+
+        Object unwrappedObject = ProtocolEndpoint.unwrap(object);
+        Object unwrappedArray = ProtocolEndpoint.unwrap(array);
+
+        assertThat(unwrappedObject).isEqualTo(java.util.Map.of("action", "stop", "value", "edited"));
+        assertThat(unwrappedArray).isEqualTo(java.util.List.of("a", java.util.Map.of("b", 1)));
     }
 
     private static String mostRecentSessionId(Streamlit4jApplication app) {

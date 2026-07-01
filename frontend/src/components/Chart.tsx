@@ -87,9 +87,7 @@ export function Chart({ kind, data }: ChartProps) {
   if (!prepared) {
     return (
       <figure className={kind}>
-        <figcaption>
-          {kind} — no numeric columns to plot
-        </figcaption>
+        <figcaption>{kind} — no numeric columns to plot</figcaption>
       </figure>
     );
   }

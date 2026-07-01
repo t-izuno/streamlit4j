@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react';
+import type { ComponentType, ReactNode } from 'react';
 
 /**
  * Props passed to every in-process custom component renderer. The bundled SPA
@@ -10,11 +10,14 @@ export interface CustomComponentRenderProps {
   args: Record<string, unknown>;
   value: unknown;
   onChange: (value: unknown) => void;
+  children?: ReactNode;
 }
 
 export type CustomComponentRenderer = ComponentType<CustomComponentRenderProps>;
+export type ChatComponentSlot = 'container' | 'message' | 'stream' | 'input' | 'controls';
 
 const registry = new Map<string, CustomComponentRenderer>();
+const chatRegistry = new Map<ChatComponentSlot, CustomComponentRenderer>();
 
 /**
  * Registers an in-process custom component renderer under {@code name}.
@@ -33,6 +36,19 @@ export function findComponent(name: string): CustomComponentRenderer | undefined
   return registry.get(name);
 }
 
+/** Registers a renderer that replaces one standard chat UI slot. */
+export function registerChatComponent(
+  slot: ChatComponentSlot,
+  renderer: CustomComponentRenderer,
+): void {
+  chatRegistry.set(slot, renderer);
+}
+
+/** Returns the renderer registered for a chat UI slot, or undefined if absent. */
+export function findChatComponent(slot: ChatComponentSlot): CustomComponentRenderer | undefined {
+  return chatRegistry.get(slot);
+}
+
 /** Returns a snapshot of all registered component names. */
 export function registeredNames(): string[] {
   return Array.from(registry.keys());
@@ -44,4 +60,5 @@ export function registeredNames(): string[] {
  */
 export function clearComponents(): void {
   registry.clear();
+  chatRegistry.clear();
 }

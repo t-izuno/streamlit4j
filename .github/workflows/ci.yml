@@ -71,6 +71,25 @@ jobs:
           path: frontend/dist
           if-no-files-found: ignore
 
+  docs:
+    name: Documentation build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: docs/public
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: docs/public/package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Build public docs
+        run: npm run docs:build
+
   e2e:
     name: E2E tests
     runs-on: ubuntu-latest

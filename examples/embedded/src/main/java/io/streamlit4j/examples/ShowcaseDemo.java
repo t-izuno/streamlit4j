@@ -16,6 +16,7 @@ public final class ShowcaseDemo {
 
     private static final String NAV_HELLO = "hello";
     private static final String NAV_CHAT = "chat";
+    private static final String NAV_FAKE_LLM_CHAT = "fake_llm_chat";
     private static final String NAV_WIDGETS = "widgets";
     private static final String NAV_LAYOUT = "layout";
     private static final String NAV_DATA = "data";
@@ -40,6 +41,9 @@ public final class ShowcaseDemo {
             }
             if (St.button("Chat (echo bot)")) {
                 state.put(STATE_KEY, NAV_CHAT);
+            }
+            if (St.button("Fake LLM chat")) {
+                state.put(STATE_KEY, NAV_FAKE_LLM_CHAT);
             }
 
             St.markdown("##### Element catalog");
@@ -66,6 +70,7 @@ public final class ShowcaseDemo {
         String selected = state.get(STATE_KEY, String.class).orElse(NAV_HELLO);
         switch (selected) {
             case NAV_CHAT -> ChatDemo.run();
+            case NAV_FAKE_LLM_CHAT -> FakeLlmChatDemo.run();
             case NAV_WIDGETS -> WidgetsDemo.run();
             case NAV_LAYOUT -> LayoutDemo.run();
             case NAV_DATA -> DataDemo.run();
